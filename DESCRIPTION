@@ -1,0 +1,22 @@
+Package: RarePlusComMinus
+Type: Package
+Title: A package in support of the manuscript ""
+Version: 0.1.0
+Author: Andrew J. Rominger
+Maintainer: The package maintainer <ajrominger@gmail.com>
+Description: Evaluating the possibility that chance alone can lead to 
+    perceived associations between rarity being associated with positive 
+    interactions and commonness being associated with negative interactions
+License: MIT
+Encoding: UTF-8
+LazyLoad: yes
+LazyData: true
+Depends:
+    R (>= 3.5.0), 
+    pika
+Imports:
+    socorro,
+    spaa
+Suggests:
+    testthat
+RoxygenNote: 6.1.1
