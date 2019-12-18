@@ -23,12 +23,14 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
     metaX <- colSums(x)
 
     # observed Schoener distance
-    sd <- as.vector(schoener(x))
+    sd <- schoener(x)
+    sd <- sd[lower.tri(sd)]
 
     # null Schoener distances
     nulls <- simulate(nullmodel(x, 'r2dtable'), nsim = B)
     nullsd <- lapply(1:dim(nulls)[3], function(i) {
-        return(as.vector(schoener(nulls[, , i])))
+        d <- schoener(nulls[, , i])
+        return(d[lower.tri(d)])
     })
 
     # combine null with observed
@@ -47,7 +49,8 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
     nneg <- sum(eneg)
 
     # edge list
-    elist <- data.frame(expand.grid(1:ncol(x), 1:ncol(x)), epos, eneg)
+    # should be combn!!!!!
+    elist <- cbind(t(combn(1:ncol(x), 2)), epos, eneg)
     # pos <- verlist[verlist[, 3] == 1, 1:2]
     # neg <- verlist[verlist[, 4] == 1, 1:2]
     # gpos <- graph_from_data_frame(verlist[verlist[, 3] == 1, 1:2],
@@ -60,7 +63,7 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
     corMeanNeg <- .abundCenCorMean(elist[elist[, 4] == 1, 1:2], metaX)
 
     return(list(pos = c(n = npos, corMeanPos),
-                neg = c(n = nneg, corMeanPos)))
+                neg = c(n = nneg, corMeanNeg)))
 }
 
 
@@ -73,16 +76,20 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
 # function to calculate correlation between abundance and centrality
 # and mean abundances, unweighted and weighted by centrality
 .abundCenCorMean <- function(elist, abund) {
-    cen <- table(c(elist[, 1], elist[, 2]))
-    x <- abund[as.integer(names(cen))]
+    if(nrow(elist) < 3) {
+        return(list(rho = NA, p = NA, m = NA, wm = NA))
+    } else {
+        cen <- table(c(elist[, 1], elist[, 2]))
+        x <- abund[as.integer(names(cen))]
 
-    # correlation output
-    o <- cor.test(x, cen, method = 'spearman')
+        # correlation output
+        o <- cor.test(x, cen, method = 'spearman')
 
-    # relative abundance
-    relx <- x / sum(abund)
+        # relative abundance
+        relx <- x / sum(abund)
 
-    # return: corr coeff, corr p-val, mean abund, mean abund weighted by centrality
-    return(list(rho = o$estimate, p = o$p.value,
-                m = mean(relx), wm = weighted.mean(relx, cen)))
+        # return: corr coeff, corr p-val, mean abund, mean abund weighted by centrality
+        return(list(rho = o$estimate, p = o$p.value,
+                    m = mean(relx), wm = weighted.mean(relx, cen)))
+    }
 }
