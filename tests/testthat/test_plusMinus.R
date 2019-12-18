@@ -54,7 +54,6 @@ pos.neg.abun.r2d <- function(matb,name,alpha,plots){
     }
     nul_res <- do.call(rbind,nul_mats)
     # null Schoener overlap
-    browser()
 
     nul_res<-rbind(Sd,nul_res)
     pos_p <- apply(nul_res,2,function(x){sum(x>=x[1])/length(x)})
@@ -154,14 +153,33 @@ pos.neg.abun.r2d <- function(matb,name,alpha,plots){
     return(resFin)
 }
 
+data('abundace_matrices')
+# choose a few small ones that have enough '+' and '-' associations
+ii <- c(1, 4, 19)
 
-# test_that('plusMinus returns same results as published version', {
-#     pos.neg.abun.r2d(matb = abun.mat[[1]], name = 'foo', alpha = 0.05, plots = FALSE)
-#     set.seed(1)
-#     x <- matrix(sample(10, 5 * 8, replace = TRUE), nrow = 5)
-#
-#     mine <- schoener(x)
-#     pub <- as.matrix(spaa::niche.overlap(x, method = 'schoener'))
-#
-#     expect_true(all.equal(as.vector(mine), as.vector(pub)))
-# })
+comp <- parallel::mclapply(ii, mc.cores = 3, FUN = function(i) {
+    set.seed(1)
+    x <- round(abun.mat[[i]])
+
+    mine <- replicate(25, {
+        foo <- plusMinus(x)
+        foo <- unlist(foo)[-c(4, 9)]
+        names(foo) <- NULL
+        return(foo)
+    })
+
+    pub <- pos.neg.abun.r2d(matb = x, name = i, alpha = 0.05, plots = FALSE)
+    pub <- pub[, c('num_pos', 'abu_rho_pos', 'abu_p_rho_pos', 'w.pos.mean.abu',
+                   'num_neg', 'abu_rho_neg', 'abu_p_rho_neg', 'w.neg.mean.abu')]
+    names(pub) <- NULL
+
+    sapply(1:nrow(mine), function(j) {
+        r <- range(mine[j, ])
+
+        return(pub[j] >= r[1] - 0.001 * diff(r) | pub[j] >= r[2] + 0.001 * diff(r))
+    })
+})
+
+test_that('plusMinus returns same results as published version', {
+    expect_true(all(unlist(comp)))
+})
