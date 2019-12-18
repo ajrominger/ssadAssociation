@@ -13,7 +13,8 @@ LazyLoad: yes
 LazyData: true
 Depends:
     R (>= 3.5.0), 
-    pika
+    pika,
+    vegan
 Imports:
     socorro,
     spaa
