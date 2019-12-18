@@ -17,7 +17,8 @@ Depends:
     vegan
 Imports:
     socorro,
-    spaa
+    spaa, 
+    igraph
 Suggests:
     testthat
 RoxygenNote: 6.1.1
