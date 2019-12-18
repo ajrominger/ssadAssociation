@@ -20,5 +20,6 @@ Imports:
     spaa, 
     igraph
 Suggests:
-    testthat
+    testthat,
+    parallel
 RoxygenNote: 6.1.1
