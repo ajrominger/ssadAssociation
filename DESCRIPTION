@@ -18,8 +18,8 @@ Depends:
 Imports:
     socorro,
     spaa, 
-    igraph
-Suggests:
-    testthat,
+    igraph,
     parallel
+Suggests:
+    testthat
 RoxygenNote: 6.1.1
