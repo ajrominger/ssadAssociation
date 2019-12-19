@@ -17,7 +17,7 @@
 #' @export
 
 plusMinus <- function(x, alpha = 0.05, B = 999) {
-    x <- x[rowSums(x) > 0, colSums(x) > 0]
+    # x <- x[rowSums(x) > 0, colSums(x) > 0]
 
     # metacommunity "abundnace"
     metaX <- colSums(x)
@@ -59,8 +59,8 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
     #                                  directed = FALSE)
 
     # correlation between centrality and abundance, and means
-    corMeanPos <- .abundCenCorMean(elist[elist[, 3] == 1, 1:2], metaX)
-    corMeanNeg <- .abundCenCorMean(elist[elist[, 4] == 1, 1:2], metaX)
+    corMeanPos <- .abundCenCorMean(elist[elist[, 3] == 1, 1:2, drop = FALSE], metaX)
+    corMeanNeg <- .abundCenCorMean(elist[elist[, 4] == 1, 1:2, drop = FALSE], metaX)
 
     return(list(pos = c(n = npos, corMeanPos),
                 neg = c(n = nneg, corMeanNeg)))
