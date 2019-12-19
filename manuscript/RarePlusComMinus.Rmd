@@ -46,11 +46,7 @@ obsdat <- lapply(abun.mat, function(x) {
 ```
 
 ```{r ssad_comp}
-
-
-summStats <- mclapply(1:length(abun.mat), mc.cores = 3, FUN = function(i) {
-    x <- round(abun.mat[[i]])
-
+summStats <- mclapply(1:length(obsdat), mc.cores = 3, FUN = function(i) {
     o <- sapply(1:ncol(x), function(j) {
         # sometimes optimization fails, so catch that and return NA
         params <- try(fitdistr(x[, j], 'negative binomial'))
@@ -68,7 +64,7 @@ summStats <- mclapply(1:length(abun.mat), mc.cores = 3, FUN = function(i) {
     })
 })
 
-summStats <- data.frame(study = rep(names(abun.mat), sapply(summStats, ncol)),
+summStats <- data.frame(study = rep(names(obsdat), sapply(summStats, ncol)),
                         t(do.call(cbind, summStats)))
 
 # remove failed optims
@@ -80,35 +76,51 @@ summStats <- summStats[round(summStats$size) != 100, ]
 
 ```{r ssad_plotting, eval = FALSE}
 par(parArgs)
-plot(summStats$nocc / summStats$nsite, summStats$mu, log = 'xy')
-plot(summStats$nocc / summStats$nsite, summStats$size, log = 'xy')
-plot(summStats$nocc, summStats$mu, log = 'xy')
-plot(summStats$nocc, summStats$size, log = 'xy')
-plot(summStats$mu, summStats$size, log = 'xy')
-
-plot(summStats$abund / summStats$J, summStats$mu, log = 'xy')
-plot(summStats$abund / summStats$J, summStats$size, log = 'xy')
-plot(summStats$abund / summStats$nsite, summStats$mu, log = 'xy')
-plot(summStats$abund / summStats$nsite, summStats$size, log = 'xy')
-plot(summStats$abund, summStats$mu, log = 'xy')
-plot(summStats$abund, summStats$size, log = 'xy')
-
-plot(summStats$abund / summStats$J, summStats$nocc / summStats$nsite, log = 'xy')
-plot(summStats$abund, summStats$nocc, log = 'xy')
-
 plot(summStats$nsite, summStats$J, log = 'xy')
 plot(summStats$J, summStats$nspp, log = 'xy')
 
-plot(summStats$nspp, summStats$mu, log = 'xy')
-plot(summStats$nspp, summStats$size, log = 'xy')
-plot(summStats$nspp, summStats$nocc / summStats$nsite, log = 'xy')
+# plot(summStats$nocc / summStats$nsite, summStats$mu, log = 'xy')
+# plot(summStats$nocc / summStats$nsite, summStats$size, log = 'xy')
+# plot(summStats$nocc, summStats$mu, log = 'xy')
+# plot(summStats$nocc, summStats$size, log = 'xy')
+# plot(summStats$mu, summStats$size, log = 'xy')
+# 
+# plot(summStats$abund / summStats$J, summStats$mu, log = 'xy')
+# plot(summStats$abund / summStats$J, summStats$size, log = 'xy')
+# plot(summStats$abund / summStats$nsite, summStats$mu, log = 'xy')
+# plot(summStats$abund / summStats$nsite, summStats$size, log = 'xy')
+# plot(summStats$abund, summStats$mu, log = 'xy')
+# plot(summStats$abund, summStats$size, log = 'xy')
+# 
+# plot(summStats$abund / summStats$J, summStats$nocc / summStats$nsite, log = 'xy')
+# plot(summStats$abund, summStats$nocc, log = 'xy')
+# 
+# 
+# 
+# plot(summStats$nspp, summStats$mu, log = 'xy')
+# plot(summStats$nspp, summStats$size, log = 'xy')
+# plot(summStats$nspp, summStats$nocc / summStats$nsite, log = 'xy')
 ```
 
 
 ```{r obs_plusMinus_comp}
-commStats <- mclapply(abun.mat, mc.cores = 3, 
+commStats <- mclapply(obsdat, mc.cores = 3,
                       FUN = function(x) unlist(plusMinus(x)))
-commStats <- do.call(rbind, commStats)
+
+commStats <- as.data.frame(do.call(rbind, commStats))
+commStats <- commStats[!is.na(commStats$neg.rho.rho) & !is.na(commStats$pos.rho.rho), ]
+```
+
+```{r obs_plusMinus_plot}
+par(parArgs)
+hist(commStats$neg.rho.rho, breaks = 20, xlim = c(-1, 1))
+hist(commStats$pos.rho.rho, breaks = 20, xlim = c(-1, 1))
+
+hist(commStats$pos.n, breaks = 20)
+hist(commStats$neg.n, breaks = 20)
+
+hist(commStats$pos.m, breaks = 20)
+hist(commStats$neg.m, breaks = 20)
 ```
 
 
