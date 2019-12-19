@@ -17,8 +17,6 @@
 #' @export
 
 plusMinus <- function(x, alpha = 0.05, B = 999) {
-    # x <- x[rowSums(x) > 0, colSums(x) > 0]
-
     # metacommunity "abundnace"
     metaX <- colSums(x)
 
@@ -49,14 +47,7 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
     nneg <- sum(eneg)
 
     # edge list
-    # should be combn!!!!!
     elist <- cbind(t(combn(1:ncol(x), 2)), epos, eneg)
-    # pos <- verlist[verlist[, 3] == 1, 1:2]
-    # neg <- verlist[verlist[, 4] == 1, 1:2]
-    # gpos <- graph_from_data_frame(verlist[verlist[, 3] == 1, 1:2],
-    #                                  directed = FALSE)
-    # gneg <- graph_from_data_frame(verlist[verlist[, 4] == 1, 1:2],
-    #                                  directed = FALSE)
 
     # correlation between centrality and abundance, and means
     corMeanPos <- .abundCenCorMean(elist[elist[, 3] == 1, 1:2, drop = FALSE], metaX)
