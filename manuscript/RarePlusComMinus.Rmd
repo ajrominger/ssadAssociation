@@ -1,0 +1,112 @@
+---
+title: "On the inference of positive and negative interactions and their relation to abundance"
+author: "Andrew J. Rominger"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: no
+    number_sections: no
+csl: nature.csl
+bibliography: RarePlusComMinus.bib
+---
+
+A recent paper infered species-species interactions from spatially replicated abundance data and further tied those infered interactions to abundances [@calatayud2019]. Specifically, the authors found that infered positive interactions were disproportionately associated with rare species, a result they interpreted as rare species being stabilized by facilitative interactions.
+
+
+```{r setup}
+library(knitr)
+opts_chunk$set(echo = TRUE, cache = TRUE, 
+               fig.width = 4, fig.height = 4, fig.align = 'center')
+
+library(pika)
+library(RarePlusComMinus)
+library(parallel)
+library(MASS)
+library(socorro)
+
+# plotting defaults
+parArgs <- list(mar = c(3, 3, 0, 0) + 0.5, mgp = c(1.75, 0.5, 0), tcl = -0.25)
+cexDefault <- 1.4
+lwdDefault <- 2
+```
+
+First we explore the shape of the spatial abundance patters in the real data provided by ref. @calatayud2019.
+
+```{r ssad_comp}
+data('abundace_matrices')
+
+summStats <- mclapply(1:length(abun.mat), mc.cores = 3, FUN = function(i) {
+    x <- round(abun.mat[[i]])
+
+    o <- sapply(1:ncol(x), function(j) {
+        params <- try(fitdistr(x[, j], 'negative binomial'))
+        if(class(params) == 'try-error') {
+            params <- c(size = NA, mu = NA, loglik = NA)
+        } else {
+            params <- c(params$estimate, loglik = params$loglik)
+        }
+        nocc <- sum(x[, j] > 0)
+        abund <- sum(x[, j])
+        
+        return(c(nsite = nrow(x), nspp = ncol(x), nocc = nocc, abund = abund, J = sum(x),
+                 params))
+    })
+})
+
+summStats <- data.frame(study = rep(names(abun.mat), sapply(summStats, ncol)),
+                        t(do.call(cbind, summStats)))
+
+# remove failed optims
+summStats <- summStats[!is.na(summStats$size), ]
+
+# looks like an optim bug around size = 100, remove it
+summStats <- summStats[round(summStats$size) != 100, ]
+```
+
+```{r ssad_plotting, eval = FALSE}
+par(parArgs)
+plot(summStats$nocc / summStats$nsite, summStats$mu, log = 'xy')
+plot(summStats$nocc / summStats$nsite, summStats$size, log = 'xy')
+plot(summStats$nocc, summStats$mu, log = 'xy')
+plot(summStats$nocc, summStats$size, log = 'xy')
+plot(summStats$mu, summStats$size, log = 'xy')
+
+plot(summStats$abund / summStats$J, summStats$mu, log = 'xy')
+plot(summStats$abund / summStats$J, summStats$size, log = 'xy')
+plot(summStats$abund / summStats$nsite, summStats$mu, log = 'xy')
+plot(summStats$abund / summStats$nsite, summStats$size, log = 'xy')
+plot(summStats$abund, summStats$mu, log = 'xy')
+plot(summStats$abund, summStats$size, log = 'xy')
+
+plot(summStats$abund / summStats$J, summStats$nocc / summStats$nsite, log = 'xy')
+plot(summStats$abund, summStats$nocc, log = 'xy')
+
+plot(summStats$nsite, summStats$J, log = 'xy')
+plot(summStats$J, summStats$nspp, log = 'xy')
+
+plot(summStats$nspp, summStats$mu, log = 'xy')
+plot(summStats$nspp, summStats$size, log = 'xy')
+plot(summStats$nspp, summStats$nocc / summStats$nsite, log = 'xy')
+```
+
+
+```{r obs_plusMinus_comp}
+commStats <- mclapply(abun.mat, mc.cores = 3, 
+                      FUN = function(x) unlist(plusMinus(x)))
+commStats <- do.call(rbind, commStats)
+```
+
+
+```{r sim_plusMinus_comp, eval = FALSE}
+S <- 150
+b <- 0.001
+nsite <- 25
+
+x <- rfish(S, b)
+y <- rnbinom(nsite * length(x), size = 0.1, mu = rep(x, nsite) / nsite)
+y <- t(matrix(y, ncol = nsite))
+y <- y[rowSums(y) > 0, ]
+```
+
+# References
+
