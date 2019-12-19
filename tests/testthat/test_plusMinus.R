@@ -160,6 +160,7 @@ ii <- c(1, 4, 19)
 comp <- parallel::mclapply(ii, mc.cores = 3, FUN = function(i) {
     set.seed(1)
     x <- round(abun.mat[[i]])
+    x <- x[rowSums(x) > 0, colSums(x) > 0]
 
     mine <- replicate(25, {
         foo <- plusMinus(x)
