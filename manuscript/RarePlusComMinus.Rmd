@@ -32,19 +32,34 @@ lwdDefault <- 2
 
 First we explore the shape of the spatial abundance patters in the real data provided by ref. @calatayud2019.
 
-```{r ssad_comp}
+```{r obs_data}
+# load data from paper
 data('abundace_matrices')
+
+# clean it
+obsdat <- lapply(abun.mat, function(x) {
+    x <- ceiling(x)
+    x <- x[rowSums(x) > 0, colSums(x) > 0]
+    
+    return(x)
+})
+```
+
+```{r ssad_comp}
+
 
 summStats <- mclapply(1:length(abun.mat), mc.cores = 3, FUN = function(i) {
     x <- round(abun.mat[[i]])
 
     o <- sapply(1:ncol(x), function(j) {
+        # sometimes optimization fails, so catch that and return NA
         params <- try(fitdistr(x[, j], 'negative binomial'))
         if(class(params) == 'try-error') {
             params <- c(size = NA, mu = NA, loglik = NA)
         } else {
             params <- c(params$estimate, loglik = params$loglik)
         }
+        
         nocc <- sum(x[, j] > 0)
         abund <- sum(x[, j])
         
