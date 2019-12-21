@@ -66,7 +66,7 @@ It should be noted that the authors of the original analysis [@calatayud2019] re
 
 And now for the plot that reproduces Fig. 2 (b and c) from ref. [@calatayud2019].
 
-```{r obs_plusMinus_plot, fig.width = 7.5, fig.height = 4, dependson = 'setup'}
+```{r obs_plusMinus_plot, fig.width = 7.5, fig.height = 4, cache = FALSE}
 # ----
 # helper function for making fancy histograms
 specialHist <- function(x, breaks, col, add = FALSE, ...) {
@@ -80,69 +80,77 @@ specialHist <- function(x, breaks, col, add = FALSE, ...) {
 
 
 # ----
+# function to remake Fig 2(b-c)
+fig2bc <- function(x, breaksRho, breaksWM) {
+    foo <- split.screen(c(1, 2))
+    
+    # correlation differences
+    screen(1)
+    
+    par(parArgs)
+    par(mar = parArgs$mar + c(0, 0, 0, -0.5))
+    specialHist(x$pos.rho.rho - x$neg.rho.rho, xlim = c(-2, 2),
+                breaks = breaksRho, col = 'gray90',
+                xlab = '', ylab = 'Number of assemblages')
+    mtext('Abundance-species degree differences\n(positive - negative)',
+          side = 1, line = 2.5)
+    abline(v = 0, col = 'red', lty = 2, lwd = 2)
+    
+    
+    # raw correlations
+    foo <- split.screen(matrix(c(0.475 + 0.02, 0.975 + 0.02, 0.475, 0.975), nrow = 1), 
+                        erase = FALSE)
+    screen(3, new = FALSE)
+    
+    par(parArgs)
+    par(cex = 0.75)
+    par(mgp = par('mgp') * par('cex'))
+    
+    specialHist(x$pos.rho.rho, xlim = c(-1, 1), ylim = c(0, 90),
+                breaks = breaksRho / 2, col = hsv(0.65, alpha = 0.5),
+                xlab = expression("Spearman's"~rho),
+                ylab = '')
+    specialHist(x$neg.rho.rho,
+                breaks = breaksRho / 2, col = hsv(0, alpha = 0.5),
+                add = TRUE)
+    
+    
+    # mean differences
+    screen(2)
+    par(parArgs)
+    par(mar = parArgs$mar + c(0, -1, 0, +0.5))
+    
+    specialHist(x$pos.wm - x$neg.wm, xlim = c(-0.3, 0.3),
+                breaks = breaksWM, col = 'gray90',
+                xlab = '', ylab = '')
+    mtext('Abundance differences\n(positive - negative)',
+          side = 1, line = 2.5)
+    abline(v = 0, col = 'red', lty = 2, lwd = 2)
+    
+    
+    # raw means
+    foo <- split.screen(matrix(c(0.475 - 0.04, 0.975 - 0.04, 0.475, 0.975), nrow = 1), 
+                        erase = FALSE)
+    screen(4, new = FALSE)
+    
+    par(parArgs)
+    par(cex = 0.75)
+    par(mgp = par('mgp') * par('cex'))
+    
+    specialHist(x$pos.wm, xlim = c(0, 0.3),
+                breaks = (breaksWM + 0.3) / 2, col = hsv(0.65, alpha = 0.5),
+                xlab = 'Weighted mean abund.',
+                ylab = '')
+    specialHist(x$neg.wm,
+                breaks = (breaksWM + 0.3) / 2, col = hsv(0, alpha = 0.5),
+                add = TRUE)
+}
+
+
+# ----
 # plotting
-foo <- split.screen(c(1, 2))
-
-# correlation differences
-screen(1)
-
-par(parArgs)
-par(mar = parArgs$mar + c(0, 0, 0, -0.5))
-specialHist(commStats$pos.rho.rho - commStats$neg.rho.rho, xlim = c(-2, 2),
-            breaks = seq(-2, 2, by = 1/5), col = 'gray90',
-            xlab = '', ylab = 'Number of assemblages')
-mtext('Abundance-species degree differences\n(positive - negative)',
-      side = 1, line = 2.5)
-abline(v = 0, col = 'red', lty = 2, lwd = 2)
-
-
-# raw correlations
-foo <- split.screen(matrix(c(0.475 + 0.02, 0.975 + 0.02, 0.475, 0.975), nrow = 1), 
-                    erase = FALSE)
-screen(3, new = FALSE)
-
-par(parArgs)
-par(cex = 0.75)
-par(mgp = par('mgp') * par('cex'))
-
-specialHist(commStats$pos.rho.rho, xlim = c(-1, 1), ylim = c(0, 80),
-            breaks = seq(-1, 1, by = 1/10), col = hsv(0.65, alpha = 0.5),
-            xlab = expression("Spearman's"~rho),
-            ylab = '')
-specialHist(commStats$neg.rho.rho,
-            breaks = seq(-1, 1, by = 1/10), col = hsv(0, alpha = 0.5),
-            add = TRUE)
-
-
-# mean differences
-screen(2)
-par(parArgs)
-par(mar = parArgs$mar + c(0, -1, 0, +0.5))
-
-specialHist(commStats$pos.wm - commStats$neg.wm, xlim = c(-0.3, 0.3),
-            breaks = seq(-0.3, 0.3, by = 0.1/3), col = 'gray90',
-            xlab = '', ylab = '')
-mtext('Abundance differences\n(positive - negative)',
-      side = 1, line = 2.5)
-abline(v = 0, col = 'red', lty = 2, lwd = 2)
-
-
-# raw means
-foo <- split.screen(matrix(c(0.475 - 0.04, 0.975 - 0.04, 0.475, 0.975), nrow = 1), 
-                    erase = FALSE)
-screen(4, new = FALSE)
-
-par(parArgs)
-par(cex = 0.75)
-par(mgp = par('mgp') * par('cex'))
-
-specialHist(commStats$pos.wm, xlim = c(0, 0.3),
-            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0.65, alpha = 0.5),
-            xlab = 'Weighted mean abund.',
-            ylab = '')
-specialHist(commStats$neg.wm,
-            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0, alpha = 0.5),
-            add = TRUE)
+fig2bc(commStats, breaksRho = seq(-2, 2, by = 1/5), 
+       breaksWM = seq(-0.3, 0.3, by = 0.1/3))
 ```
 
 ```{r fig2-estimates}
@@ -195,7 +203,7 @@ summStats <- summStats[!is.na(summStats$size), ]
 summStats[round(summStats$size) == 100, c('size', 'mu', 'loglik')] <- NA
 ```
 
-```{r ssad_plot, fig.width = 5, fig.height = 5, dependson = 'setup'}
+```{r ssad_plot, fig.width = 5, fig.height = 5, cache = FALSE}
 # helper funciton for easy log-log ploits
 llplot <- function(x, y, expLab = TRUE, ...) {
     plot(x, y, xaxt = 'n', yaxt = 'n', ...)
@@ -240,16 +248,24 @@ sadStats <- mclapply(obsdat, mc.cores = nthrd, FUN = function(x) {
 sadStats <- as.data.frame(do.call(rbind, sadStats))
 names(sadStats) <- c('mod', 'par1', 'par2')
 sadStats$mod <- mods[sadStats$mod]
-head(sadStats)
+
+# limit to only those sites that produced good networks
+sadStats <- sadStats[rownames(sadStats) %in% 
+                         rownames(commStats[!is.na(commStats$pos.n), ]), ]
 ```
 
 We'll make linear models of the SSAD relationships to sample from in addition to sampling from the SAD
 
 ```{r ssad_lm}
 # indBySiteMod <- lm(log(summStats$J) ~ log(summStats$nsite))
-dat4k <- data.frame(logk = log(summStats$size), 
-                    loga = log(summStats$abund / summStats$J),
-                    logS = log(summStats$nspp))
+# data for linear model of k, excluding sites that didn't produce a good network
+dat4k <- with(summStats[summStats$study %in% 
+                            rownames(commStats[!is.na(commStats$pos.n), ]), ], 
+              data.frame(logk = log(size), 
+                         loga = log(abund / J),
+                         logS = log(nspp))
+)
+
 kByRelSppMod <- lm(logk ~ loga + logS, data = dat4k)
 
 # function to sample random params and generate random data
@@ -285,86 +301,40 @@ Now we can do a simulation where we make slightly more than `r sum(!is.na(commSt
 nsim <- round(1.25 * sum(!is.na(commStats$pos.wm)))
 
 # numbers of sites and species to sample from
-nsitenspp <- unique(summStats[, c('study', 'nsite', 'nspp')])
+# note: only using those sites that produced good networks
+nsitenspp <- unique(summStats[
+    summStats$study %in% rownames(commStats[!is.na(commStats$pos.n), ]), 
+    c('study', 'nsite', 'nspp')])
 
 # loop over simulation replicates
-simPlusMinus <- mclapply(1:nsim, mc.cores = nthrd, 
+simPlusMinus <- mclapply(1:nsim,  mc.cores = nthrd, 
                          FUN = function(i) {
                              j <- sample(nrow(nsitenspp), 1)
                              simDat <- makeData(nsite = nsitenspp$nsite[j], 
                                                 nspp = nsitenspp$nspp[j])
+                             simDat <- simDat[rowSums(simDat) > 0, 
+                                              colSums(simDat) > 0]
                              
-                             unlist(plusMinus(simDat))
+                             if(any(dim(simDat) < 10)) {
+                                 o <- rep(NA, ncol(commStats))
+                                 names(o) <- names(commStats)
+                             } else {
+                                 o <- unlist(plusMinus(simDat))
+                             }
+                             
+                             return(o)
                          })
 
+
 simPlusMinus <- as.data.frame(do.call(rbind, simPlusMinus))
+simPlusMinus <- simPlusMinus[!is.na(simPlusMinus$pos.n), ]
 ```
 
-```{r sim_plusMinus_plot}
-commStats <- simPlusMinus
+```{r sim_plusMinus_plot, fig.width = 7.5, fig.height = 4, cache = FALSE}
+wmmax <- ceiling(max(simPlusMinus$pos.wm, simPlusMinus$neg.wm, na.rm = TRUE) * 9) / 3
 
-foo <- split.screen(c(1, 2))
-
-# correlation differences
-screen(1)
-
-par(parArgs)
-par(mar = parArgs$mar + c(0, 0, 0, -0.5))
-specialHist(commStats$pos.rho.rho - commStats$neg.rho.rho, xlim = c(-2, 2),
-            breaks = seq(-2, 2, by = 1/5), col = 'gray90',
-            xlab = '', ylab = 'Number of assemblages')
-mtext('Abundance-species degree differences\n(positive - negative)',
-      side = 1, line = 2.5)
-abline(v = 0, col = 'red', lty = 2, lwd = 2)
-
-
-# raw correlations
-foo <- split.screen(matrix(c(0.475 + 0.02, 0.975 + 0.02, 0.475, 0.975), nrow = 1), 
-                    erase = FALSE)
-screen(3, new = FALSE)
-
-par(parArgs)
-par(cex = 0.75)
-par(mgp = par('mgp') * par('cex'))
-
-specialHist(commStats$pos.rho.rho, xlim = c(-1, 1), ylim = c(0, 80),
-            breaks = seq(-1, 1, by = 1/10), col = hsv(0.65, alpha = 0.5),
-            xlab = expression("Spearman's"~rho),
-            ylab = '')
-specialHist(commStats$neg.rho.rho,
-            breaks = seq(-1, 1, by = 1/10), col = hsv(0, alpha = 0.5),
-            add = TRUE)
-
-
-# mean differences
-screen(2)
-par(parArgs)
-par(mar = parArgs$mar + c(0, -1, 0, +0.5))
-
-specialHist(commStats$pos.wm - commStats$neg.wm, xlim = c(-0.3, 0.3),
-            breaks = seq(-0.3, 0.3, by = 0.1/3), col = 'gray90',
-            xlab = '', ylab = '')
-mtext('Abundance differences\n(positive - negative)',
-      side = 1, line = 2.5)
-abline(v = 0, col = 'red', lty = 2, lwd = 2)
-
-
-# raw means
-foo <- split.screen(matrix(c(0.475 - 0.04, 0.975 - 0.04, 0.475, 0.975), nrow = 1), 
-                    erase = FALSE)
-screen(4, new = FALSE)
-
-par(parArgs)
-par(cex = 0.75)
-par(mgp = par('mgp') * par('cex'))
-
-specialHist(commStats$pos.wm, xlim = c(0, 0.3),
-            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0.65, alpha = 0.5),
-            xlab = 'Weighted mean abund.',
-            ylab = '')
-specialHist(commStats$neg.wm,
-            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0, alpha = 0.5),
-            add = TRUE)
+fig2bc(simPlusMinus, breaksRho = seq(-2, 2, by = 1/5), 
+       breaksWM = seq(-wmmax, wmmax, by = 0.1/3))
 ```
 
 # References
