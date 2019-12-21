@@ -36,7 +36,7 @@ lwdDefault <- 2
 ```
 
 
-First we explore the shape of the spatial abundance patters in the real data provided by ref. @calatayud2019.
+First we reproduce some of the key results of ref. [@calatayud2019], namely how abundance relates to positive and negative association networks.
 
 ```{r obs_data}
 # load data from paper
@@ -50,6 +50,119 @@ obsdat <- lapply(abun.mat, function(x) {
     return(x)
 })
 ```
+
+```{r obs_plusMinus_comp}
+commStats <- mclapply(obsdat, mc.cores = nthrd,
+                      FUN = function(x) unlist(plusMinus(x)))
+
+commStats <- as.data.frame(do.call(rbind, commStats))
+
+# remove studies with too few plus or minus links
+commStats[is.na(commStats$pos.rho.rho) | is.na(commStats$neg.rho.rho), ] <- NA
+```
+
+It should be noted that the authors of the original analysis [@calatayud2019] retained 326 studies after filtering, whereas we retain `r sum(!is.na(commStats$pos.wm))`. This may be in part because we removed any dataset for which there were fewer than three links in either the postive or negative networks, whereas the authors of the original analysis removed only those datasets with fewer than two links [@calatayud2019]. 
+
+And now for the plot that reproduces Fig. 2 (b and c) from ref. [@calatayud2019].
+
+```{r obs_plusMinus_plot, fig.width = 7.5, fig.height = 4, cache = FALSE}
+# ----
+# helper function for making fancy histograms
+specialHist <- function(x, breaks, col, add = FALSE, ...) {
+    h <- hist(x, breaks, plot = FALSE)
+
+    if(!add) plot(range(h$breaks), range(h$counts), type = 'n', ...)
+
+    rect(xleft = h$breaks[-length(h$breaks)], xright = h$breaks[-1], 
+         ybottom = 0, ytop = h$counts, col = col)
+}
+
+
+# ----
+# plotting
+foo <- split.screen(c(1, 2))
+
+# correlation differences
+screen(1)
+
+par(parArgs)
+par(mar = parArgs$mar + c(0, 0, 0, -0.5))
+specialHist(commStats$pos.rho.rho - commStats$neg.rho.rho, xlim = c(-2, 2),
+            breaks = seq(-2, 2, by = 1/5), col = 'gray90',
+            xlab = '', ylab = 'Number of assemblages')
+mtext('Abundance-species degree differences\n(positive - negative)',
+      side = 1, line = 2.5)
+abline(v = 0, col = 'red', lty = 2, lwd = 2)
+
+
+# raw correlations
+foo <- split.screen(matrix(c(0.475 + 0.02, 0.975 + 0.02, 0.475, 0.975), nrow = 1), 
+                    erase = FALSE)
+screen(3, new = FALSE)
+
+par(parArgs)
+par(cex = 0.75)
+par(mgp = par('mgp') * par('cex'))
+
+specialHist(commStats$pos.rho.rho, xlim = c(-1, 1), ylim = c(0, 80),
+            breaks = seq(-1, 1, by = 1/10), col = hsv(0.65, alpha = 0.5),
+            xlab = expression("Spearman's"~rho),
+            ylab = '')
+specialHist(commStats$neg.rho.rho,
+            breaks = seq(-1, 1, by = 1/10), col = hsv(0, alpha = 0.5),
+            add = TRUE)
+
+
+# mean differences
+screen(2)
+par(parArgs)
+par(mar = parArgs$mar + c(0, -1, 0, +0.5))
+
+specialHist(commStats$pos.wm - commStats$neg.wm, xlim = c(-0.3, 0.3),
+            breaks = seq(-0.3, 0.3, by = 0.1/3), col = 'gray90',
+            xlab = '', ylab = '')
+mtext('Abundance differences\n(positive - negative)',
+      side = 1, line = 2.5)
+abline(v = 0, col = 'red', lty = 2, lwd = 2)
+
+
+# raw means
+foo <- split.screen(matrix(c(0.475 - 0.04, 0.975 - 0.04, 0.475, 0.975), nrow = 1), 
+                    erase = FALSE)
+screen(4, new = FALSE)
+
+par(parArgs)
+par(cex = 0.75)
+par(mgp = par('mgp') * par('cex'))
+
+specialHist(commStats$pos.wm, xlim = c(0, 0.3),
+            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0.65, alpha = 0.5),
+            xlab = 'Weighted mean abund.',
+            ylab = '')
+specialHist(commStats$neg.wm,
+            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0, alpha = 0.5),
+            add = TRUE)
+```
+
+```{r fig2-estimates}
+# estimate number of assembledges suggested by Fig 2c; number refer to arbitrary
+# pixle coordinates from the figure rescaled to the y-axis units
+
+y0 <- 517
+ys <- c(173, 345)
+
+r <- 220 / mean((y0 - ys) * 1:2)
+
+yblu <- c(234, 399, 478, 498, 507, 507, 509, rep(512, 5))
+yred <- c(498, 375, 403, 419, 467, 482, 505)
+
+fig2est <- r * (sum((y0 - yblu)) + sum((y0 - yred)))
+```
+
+It should be noted that our inset figure of mean weighted abundances differs from the original paper [@calatayud2019] in that their y-axis ranges from 0 to 220, while ours ranges from 0 to 120; we suspected the original authors mislabled their axis, because the scale as presented would suggest over `r 100 * floor(fig2est / 100)` assembledges, while the number should be 326.  Rescaling their axis to range from 0 to 120 brings this estimate more in line with the reported number of assembledges.
+
+Now we explore the shape of the spatial abundance patters in the real data provided by ref. @calatayud2019.
+
 
 ```{r ssad_comp}
 summStats <- mclapply(1:length(obsdat), mc.cores = nthrd, FUN = function(i) {
@@ -81,13 +194,16 @@ summStats <- summStats[!is.na(summStats$size), ]
 summStats[round(summStats$size) == 100, c('size', 'mu', 'loglik')] <- NA
 ```
 
-```{r ssad_plotting, eval = FALSE}
+```{r ssad_plot, eval = FALSE}
 par(parArgs)
 plot(summStats$nsite, summStats$J, log = 'xy')
 plot(summStats$J, summStats$nspp, log = 'xy')
 
-# plot(summStats$nocc / summStats$nsite, summStats$mu, log = 'xy')
-# plot(summStats$nocc / summStats$nsite, summStats$size, log = 'xy')
+plot(summStats$abund / summStats$J, summStats$nocc / summStats$nsite, log = 'xy')
+
+plot(summStats$nocc / summStats$nsite, summStats$mu, log = 'xy')
+plot(summStats$nocc / summStats$nsite, summStats$size, log = 'xy')
+
 # plot(summStats$nocc, summStats$mu, log = 'xy')
 # plot(summStats$nocc, summStats$size, log = 'xy')
 # plot(summStats$mu, summStats$size, log = 'xy')
@@ -109,100 +225,6 @@ plot(summStats$J, summStats$nspp, log = 'xy')
 # plot(summStats$nspp, summStats$nocc / summStats$nsite, log = 'xy')
 ```
 
-
-```{r obs_plusMinus_comp}
-commStats <- mclapply(obsdat, mc.cores = nthrd,
-                      FUN = function(x) unlist(plusMinus(x)))
-
-commStats <- as.data.frame(do.call(rbind, commStats))
-
-commStats[is.na(commStats$pos.rho.rho) | is.na(commStats$neg.rho.rho), ] <- NA
-sum(!is.na(commStats$pos.wm))
-```
-
-```{r obs_plusMinus_plot}
-# ----
-# helper function for making fancy histograms
-specialHist <- function(x, breaks, col, add = FALSE, ...) {
-    h <- hist(x, breaks, plot = FALSE)
-
-    if(!add) plot(range(h$breaks), range(h$counts), type = 'n', ...)
-
-    rect(xleft = h$breaks[-length(h$breaks)], xright = h$breaks[-1], ybottom = 0, ytop = h$counts,
-         col = col)
-}
-
-
-# ----
-# plotting
-
-split.screen(c(1, 2))
-
-# correlation differences
-screen(1)
-
-par(parArgs)
-par(mar = parArgs$mar + c(0, 0, 0, -0.5))
-specialHist(commStats$pos.rho.rho - commStats$neg.rho.rho, xlim = c(-2, 2),
-            breaks = seq(-2, 2, by = 1/5), col = 'gray90',
-            xlab = '', ylab = 'Number of assemblages')
-mtext('Abundance-species degree differences\n(positive - negative)',
-      side = 1, line = 2.5)
-abline(v = 0, col = 'red', lty = 2, lwd = 2)
-
-
-# raw correlations
-split.screen(matrix(c(0.475 + 0.02, 0.975 + 0.02, 0.475, 0.975), nrow = 1), erase = FALSE)
-screen(3, new = FALSE)
-
-par(parArgs)
-par(cex = 0.75)
-par(mgp = par('mgp') * par('cex'))
-
-specialHist(commStats$pos.rho.rho, xlim = c(-1, 1), ylim = c(0, 80),
-            breaks = seq(-1, 1, by = 1/10), col = hsv(0.65, alpha = 0.5),
-            xlab = expression("Spearman's"~rho),
-            ylab = '')
-specialHist(commStats$neg.rho.rho,
-            breaks = seq(-1, 1, by = 1/10), col = hsv(0, alpha = 0.5),
-            add = TRUE)
-
-
-# mean differences
-screen(2)
-par(parArgs)
-par(mar = parArgs$mar + c(0, -1, 0, +0.5))
-
-specialHist(commStats$pos.wm - commStats$neg.wm, xlim = c(-0.3, 0.3),
-            breaks = seq(-0.3, 0.3, by = 0.1/3), col = 'gray90',
-            xlab = '', ylab = '')
-mtext('Abundance differences\n(positive - negative)',
-      side = 1, line = 2.5)
-abline(v = 0, col = 'red', lty = 2, lwd = 2)
-
-
-# raw means
-split.screen(matrix(c(0.475 - 0.04, 0.975 - 0.04, 0.475, 0.975), nrow = 1), erase = FALSE)
-screen(4, new = FALSE)
-
-par(parArgs)
-par(cex = 0.75)
-par(mgp = par('mgp') * par('cex'))
-
-specialHist(commStats$pos.wm, xlim = c(0, 0.3),
-            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0.65, alpha = 0.5),
-            xlab = 'Weighted mean abund.',
-            ylab = '')
-specialHist(commStats$neg.wm,
-            breaks = seq(0, 0.3, by = 0.1/6), col = hsv(0, alpha = 0.5),
-            add = TRUE)
-```
-
-
-```{r test_plot}
-plot(1)
-plot(1:10)
-```
 
 ```{r sim_plusMinus_comp, eval = FALSE}
 S <- 150
