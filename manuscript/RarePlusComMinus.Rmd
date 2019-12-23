@@ -10,7 +10,14 @@ csl: nature.csl
 bibliography: RarePlusComMinus.bib
 ---
 
-A recent paper infered species-species interactions from spatially replicated abundance data and further tied those infered interactions to abundances [@calatayud2019]. Specifically, the authors found that infered positive interactions were disproportionately associated with rare species, a result they interpreted as rare species being stabilized by facilitative interactions.
+A recent paper, Calatayuda et al. [@calatayud2019] infered species-species interaction networks from spatially replicated abundance data and found that positive interactions were associated with more rare species compared to negative interactions being associated with common species. Here, I show that these results cannot be assigned a biological interpretation because they are readily recreated with completely random data simulated without any species interactions.  
+
+Things to discuss
+
+- error rates with matrix permutations 
+- neg binom ssad [@kendall1949; @nachman2000; @engen2008; @zillio2010; @connolly2017]
+
+
 
 
 ```{r setup}
@@ -259,17 +266,26 @@ We'll make linear models of the SSAD relationships to sample from in addition to
 ```{r ssad_lm}
 # indBySiteMod <- lm(log(summStats$J) ~ log(summStats$nsite))
 # data for linear model of k, excluding sites that didn't produce a good network
-dat4k <- with(summStats[summStats$study %in% 
-                            rownames(commStats[!is.na(commStats$pos.n), ]), ], 
-              data.frame(logk = log(size), 
+dat4k <- with(summStats[summStats$study %in%
+                            rownames(commStats[!is.na(commStats$pos.n), ]), ],
+              data.frame(logk = log(size),
                          loga = log(abund / J),
                          logS = log(nspp))
 )
 
 kByRelSppMod <- lm(logk ~ loga + logS, data = dat4k)
 
+# function to generate k values from input number of species and abundances
+rfunSpp <- function(nspp, abund) {
+    J <- sum(abund)
+    exp(predict(kByRelSppMod, newdata = data.frame(loga = log(abund / J),
+                                                   logS = log(nspp))) +
+            rnorm(nspp, sd = summary(kByRelSppMod)$sigma))
+}
+
+
 # function to sample random params and generate random data
-makeData <- function(nsite, nspp) {
+makeData <- function(nsite, nspp, ssadfun = 'nbinom') {
     # make SAD
     iSAD <- sample(nrow(sadStats), 1)
     rfun <- get(paste0('r', sadStats$mod[iSAD]))
@@ -281,15 +297,22 @@ makeData <- function(nsite, nspp) {
     J <- sum(abund)
     mu <- abund / nsite
     
-    # calcualte k (size param)
-    k <- exp(predict(kByRelSppMod, newdata = data.frame(loga = log(abund / J),
-                                                        logS = log(nspp))) + 
-                 rnorm(nspp, sd = summary(kByRelSppMod)$sigma))
-    
     # loop over abundances and generate ssad
-    sapply(1:length(abund), function(i) {
-        return(rnbinom(nsite, k[i], mu = mu[i]))
-    })
+    if(ssad == 'nbinom') {
+        # calcualte k (size param)
+        k <- exp(predict(kByRelSppMod, newdata = data.frame(loga = log(abund / J),
+                                                            logS = log(nspp))) + 
+                     rnorm(nspp, sd = summary(kByRelSppMod)$sigma))
+        o <- sapply(1:length(abund), function(i) {
+            return(rnbinom(nsite, k[i], mu = mu[i]))
+        })
+    } else {
+        o <- sapply(1:length(abund), function(i) {
+            return(rpois(nsite, mu[i]))
+        })
+    }
+    
+    return(o)
 }
 ```
 
@@ -335,6 +358,49 @@ wmmax <- ceiling(max(simPlusMinus$pos.wm, simPlusMinus$neg.wm, na.rm = TRUE) * 9
 
 fig2bc(simPlusMinus, breaksRho = seq(-2, 2, by = 1/5), 
        breaksWM = seq(-wmmax, wmmax, by = 0.1/3))
+```
+
+
+Now we want to figure out if this is specifically because of the shape of the SSAD (i.e. negative binomial) or if a spatially unclustered SSAD would also yield this result. We do this by modeling the SSAD with a Poisson distribution and compare
+
+```{r sim_pois_plusMinus_comp}
+# loop over simulation replicates
+simPois <- mclapply(1:nsim,  mc.cores = nthrd, 
+                         FUN = function(i) {
+                             j <- sample(nrow(nsitenspp), 1)
+                             simDat <- makeData(nsite = nsitenspp$nsite[j], 
+                                                nspp = nsitenspp$nspp[j])
+                             simDat <- simDat[rowSums(simDat) > 0, 
+                                              colSums(simDat) > 0]
+                             
+                             if(any(dim(simDat) < 10)) {
+                                 o <- rep(NA, ncol(commStats))
+                                 names(o) <- names(commStats)
+                             } else {
+                                 o <- unlist(plusMinus(simDat, ssadfun = 'pois'))
+                             }
+                             
+                             return(o)
+                         })
+
+
+simPois <- as.data.frame(do.call(rbind, simPois))
+simPois <- simPois[!is.na(simPois$pos.n), ]
+```
+
+```{r sim_pois_plusMinus_plot, fig.width = 7.5, fig.height = 4, cache = FALSE}
+wmmax <- ceiling(max(simPois$pos.wm, simPois$neg.wm, na.rm = TRUE) * 9) / 3
+
+fig2bc(simPois, breaksRho = seq(-2, 2, by = 1/5), 
+       breaksWM = seq(-wmmax, wmmax, by = 0.1/3))
+```
+
+And lastly we might be interested in whether we need to use quantities from the dat so much. We might instead imagine one arbitrary SAD and one arbitrary negative binomial SSAD and see if qualitatively similar results are found.
+
+```{r, sim_simple_plusMinus}
+
+
+
 ```
 
 # References
