@@ -2,3 +2,5 @@
 
 export(plusMinus)
 export(schoener)
+export(simPlusMinus)
+export(simpleSim)
