@@ -3,10 +3,17 @@
 #' @description Simulate spatial replicates of abundance data and apply the same
 #' analytical pipeline to those data that would be applied to real data
 #'
-#' @details Note: any value passed to \code{ssadType} other than \code{'nbinom'} results
+#' @details \code{simPlusMinus} draws random SAD and SSAD shapes from the raw data
+#' and uses these to simulate more data and calculate network statistics on those
+#' simulated data. \code{simpleSim} assumes one SAD and one SSAD and simulates data from
+#' those, again calculated network statistics.
+#'
+#' Note: any value passed to \code{ssadType} other than \code{'nbinom'} results
 #' in a Poisson SSAD (i.e., there are only two options, negative binomial specified by
 #' \code{'nbinom'} or Poisson specified by anything else)
 #'
+#' @param nsitenspp a \code{data.frame} with columns \code{nsite} and \code{nspp}
+#' @param sadStats a \code{data.frame} with columns \code{mod}, \code{par1}, \code{par2}
 #' @param nsite number of sites to simulate
 #' @param nspp number of species to simulate
 #' @param mcCores number of cores to use in \code{parallel::mclapply}
@@ -15,16 +22,63 @@
 #' @param ssadfun function to generate random SSAD sample
 #' @param nsim number of simulations to run
 #'
-#' @return an \code{ncol(x)} by \code{ncol(x)} matrix of species-species similarities
+#' @return a \code{data.frame} with \code{<= nsim} rows (some simulations may be
+#' thrown out if they do not meet data filtering requirements), and columns corresponding
+#' to summary statistics about the positive and negative network characteristics
 #'
 #' @author Andy Rominger <ajrominger@@gmail.com>
 #'
 #' @export
 #' @rdname simPlusMinus
 
-simPlusMinus <- function(nsite, nspp, mcCores, ssadType, nsim) {
-    return(NULL)
+simPlusMinus <- function(nsitenspp, sadStats, mcCores,
+                         ssadType = 'nbinom', kfun, nsim) {
+    # indeces for SAD data and nsite, nspp data
+    iiSAD <- sample(nrow(sadStats), nsim, replace = TRUE)
+    jjNN <- sample(nrow(nsitenspp), nsim, replace = TRUE)
+
+    # loop over replicates and make communities, then calculate networks
+    o <- parallel::mclapply(1:nsim, mc.cores = mcCores, FUN = function(i) {
+        j <- jjNN[i]
+        nsite <- nsitenspp$nsite[j]
+        nspp <- nsitenspp$nspp[j]
+
+        # make SAD
+        iSAD <- iiSAD[i]
+        rfun <- get(paste0('r', sadStats$mod[iSAD]))
+        pars <- as.numeric(sadStats[iSAD, 2:3])
+        pars <- pars[!is.na(pars)]
+        abund <- do.call(rfun, c(list(nspp), as.list(pars)))
+
+        # calculate known quantities from abund
+        J <- sum(abund)
+        mu <- abund / nsite
+
+        # loop over abundances and generate ssad
+        if(ssadType == 'nbinom') {
+            # calcualte k (size param)
+            # k <- exp(predict(kByRelSppMod, newdata = data.frame(loga = log(abund / J),
+            #                                                     logS = log(nspp))) +
+            #              rnorm(nspp, sd = summary(kByRelSppMod)$sigma))
+            k <- kfun(nspp, abund)
+
+            # mat <- sapply(1:length(abund), function(l) {
+            #     return(rnbinom(nsite, k[l], mu = mu[l]))
+            # })
+            mat <- .makeMat(nsite, nspp, rnbinom, size = k, mu = mu)
+        } else {
+            # mat <- sapply(1:length(abund), function(l) {
+            #     return(rpois(nsite, mu[l]))
+            # })
+            mat <- .makeMat(nsite, nspp, rpois, lambda = mu)
+        }
+
+        return(.simCleanup(mat))
+    })
+
+    return(.outCleanup(o))
 }
+
 
 
 #' @export
@@ -42,20 +96,23 @@ simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
         mu <- abund / nsite
 
         # loop over abundances and generate ssad
-        mat <- sapply(1:length(abund), function(i) {
-            return(ssadfun(nsite, mu[i]))
-        })
+        # mat <- sapply(1:length(abund), function(i) {
+        #     return(ssadfun(nsite, mu[i]))
+        # })
+        mat <- .makeMat(nsite, nspp, ssadfun, mu = mu)
 
         # browser()
         return(.simCleanup(mat))
     })
 
-    o <- as.data.frame(do.call(rbind, o))
-    o[is.na(o$pos.rho.rho) | is.na(o$neg.rho.rho), ] <- NA
-    o <- o[!is.na(o$pos.n), ]
-
-    return(o)
+    return(.outCleanup(o))
 }
+
+
+.makeMat <- function(nsite, nspp, rfun, ...) {
+    matrix(rfun(nsite * nspp, ...), nrow = nsite, byrow = TRUE)
+}
+
 
 .simCleanup <- function(mat) {
     defaultNames <- c('pos.n', 'pos.rho.rho', 'pos.p', 'pos.m', 'pos.wm',
@@ -73,3 +130,10 @@ simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
     return(o)
 }
 
+.outCleanup <- function(o) {
+    o <- as.data.frame(do.call(rbind, o))
+    o[is.na(o$pos.rho.rho) | is.na(o$neg.rho.rho), ] <- NA
+    o <- o[!is.na(o$pos.n), ]
+
+    return(o)
+}

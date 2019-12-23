@@ -5,14 +5,15 @@
 \alias{simpleSim}
 \title{Simulate positive and negative interactions from purely random data}
 \usage{
-simPlusMinus(nsite, nspp, mcCores, ssadType, nsim)
+simPlusMinus(nsitenspp, sadStats, mcCores, ssadType = "nbinom", kfun,
+  nsim)
 
 simpleSim(nsite, nspp, mcCores, sadfun, ssadfun, nsim)
 }
 \arguments{
-\item{nsite}{number of sites to simulate}
+\item{nsitenspp}{a \code{data.frame} with columns \code{nsite} and \code{nspp}}
 
-\item{nspp}{number of species to simulate}
+\item{sadStats}{a \code{data.frame} with columns \code{mod}, \code{par1}, \code{par2}}
 
 \item{mcCores}{number of cores to use in \code{parallel::mclapply}}
 
@@ -20,18 +21,29 @@ simpleSim(nsite, nspp, mcCores, sadfun, ssadfun, nsim)
 
 \item{nsim}{number of simulations to run}
 
+\item{nsite}{number of sites to simulate}
+
+\item{nspp}{number of species to simulate}
+
 \item{sadfun}{function to generate random SAD sample}
 
 \item{ssadfun}{function to generate random SSAD sample}
 }
 \value{
-an \code{ncol(x)} by \code{ncol(x)} matrix of species-species similarities
+a \code{data.frame} with \code{<= nsim} rows (some simulations may be
+thrown out if they do not meet data filtering requirements), and columns corresponding
+to summary statistics about the positive and negative network characteristics
 }
 \description{
 Simulate spatial replicates of abundance data and apply the same
 analytical pipeline to those data that would be applied to real data
 }
 \details{
+\code{simPlusMinus} draws random SAD and SSAD shapes from the raw data
+and uses these to simulate more data and calculate network statistics on those
+simulated data. \code{simpleSim} assumes one SAD and one SSAD and simulates data from
+those, again calculated network statistics.
+
 Note: any value passed to \code{ssadType} other than \code{'nbinom'} results
 in a Poisson SSAD (i.e., there are only two options, negative binomial specified by
 \code{'nbinom'} or Poisson specified by anything else)
