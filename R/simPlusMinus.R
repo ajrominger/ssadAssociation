@@ -57,19 +57,10 @@ simPlusMinus <- function(nsitenspp, sadStats, mcCores,
         # loop over abundances and generate ssad
         if(ssadType == 'nbinom') {
             # calcualte k (size param)
-            # k <- exp(predict(kByRelSppMod, newdata = data.frame(loga = log(abund / J),
-            #                                                     logS = log(nspp))) +
-            #              rnorm(nspp, sd = summary(kByRelSppMod)$sigma))
             k <- kfun(nspp, abund)
 
-            # mat <- sapply(1:length(abund), function(l) {
-            #     return(rnbinom(nsite, k[l], mu = mu[l]))
-            # })
             mat <- .makeMat(nsite, nspp, rnbinom, size = k, mu = mu)
         } else {
-            # mat <- sapply(1:length(abund), function(l) {
-            #     return(rpois(nsite, mu[l]))
-            # })
             mat <- .makeMat(nsite, nspp, rpois, lambda = mu)
         }
 
@@ -96,12 +87,8 @@ simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
         mu <- abund / nsite
 
         # loop over abundances and generate ssad
-        # mat <- sapply(1:length(abund), function(i) {
-        #     return(ssadfun(nsite, mu[i]))
-        # })
         mat <- .makeMat(nsite, nspp, ssadfun, mu = mu)
 
-        # browser()
         return(.simCleanup(mat))
     })
 
