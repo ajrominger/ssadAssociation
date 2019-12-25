@@ -10,13 +10,12 @@ csl: nature.csl
 bibliography: RarePlusComMinus.bib
 ---
 
-A recent paper, Calatayuda et al. [@calatayud2019] infered species-species interaction networks from spatially replicated abundance data and found that positive interactions were associated with more rare species compared to negative interactions being associated with common species. Here, I show that these results cannot be assigned a biological interpretation because they are readily recreated with completely random data simulated without any species interactions.  
+Why do rare species persist in ecosystems? Rare species seem to be at a disadvantage by pure probabilistic odds [@mcgill2005] and perhaps also from poorly adapted species-environment and species-species interactions [@hutchinson1961], though negative density-dependence may help rare species persist [@leigh2004; yenni2012]. The question of rarity and persistence remains thus unresolved.  In a recent paper, Calatayuda et al. [@calatayud2019] (CEA) infered species-species interaction networks from spatially replicated abundance data across many taxa and environments.  CEA found that rare species were associated with positive interactions whereas common species were associated with negative interactions, indicating that postive interactions, such as facilitation, may help rare species persist [@calatayud2019]. However, the use of abundance and co-occurence data to infer species interactions is difficult and often inaccurate [@freilich2018; carr2019; rajala2019]. This issue arrises in no small part becuase the underlying null models used to infer interactions themselves are known to have type I and II error problems in real world applications [@ulrich2010; @ladau2008; @ladau2017]. Here, I show that the finding of rare species being more associated with positive interactions as found by CEA [@calatayud2019] can be explained by statistical error in the inference of species interactions from abundance data. It would therefore not be supported to assign biological interpretations to these findings until more data can be brought to bear on the subject or interaction types and the persistence of rare species.
+
+
 
 Things to discuss
 
-- error rates with matrix permutations 
-- neg binom ssad [@kendall1949; @nachman2000; @engen2008; @zillio2010; @connolly2017]
-- neg binom v. poisson test for ssad's
 - does the null model lead to poisson ssad's in the null permutations?
 
 
@@ -379,26 +378,47 @@ fig2bc(simPMDataPois, breaksRho = seq(-2, 2, by = 1/5),
 And lastly we might be interested in whether we need to use quantities from the dat so much. We might instead imagine one arbitrary SAD and one arbitrary negative binomial SSAD and see if qualitatively similar results are found.
 
 ```{r, sim_simple_nb_plusMinus_comp}
-# stub
+oneK <- 0.05
+b <- 0.01
+nsiteSimp <- 20
+nsppSimp <- 100
+nsimSimp <- nsim
+
+simPMSimpNB <- simpleSim(nsiteSimp, nsppSimp, nthrd, sadfun = function(n) rfish(n, b), 
+                         ssadfun = function(n, mu) rnbinom(n, oneK, mu = mu), 
+                         nsim = nsimSimp)
 ```
 
 ```{r, sim_simple_pois_plusMinus_comp}
-# stub
+simPMSimpPo <- simpleSim(nsiteSimp, nsppSimp, nthrd, sadfun = function(n) rfish(n, b), 
+                         ssadfun = function(n, mu) rpois(n, lambda = mu), 
+                         nsim = nsimSimp)
 ```
 
 Putting all plots together
-```{r foo_plot, fig.width = 7.5, fig.height = 7.5, cache = FALSE, eval = FALSE}
+```{r foo_plot, fig.width = 7.5, fig.height = 7.5, cache = FALSE}
 split.screen(c(2, 1))
+
 screen(1)
-fig2bc(commStats, breaksRho = seq(-2, 2, by = 1/5), 
+fig2bc(simPMSimpNB, breaksRho = seq(-2, 2, by = 1/5), 
        breaksWM = seq(-0.3, 0.3, by = 0.1/3), addxlab = FALSE)
 
 screen(2)
-fig2bc(commStats, breaksRho = seq(-2, 2, by = 1/5), 
+fig2bc(simPMSimpPo, breaksRho = seq(-2, 2, by = 1/5), 
        breaksWM = seq(-0.3, 0.3, by = 0.1/3), addxlab = FALSE)
+
 close.screen(all.screens = TRUE)
 ```
 
+
+```{r ssad_perm_comp, eval = FALSE}
+simNBPerm <- ssadSim(30, 50, nthrd, function(n) {rfish(n, 0.01)},
+                     function(n, mu) {rnbinom(n, 0.05, mu = mu)}, nsim = 500, B = 999)
+
+hist(simNBPerm$size)
+hist(simNBPerm$mu)
+hist(simNBPerm$dAIC)
+```
 
 # References
 
