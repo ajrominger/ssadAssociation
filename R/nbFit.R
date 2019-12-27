@@ -2,7 +2,8 @@
 #'
 #' @description Fits the negative binomial SSAD to a site x species matrix
 #'
-#' @details If likelihood optimization fails \code{NA} will be returned.
+#' @details If likelihood optimization fails for a given species, \code{NA} will be
+#' returned for all row elements corresponding to that species.
 #'
 #' @param x a site by species matrix
 #'
@@ -21,12 +22,14 @@ nbFit <- function(x) {
         fit <- try(MASS::fitdistr(x[, j], 'negative binomial'))
 
         if(inherits(fit, 'try-error')) {
-            f <- c(size = NA, mu = NA, logLik = NA, poisLogLik = NA)
+            f <- c(size = NA, mu = NA, logLik = NA, poisLogLik = NA,
+                   truMean = mean(x[, j]))
         } else {
             f <- c(fit$estimate, logLik = fit$loglik)
             ##### !!!!! use `mean(thisx[, j)` instead of `fit$estimate[2]`
             ##### !!!!! here and in the .Rmd file
-            f <- c(f, poisLogLik = sum(dpois(x[, j], mean(x[, j]), log = TRUE)))
+            f <- c(f, poisLogLik = sum(dpois(x[, j], mean(x[, j]), log = TRUE)),
+                   truMean = mean(x[, j]))
         }
 
         return(f)

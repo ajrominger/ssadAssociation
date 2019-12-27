@@ -20,7 +20,8 @@ species matrix \code{x}.
 Fits the negative binomial SSAD to a site x species matrix
 }
 \details{
-If likelihood optimization fails \code{NA} will be returned.
+If likelihood optimization fails for a given species, \code{NA} will be
+returned for all row elements corresponding to that species.
 }
 \author{
 Andy Rominger <ajrominger@gmail.com>
