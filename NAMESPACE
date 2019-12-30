@@ -2,6 +2,7 @@
 
 export(fitdistrNB)
 export(nbFit)
+export(nbLLZ)
 export(plusMinus)
 export(schoener)
 export(simPlusMinus)
