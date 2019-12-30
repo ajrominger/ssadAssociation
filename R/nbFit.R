@@ -21,8 +21,6 @@ nbFit <- function(x) {
     theseStats <- sapply(1:ncol(x), function(j) {
         fit <- fitdistrNB(x[, j])
         f <- c(fit$estimate, logLik = fit$loglik)
-        ##### !!!!! use `mean(thisx[, j)` instead of `fit$estimate[2]`
-        ##### !!!!! here and in the .Rmd file
         f <- c(f, poisLogLik = sum(dpois(x[, j], mean(x[, j]), log = TRUE)))
         f <- c(f, dAIC = as.numeric(2 * (2 - f['logLik'] - (1 - f['poisLogLik']))),
                z = nbLLZ(x[, j], f[1], f[2]),
