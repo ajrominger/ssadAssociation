@@ -70,7 +70,7 @@ commStats <- as.data.frame(do.call(rbind, commStats))
 commStats[is.na(commStats$pos.rho.rho) | is.na(commStats$neg.rho.rho), ] <- NA
 ```
 
-It should be noted that the authors of the original analysis [@calatayud2019] retained 326 studies after filtering, whereas we retain `r sum(!is.na(commStats$pos.wm))`. This may be in part because we removed any dataset for which there were fewer than three links in either the postive or negative networks, whereas the authors of the original analysis removed only those datasets with fewer than two links [@calatayud2019]. 
+It should be noted that the authors of the original analysis [@calatayud2019] retained 326 studies after filtering, whereas I retain `r sum(!is.na(commStats$pos.wm))`. This may be in part because I removed any dataset for which there were fewer than three links in either the postive or negative networks, whereas the authors of the original analysis removed only those datasets with fewer than two links [@calatayud2019]. 
 
 And now for the plot that reproduces Fig. 2 (b and c) from ref. [@calatayud2019].
 
@@ -210,53 +210,37 @@ fig2est <- r * (sum((y0 - yblu)) + sum((y0 - yred)))
 
 It should be noted that our inset figure of mean weighted abundances differs from the original paper [@calatayud2019] in that their y-axis ranges from 0 to 220, while ours ranges from 0 to 120; we suspected the original authors mislabled their axis, because the scale as presented would suggest over `r 100 * floor(fig2est / 100)` assembledges, while the number should be 326.  Rescaling their axis to range from 0 to 120 brings this estimate more in line with the reported number of assembledges.
 
-Now we explore the shape of the spatial abundance patters in the real data provided by ref. @calatayud2019.
+Now we explore the shape of the spatial abundance patters in the real data provided by ref. [@calatayud2019].
 
 
 ```{r ssad_comp}
-summStats <- mclapply(1:length(obsdat), mc.cores = nthrd, FUN = function(i) {
-    x <- obsdat[[i]]
-    o <- sapply(1:ncol(x), function(j) {
-        # sometimes optimization fails, so catch that and return NA
-        params <- try(fitdistr(x[, j], 'negative binomial'))
-        if(class(params) == 'try-error') {
-            params <- c(size = NA, mu = NA, loglik = NA, poisLogLik = NA)
-        } else {
-            poisLogLik <- sum(dpois(x[, j], params$estimate[2], log = TRUE))
-            params <- c(params$estimate, loglik = params$loglik, 
-                        poisLogLik = poisLogLik)
-        }
-        
-        nocc <- sum(x[, j] > 0)
-        abund <- sum(x[, j])
-        
-        return(c(nsite = nrow(x), nspp = ncol(x), nocc = nocc, abund = abund, J = sum(x),
-                 params))
-    })
+summStats <- mclapply(obsdat, mc.cores = nthrd, FUN = function(x) {
+    nbInfo <- nbFit(x)
+    cbind(nsite = nrow(x), nspp = ncol(x), J = sum(x), nbInfo)
 })
 
-summStats <- data.frame(study = rep(names(obsdat), sapply(summStats, ncol)),
-                        t(do.call(cbind, summStats)))
+summStats <- data.frame(study = rep(names(obsdat), sapply(summStats, nrow)),
+                        do.call(rbind, summStats))
 
 # remove failed optims
-summStats <- summStats[!is.na(summStats$size), ]
+# summStats <- summStats[!is.na(summStats$size), ]
 
 # looks like an optim bug around size = 100, remove it
-summStats[round(summStats$size) == 100, c('size', 'mu', 'loglik')] <- NA
+# summStats[round(summStats$size) == 100, c('size', 'mu', 'loglik')] <- NA
 ```
 
-```{r ssad_fit_plot, cache = FALSE}
-nbAIC <- 2 * (2 - summStats$loglik)
-poAIC <- 2 * (1 - summStats$poisLogLik)
+```{r ssad_fit_plot, cache = FALSE, eval = FALSE}
+# nbAIC <- 2 * (2 - summStats$loglik)
+# poAIC <- 2 * (1 - summStats$poisLogLik)
 
 par(parArgs)
-plot(summStats$mu, summStats$size, 
-     col = c('red', 'black')[as.integer(nbAIC < poAIC + 2) + 1],
-     log = 'xy', xaxt = 'n', yaxt = 'n', 
+plot(summStats$mu, summStats$size,
+     # col = c('red', 'black')[as.integer(nbAIC < poAIC + 2) + 1],
+     log = 'xy', xaxt = 'n', yaxt = 'n',
      xlab = expression(mu), ylab = expression(k))
 logAxis(1:2, expLab = TRUE)
-legend('topleft', legend = c('NB sufficient', 'Pois better'), 
-       col = c('black', 'red'), pch = 1, bty = 'n')
+# legend('topleft', legend = c('NB sufficient', 'Pois better'),
+#        col = c('black', 'red'), pch = 1, bty = 'n')
 ```
 
 ```{r ssad_plot, fig.width = 5, fig.height = 5, cache = FALSE, eval = FALSE}
@@ -322,14 +306,22 @@ dat4k <- with(summStats[summStats$study %in%
                          logS = log(nspp))
 )
 
-kByRelSppMod <- lm(logk ~ loga + logS, data = dat4k)
+# kByRelSppMod <- lm(logk ~ loga + logS, data = dat4k)
+kMod <- lm(logk ~ loga, data = dat4k[is.finite(dat4k$logk), ])
 
 # function to generate k values from input number of species and abundances
-kfunSpp <- function(nspp, abund) {
+# kfunSpp <- function(nspp, abund) {
+#     J <- sum(abund)
+#     exp(predict(kByRelSppMod, newdata = data.frame(loga = log(abund / J),
+#                                                    logS = log(nspp))) +
+#             rnorm(nspp, sd = summary(kByRelSppMod)$sigma))
+# }
+
+kfun <- function(nspp, abund) {
     J <- sum(abund)
-    exp(predict(kByRelSppMod, newdata = data.frame(loga = log(abund / J),
-                                                   logS = log(nspp))) +
-            rnorm(nspp, sd = summary(kByRelSppMod)$sigma))
+    
+    exp(predict(kMod, newdata = data.frame(loga = log(abund / J))) +
+            rnorm(nspp, sd = summary(kMod)$sigma))
 }
 ```
 
@@ -347,8 +339,10 @@ nsitenspp <- unique(summStats[
     c('study', 'nsite', 'nspp')])
 
 # loop over simulation replicates
+# simPMData <- simPlusMinus(nsitenspp = nsitenspp, sadStats = sadStats, mcCores = nthrd, 
+#                           ssadType = 'nbinom', kfun = kfunSpp, nsim = nsim)
 simPMData <- simPlusMinus(nsitenspp = nsitenspp, sadStats = sadStats, mcCores = nthrd, 
-                          ssadType = 'nbinom', kfun = kfunSpp, nsim = nsim)
+                          ssadType = 'nbinom', kfun = kfun, nsim = nsim)
 ```
 
 ```{r sim_plusMinus_plot, fig.width = 7.5, fig.height = 4, cache = FALSE}
@@ -413,7 +407,7 @@ close.screen(all.screens = TRUE)
 
 ```{r ssad_perm_comp, eval = FALSE}
 simNBPerm <- ssadSim(30, 50, nthrd, function(n) {rfish(n, 0.01)},
-                     function(n, mu) {rnbinom(n, 0.05, mu = mu)}, nsim = 500, B = 999)
+                     function(n, mu) {rnbinom(n, 0.05, mu = mu)}, nsim = 50, B = 499)
 
 hist(simNBPerm$size)
 hist(simNBPerm$mu)
