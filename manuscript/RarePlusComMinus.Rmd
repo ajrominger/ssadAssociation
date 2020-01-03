@@ -56,16 +56,16 @@ Species abundances are not evenly distributed across species [@hubbell2001; @mcg
 
 The data compiled by CEA [@calatayud2019] indeed conform to the ubiquity of uneaveness (Supplementary Figs. \ref{fig} and \ref{fig}). To evaluate whether this drives the results about interaction type and abudance, in Figure \ref{fig:plusMinus} I first reproduce key results from CEA's Figure 2(b-c); I then simulate purely random data that match key characteristics of observed data but contain absolutely no species interactions. These random data are simulated as follows:
 
-1) The number of species $S$, number of sites $M$, and shape of the best fitting species abundance distribution $P_{SAD}$ are sampled (with replacement) from the observed data
-2) $S$ species abundances $x_i \ldots x_S$ are sampled from $P_{SAD}$
-3) For each $x_i$, within-species counts are distributed across the $M$ sites according to a spatial species abundance distribution $Q_{SSAD}$ that is either negative binomial (in the case of spatial clustering) or Poisson (in the case of spatial evenness)
+1) The number of species $S$, number of sites $M$, and shape of the best fitting species abundance distribution (SAD) are sampled (with replacement) from the observed data
+2) $S$ species abundances $x_i \ldots x_S$ are sampled from the SAD
+3) For each $x_i$, within-species counts are distributed across the $M$ sites according to a spatial species abundance distribution (SSAD) that is either negative binomial (in the case of spatial clustering) or Poisson (in the case of spatial evenness)
 4) The resulting simualted site by species matrix is fed through the same pipeline as the observed data to infer positive and negative interactions.
 
 All analyses are carried out in R [@rcore] and can be fully reproduced by installing the R package accompanying this paper, as detailed in the supplement.
 
-In the case of a Poisson $Q_{SSAD}$ the one parameter (the mean) is fully specified by the average site-level abundance of a given species. In the case of a negative binomial $Q_{SAD}$, the mean parameter is again specified by the site-level average, but the size or clustering parameter $k$ is not fully specified.  To capture the rough features of the data, I sample $k$ from a linear relationship (with noise) between the maximum likelihood estimates of $k$ and the relative abundance of each species.
+In the case of a Poisson SSAD the one parameter (the mean) is fully specified by the average site-level abundance of a given species. In the case of a negative binomial SSAD, the mean parameter is again specified by the site-level average, but the size or clustering parameter $k$ is not fully specified.  To capture the rough features of the data, I sample $k$ from a linear relationship (with noise) between the maximum likelihood estimates of $k$ and the relative abundance of each species.
 
-Figure \ref{fig:plusMinus} shows that with a negative binomial $Q_{SAD}$, the simulated data closely match the observed findings. This correspondence largely dissapears when we instead use a Poisson $Q_{SAD}$, highlighting the importance of spatial aggregation in driving the artifactual results.  However, we still observe a slight skew toward rare species being slighly more prevelent with positive interactions (Fig. \ref{fig:plusMinus}F). 
+Figure \ref{fig:plusMinus} shows that with a negative binomial SSAD, the simulated data closely match the observed findings. This correspondence largely dissapears when we instead use a Poisson SSAD, highlighting the importance of spatial aggregation in driving the artifactual results.  However, we still observe a slight skew toward rare species being slighly more prevelent with positive interactions (Fig. \ref{fig:plusMinus}F). 
 
 <!-- To investigate this further, I sample from uniform species abundances, again with Poisson spatial distributions. Now there is no skewed association between abundance and interaction type (Fig. \ref{fig:plusMinus}). -->
 
@@ -81,24 +81,23 @@ lazyLoad(findChunk('sim_poisUnif_plusMinus_comp', 'RarePlusComMinus_supp'))
 ```
 
 ```{r fig_plusMinus, fig.width = figW * 2, fig.height = figH * 2.25, fig.cap = 'Distributions of correlations between network centrality and abundance (left panels) and weighted mean abundance by network type (right panels). The results of CEA Figure 2(B-C) are reproduced in this figure panels A-B; panels C-D show data simulated with a negative binomial SSAD and no species interactions; panels E-F show data simulated with a Poisson SSAD and again no species interactions. \\label{fig:plusMinus}'}
-sink('/dev/null')
 wmmax <- ceiling(max(simPMData$pos.wm, simPMData$neg.wm, na.rm = TRUE) * 9) / 3
 
-split.screen(c(3, 1))
+foo <- split.screen(c(3, 1))
 
 screen(1)
-fig2bc(commStats, breaksRho = seq(-2, 2, by = 1/5), 
+foo <- fig2bc(commStats, breaksRho = seq(-2, 2, by = 1/5), 
        breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = FALSE, 
        figLabs = c('A', 'B'))
 mtext('Observed', side = 4, outer = TRUE)
 
 screen(2)
-fig2bc(simPMData, breaksRho = seq(-2, 2, by = 1/5), 
+foo <- fig2bc(simPMData, breaksRho = seq(-2, 2, by = 1/5), 
        breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = FALSE, 
        figLabs = c('C', 'D'))
 
 screen(3)
-fig2bc(simPMDataPois, breaksRho = seq(-2, 2, by = 1/5),
+foo <- fig2bc(simPMDataPois, breaksRho = seq(-2, 2, by = 1/5),
        breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = FALSE,
        figLabs = c('E', 'F'))
 
@@ -107,11 +106,12 @@ fig2bc(simPMDataPois, breaksRho = seq(-2, 2, by = 1/5),
 #        breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = FALSE, 
 #        figLabs = c('A', 'B'))
 
-close.screen(all.screens = TRUE)
-sink()
+foo <- close.screen(all.screens = TRUE)
 ```
 
-First we seek to understand why negative binomial SSADs reproduce the results while Poisson SSADs fail to.  The null model algorithm used fixes row and column marginals, but within any given species, the way its total abundance is allocated across sites by the null model has a potentially large combinitorial space to explore. I compare known SSADs to their permuted counterpart in Figure \ref{fig:ssadPerm} and find that the null model transforms negative binomial SSADs to a more Poisson shape, while leaving Poisson SSADs probabilistically unchanged. Specifically, when starting with a negative binomial SSAD, the null model inflates the number of sites individuals are allocated to (more similarely to a Poisson SSAD) and consiquently the inferred $k$ parameter of these permuted SSADs is increase, indicating less spatial clustering.
+First we seek to understand why negative binomial SSADs reproduce the results while Poisson SSADs fail to.  The spatial clustering or evenness of the SSAD is central: in Supplementary Figure \ref{fig} I show that the spurious relationship between abundance and interaction type occurs even when simulating data from just one SAD function with the same spatially clustered SSAD for all species.  In this simulation replacing the one spatially clustered SSAD with a Poisson SSAD again partially breaks the spurious association as in Figure \ref{fig:plusMinus}.
+
+The null model algorithm used here and in CEA [@calatayud2019] fixes row and column marginals, but within any given species, the way its total abundance is allocated across sites by the null model has a potentially large combinitorial space to explore. I compare known SSADs to their permuted counterpart in Figure \ref{fig:ssadPerm} and find that the null model transforms negative binomial SSADs to a more Poisson shape, while leaving Poisson SSADs probabilistically unchanged. Specifically, when starting with a negative binomial SSAD, the null model inflates the number of sites individuals are allocated to (more similarely to a Poisson SSAD) and consiquently the inferred $k$ parameter of these permuted SSADs is increase, indicating less spatial clustering.
 
 ```{r ssadPerm_prep, include = FALSE}
 lazyLoad(findChunk('ssad_perm_comp', 'RarePlusComMinus_supp'))
@@ -197,13 +197,11 @@ $$
 $$
 The probability of this configuration is $Q(`r commPairMax[1, 1]`; \mu = `r Ncomm / nsite`)^{`r 2 * nsite`}$ which, for the same negative binomial equals $`r formatNice(nbCommPMax)`$, and for the Poisson equals $`r formatNice(poCommPMax)`$.
 
-Narrative:
+Thus a clustered SSAD makes rare species appear aggregated, compared to an even SSAD that, if anything, makes common species appear more aggregated.  Because the null model algorithm preserves even SSADs this is less of an issue; however, when presented with spatially clustered abundances, the null model will spuriously identify rare species as aggregated and common species as repelling each other.  This statistical property accounts for the prevelance of rare species in positive interaction networks and common species in negative interaction networks. Great caution should be used when infering species interactions from abundance data.  In the purely random simulated data sets `r 10` 
 
-- just spatial clustering is enough to trick the algo
-- when abundances are even, no spatial clustering leads to no difference in plus and minus, the commonness of rarity plays a role in all this too
-- spatial clustering can be from all kinds of sources
-- also any random data still lead to lots of + and - interactions, so maybe we should stop trying to infer them this way (count up number in different sims)
+```{r}
 
+```
 
 
 \clearpage
