@@ -20,7 +20,8 @@ Imports:
     spaa, 
     igraph,
     parallel, 
-    viridis
+    viridis, 
+    knitr
 Suggests:
     testthat
 RoxygenNote: 6.1.1
