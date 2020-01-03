@@ -105,7 +105,7 @@ obsdat <- lapply(abundMats, function(x) {
 })
 ```
 
-Now we use the `plusMinus` function to calculate positive and negative association networks and abundances from the observed data:
+Now we use the `plusMinus` function to calculate positive and negative association networks and abundances from the observed data. Internally, this function produces `B` (default `B = 999`) randomly permuted matrices using the `r2dtable` algorithm [@patefield1981] that fixes row and column marginals. It then compares the Schoener similarities from the original and permuted matrices.  I use the custom function `schoener` (made to be more efficient) to compute these similarities, and this function is unit tested against `spaa::niche.overlap`.
 
 ```{r obs_plusMinus_comp, dependson = c('obs_data', 'threading')}
 commStats <- mclapply(obsdat, mc.cores = nthrd,
