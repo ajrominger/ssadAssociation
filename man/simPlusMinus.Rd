@@ -5,14 +5,11 @@
 \alias{simpleSim}
 \title{Simulate positive and negative interactions from purely random data}
 \usage{
-simPlusMinus(nsitenspp, sadStats, mcCores, ssadType = "nbinom", kfun,
-  nsim)
+simPlusMinus(sadStats, mcCores, ssadType = "nbinom", kfun, nsim)
 
 simpleSim(nsite, nspp, mcCores, sadfun, ssadfun, nsim)
 }
 \arguments{
-\item{nsitenspp}{a \code{data.frame} with columns \code{nsite} and \code{nspp}}
-
 \item{sadStats}{a \code{data.frame} with columns \code{mod}, \code{par1}, \code{par2}}
 
 \item{mcCores}{number of cores to use in \code{parallel::mclapply}}
