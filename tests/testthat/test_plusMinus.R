@@ -153,18 +153,19 @@ pos.neg.abun.r2d <- function(matb,name,alpha,plots){
     return(resFin)
 }
 
-data('abundace_matrices')
+data('abundMats')
 # choose a few small ones that have enough '+' and '-' associations
 ii <- c(1, 4, 19)
 
 comp <- parallel::mclapply(ii, mc.cores = 3, FUN = function(i) {
     set.seed(1)
-    x <- round(abun.mat[[i]])
+    x <- round(abundMats[[i]])
     x <- x[rowSums(x) > 0, colSums(x) > 0]
 
     mine <- replicate(25, {
         foo <- plusMinus(x)
-        foo <- unlist(foo)[-c(4, 9)]
+        foo <- unlist(foo)[c('pos.n', 'pos.rho.rho', 'pos.p', 'pos.wm',
+                             'neg.n', 'neg.rho.rho', 'neg.p', 'neg.wm')]
         names(foo) <- NULL
         return(foo)
     })
