@@ -12,7 +12,6 @@
 #' in a Poisson SSAD (i.e., there are only two options, negative binomial specified by
 #' \code{'nbinom'} or Poisson specified by anything else)
 #'
-#' @param nsitenspp a \code{data.frame} with columns \code{nsite} and \code{nspp}
 #' @param sadStats a \code{data.frame} with columns \code{mod}, \code{par1}, \code{par2}
 #' @param nsite number of sites to simulate
 #' @param nspp number of species to simulate
@@ -31,22 +30,22 @@
 #' @export
 #' @rdname simPlusMinus
 
-simPlusMinus <- function(nsitenspp, sadStats, mcCores,
+simPlusMinus <- function(sadStats, mcCores,
                          ssadType = 'nbinom', kfun, nsim) {
     # indeces for SAD data and nsite, nspp data
     iiSAD <- sample(nrow(sadStats), nsim, replace = TRUE)
-    jjNN <- sample(nrow(nsitenspp), nsim, replace = TRUE)
+    # jjNN <- sample(nrow(nsitenspp), nsim, replace = TRUE)
 
     # loop over replicates and make communities, then calculate networks
     o <- parallel::mclapply(1:nsim, mc.cores = mcCores, FUN = function(i) {
-        j <- jjNN[i]
-        nsite <- nsitenspp$nsite[j]
-        nspp <- nsitenspp$nspp[j]
+        j <- iiSAD[i]
+        nsite <- sadStats$nsite[j]
+        nspp <- sadStats$nspp[j]
 
         # make SAD
-        iSAD <- iiSAD[i]
-        rfun <- get(paste0('r', sadStats$mod[iSAD]))
-        pars <- as.numeric(sadStats[iSAD, 2:3])
+        # iSAD <- iiSAD[i]
+        rfun <- get(paste0('r', sadStats$mod[j]))
+        pars <- as.numeric(sadStats[j, 2:3])
         pars <- pars[!is.na(pars)]
         abund <- do.call(rfun, c(list(nspp), as.list(pars)))
 
@@ -113,6 +112,7 @@ simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
     }
 
     names(o) <- defaultNames
+    o <- c(n = ncol(mat), o)
 
     return(o)
 }
