@@ -8,7 +8,7 @@ x <- cbind(r, r)
 xfit <- nbFit(x)
 
 test_that('nbFit returns correct dimension', {
-    expect_equal(dim(xfit), c(2, 6))
+    expect_equal(dim(xfit), c(2, 9))
 })
 
 test_that('nbFit returns correct parameter estimates', {
