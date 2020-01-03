@@ -15,14 +15,11 @@ bibliography: RarePlusComMinus.bib
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
-```
-
-```{r keeplatex, include = FALSE, cache = FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 options(tinytex.clean = FALSE)
 ```
 
-This supplement combines a narrative account of how to reproduce my results as well as additional analyses in support of the conclusions in the main text.
+This supplement combines a narrative account of how to reproduce the results in the main text as well as additional analyses in support of the conclusions in the main text.
 
 # Reproducibility
 
@@ -51,7 +48,7 @@ if(!pikaLoad) install_github('ajrominger/pika')
 
 All other required packages [@vegan; @viridis; @igraph; @spaa] are installed with the installation of *RarePlusComMinus*.  The *RarePlusComMinus* package includes documented [@roxygen2] and unit-tested [@testthat] functions to carry out all analyses.  The help documentation explains these functions, for example
 
-```{r, helpdocs, eval = FALSE, cache = FALSE}
+```{r, helpdocs, eval = FALSE}
 ?plusMinus
 ?schoener
 ```
@@ -59,12 +56,15 @@ All other required packages [@vegan; @viridis; @igraph; @spaa] are installed wit
 
 Now we can set-up our analysis.
 
-```{r pkg_setup, cache = FALSE, results = 'hide', warning = FALSE, message = FALSE}
+```{r pkg_setup, results = 'hide', warning = FALSE, message = FALSE}
 library(RarePlusComMinus)
 library(pika)
 library(socorro)
 library(parallel)
 library(viridis)
+
+# we can now set caching to be TRUE by default
+knitr::opts_chunk$set(cache = TRUE)
 ```
 
 ```{r threading}
@@ -79,9 +79,11 @@ if(nthrd < 1) nthrd <- 1
 parArgs <- list(mar = c(3, 3, 0, 0) + 0.5, mgp = c(1.5, 0.30, 0), tcl = -0.25)
 cexDefault <- 1.4
 lwdDefault <- 2
-figW <- 3.5
-figH <- 3.5
+figW <- 3.75
+figH <- 3.75
+```
 
+```{r figDim, cache = FALSE, dependson = 'plot_defaults'}
 knitr::opts_chunk$set(fig.width = figW, fig.height = figH, fig.align = 'center')
 ```
 
@@ -105,7 +107,7 @@ obsdat <- lapply(abundMats, function(x) {
 
 Now we use the `plusMinus` function to calculate positive and negative association networks and abundances from the observed data:
 
-```{r obs_plusMinus_comp}
+```{r obs_plusMinus_comp, dependson = c('obs_data', 'threading')}
 commStats <- mclapply(obsdat, mc.cores = nthrd,
                       FUN = function(x) unlist(plusMinus(x)))
 
@@ -119,7 +121,7 @@ The `plusMinus` function is based on, but not copied from, the function the orig
 
 It should be noted that the authors of the original analysis [@calatayud2019] retained 326 studies after filtering, whereas I retain `r sum(!is.na(commStats$pos.wm))`. This is because I removed any dataset for which there were fewer than three links in either the postive or negative networks, whereas the authors of the original analysis removed only those datasets with fewer than two links [@calatayud2019]. 
 
-I use these calculations to make Supplementary Figure \ref{fig:plusMinus_obs}, which reproduce Figure 2 (b-c) from CEA [@calatayud2019].
+I use these calculations to make Supplementary Figure \ref{fig:plusMinus_obs}, which reproduce Figure 2 (B-C) from CEA [@calatayud2019].
 
 ```{r plusMinus_plotFuns}
 # ----
@@ -143,11 +145,25 @@ figLetter <- function(l, lab, bg = 'transparent', cex = 1, ...) {
 
 # ----
 # function to remake Fig 2(b-c)
-fig2bc <- function(x, breaksRho, breaksWM, addxlab = TRUE, figLabs = LETTERS[1:2]) {
+fig2bc <- function(x, breaksRho, breaksWM, addxlab = TRUE, figLabs = LETTERS[1:2], 
+                   insetxprop = 0.5, insetyprop = 0.5) {
+    
+    # ----
+    # relative bounds for inset figures
+    insetxMax <- 0.975
+    insetxMin <- insetxMax - insetxprop
+    
+    insetyMax <- 0.975
+    insetyMin <- insetyMax - insetyprop
+    
+    # ----
+    # set up plot
     plot.new()
     par(parArgs)
     par(cex = 1)
     
+    # ----
+    # split into two main plots and fill in
     fi <- split.screen(c(1, 2), erase = FALSE)
     
     # correlation differences
@@ -170,7 +186,8 @@ fig2bc <- function(x, breaksRho, breaksWM, addxlab = TRUE, figLabs = LETTERS[1:2
     figLetter('topleft', figLabs[1])
     
     # raw correlations
-    fj <- split.screen(matrix(c(0.475 + 0.02, 0.975 + 0.02, 0.475, 0.975), nrow = 1), 
+    fj <- split.screen(matrix(c(insetxMin + 0.02, insetxMax + 0.02, 
+                                insetyMin, insetyMax), nrow = 1), 
                         erase = FALSE)
     screen(fj, new = FALSE)
     
@@ -178,14 +195,24 @@ fig2bc <- function(x, breaksRho, breaksWM, addxlab = TRUE, figLabs = LETTERS[1:2
     par(cex = 0.75)
     par(mgp = par('mgp') * par('cex'))
     
-    specialHist(x$pos.rho.rho, xlim = c(-1, 1), ylim = c(0, 90),
+    rhoYmax <- 90
+    rhoFmax <- max(hist(x$pos.rho.rho, breaks = breaksRho / 2, plot = FALSE)$counts,
+                   hist(x$neg.rho.rho, breaks = breaksRho / 2, plot = FALSE)$counts)
+    
+    if(0.75 * rhoYmax < rhoFmax + 0.1 * rhoYmax) {
+        rhoYmax <- 1.35 * rhoYmax
+    }
+    
+    specialHist(x$pos.rho.rho, xlim = c(-1, 1), ylim = c(0, rhoYmax),
                 breaks = breaksRho / 2, col = hsv(0.65, alpha = 0.5),
                 xlab = expression("Spearman's"~rho),
                 ylab = '')
     specialHist(x$neg.rho.rho,
                 breaks = breaksRho / 2, col = hsv(0, alpha = 0.5),
                 add = TRUE)
+    
     usr <- par('usr')
+    
     points(usr[1] + c(0.2, 0.5) * diff(usr[1:2]), rep(usr[3] + 0.75 * diff(usr[3:4]), 2),
            cex = 3, bg = hsv(c(0.65, 0), alpha = 0.5), pch = 21)
     text(usr[1] + c(0.2, 0.5) * diff(usr[1:2]), rep(usr[3] + 0.75 * diff(usr[3:4]), 2),
@@ -213,7 +240,8 @@ fig2bc <- function(x, breaksRho, breaksWM, addxlab = TRUE, figLabs = LETTERS[1:2
     
     
     # raw means
-    fk <- split.screen(matrix(c(0.475 - 0.04, 0.975 - 0.04, 0.475, 0.975), nrow = 1), 
+    fk <- split.screen(matrix(c(insetxMin - 0.04, insetxMax - 0.04, 
+                                insetyMin, insetyMax), nrow = 1), 
                         erase = FALSE)
     screen(fk, new = FALSE)
     
@@ -236,7 +264,9 @@ fig2bc <- function(x, breaksRho, breaksWM, addxlab = TRUE, figLabs = LETTERS[1:2
            rep(usr[3] + 0.75 * diff(usr[3:4]), 2),
          labels = c('+', '-'), cex = 2)
     
-    close.screen(c(fi, fj, fk))
+    foo <- close.screen(c(fi, fj, fk))
+    
+    invisible(NULL)
 }
 ```
 
@@ -271,7 +301,7 @@ Now we explore the shape of the spatial abundance patters in the real data provi
 
 In Supplementary Figure \ref{fig:ssad} I show that the data are well fit by the negative binomial via a likelihood-based goodness of fit test [@etienne2007; @romMeteR]. This test scales the observed likelihood by the sampling distribution of likelihoods given the hypothesis that the negative binomial is the correct distribution. This test stastistic, when squared, follows a $\chi$-squared distribution with 1 degree of freedom [@romMeteR], allowing us to make a parametric cuttoff of when the data are not well represented by a negative binomial.  No assembledge analyzed rejected the negative binomial distribution. In Supplementary Figure \ref{fig:ssad} I also explore the relationship of the clustering parameter $k$ with species relative abundance.  The purpose of this later analysis is to be able to simulate random but realistic data. 
 
-```{r ssad_comp}
+```{r ssad_comp, dependson = c('obs_data', 'threading', 'obs_plusMinus_comp')}
 # limit to only those communities that yielded meaningful networks
 summStats <- mclapply(obsdat[rownames(commStats[!is.na(commStats$pos.n), ])], 
                       mc.cores = nthrd, FUN = function(x) {
@@ -284,7 +314,7 @@ summStats <- data.frame(study = rep(rownames(commStats[!is.na(commStats$pos.n), 
                         do.call(rbind, summStats))
 ```
 
-```{r ssad_lm}
+```{r ssad_lm, dependson = c('ssad_comp', 'obs_plusMinus_comp')}
 # data for linear model of k, excluding sites that didn't produce a good network
 dat4k <- with(summStats[summStats$study %in%
                             rownames(commStats[!is.na(commStats$pos.n), ]) &
@@ -332,7 +362,7 @@ figLetter('topleft', 'B')
 
 We also need to know the shapes of the species abundance distributions (SAD) of each assembledge to simulate realistic data. I do this using the function `fitSAD` from the custom *pika* package. I preform model selection on three standard SAD forms: the log-series, Poisson log-normal, and zero-truncated negative binomial, and record the best fit model and its parameter(s) for each assembledge.
 
-```{r sad_comp}
+```{r sad_comp, dependson = c('obs_data', 'threading', 'obs_plusMinus_comp')}
 mods <- c('fish', 'plnorm', 'tnegb')
 sadStats <- mclapply(obsdat, mc.cores = nthrd, FUN = function(x) {
     nsite <- nrow(x)
@@ -358,7 +388,7 @@ sadStats <- sadStats[rownames(sadStats) %in%
                          rownames(commStats[!is.na(commStats$pos.n), ]), ]
 ```
 
-```{r sadShape_comp}
+```{r sadShape_comp, dependson = c('sad_comp', 'threading')}
 # helper function to make a rank abundance dist for a hypothetical community of
 # `S` species given model `m` and parameters `p`
 
@@ -428,47 +458,32 @@ legend('topright',
 
 Now we can simulate abundance data matching the overall shapes of the observed SAD's and SSAD's but with absolutely no real correlation or interaction between species.
 
-```{r sim_plusMinus_setup}
+```{r sim_plusMinus_setup, dependson = 'obs_plusMinus_comp'}
 # number of simulations to run
 nsim <- round(1.25 * sum(!is.na(commStats$pos.wm)))
 ```
 
-I simulate `r nsim` random assembledges, slightly more than the `r sum(!is.na(commStats$pos.wm))` observed assemledges because some simulated assembledges will be rejected based on the data standards used. In Figure 1 of the main text we plot these simulated results alongside the results from the real data.
+I simulate `r nsim` random assembledges, slightly more than the `r sum(!is.na(commStats$pos.wm))` observed assemledges because some simulated assembledges will be rejected based on the data standards used. In Figure 1 of the main text I plot these simulated results alongside the results from the real data.
 
-```{r sim_plusMinus_comp}
+```{r sim_plusMinus_comp, dependson = c('sim_plusMinus_setup', 'threading')}
 # loop over simulation replicates
 simPMData <- simPlusMinus(sadStats = sadStats, mcCores = nthrd, 
                           ssadType = 'nbinom', kfun = kfun, nsim = nsim)
 ```
 
 
-
-```{r sim_plusMinus_plot, fig.width = figW * 1.95, fig.height = 4, eval = FALSE, cache = FALSE, include = FALSE}
-wmmax <- ceiling(max(simPMData$pos.wm, simPMData$neg.wm, na.rm = TRUE) * 9) / 3
-
-fig2bc(simPMData, breaksRho = seq(-2, 2, by = 1/5), 
-       breaksWM = seq(-wmmax, wmmax, by = 0.1/3))
-```
-
-
 Now we want to figure out if the correspondence between real and simulated results is specifically because of the shape of the SSAD (i.e. negative binomial) or if a spatially unclustered SSAD would also yield this close of a match. We do this by modeling the SSAD with a Poisson distribution.
 
-```{r sim_pois_plusMinus_comp}
+```{r sim_pois_plusMinus_comp, dependson = c('sim_plusMinus_setup', 'threading')}
 # loop over simulation replicates
 simPMDataPois <- simPlusMinus(sadStats = sadStats, mcCores = nthrd, 
                               ssadType = 'pois', kfun = NULL, nsim = nsim)
 ```
 
-```{r sim_pois_plusMinus_plot, fig.width = figW * 1.95, fig.height = 4, eval = FALSE, cache = FALSE, include = FALSE}
-wmmax <- ceiling(max(simPMDataPois$pos.wm, simPMDataPois$neg.wm, na.rm = TRUE) * 9) / 3
 
-fig2bc(simPMDataPois, breaksRho = seq(-2, 2, by = 1/5), 
-       breaksWM = seq(-wmmax, wmmax, by = 0.1/3))
-```
+<!-- As seen in Figure 1 in the main text, the Poisson SSAD removes much of the correspondence between the observed and simulated results; however, even in the Poisson case, rare species do tend to be found slightly more often in positive interaction networks. To explore whether this is the result of there simply being many more rare species than common, I simulate assembledges with uniformly distributed SAD's, again using a Poisson SSAD.  These results are also shown in Figure 1 in the main text. -->
 
-As seen in Figure 1 in the main text, the Poisson SSAD removes much of the correspondence between the observed and simulated results; however, even in the Poisson case, rare species do tend to be found slightly more often in positive interaction networks. To explore whether this is the result of there simply being many more rare species than common, I simulate assembledges with uniformly distributed SAD's, again using a Poisson SSAD.  These results are also shown in Figure 1 in the main text.
-
-```{r sim_poisUnif_plusMinus_comp}
+```{r sim_poisUnif_plusMinus_comp, eval = FALSE, include = FALSE, cache = FALSE}
 # a simple discrete uniform random variable funciton
 rdunif <- function(n, min, max) {
     sample(min:max, n, replace = TRUE)
@@ -490,7 +505,7 @@ simPMDataUnifPois <- simPlusMinus(sadStats = sadUnif, mcCores = nthrd,
 
 Lastly we might be interested in whether we can produce a spurious association between abundance and interaction type without any reference to the observed data. For this experiment I imagine one arbitrary SAD and combine it with one of two arbitrary SSADs (either negative binomial or Poisson) and see if qualitatively similar results are found.
 
-```{r, sim_simple_nb_plusMinus_setup}
+```{r, sim_simple_setup, dependson = 'sim_plusMinus_setup'}
 oneK <- 0.1
 b <- 0.01
 nsiteSimp <- 20
@@ -500,19 +515,13 @@ nsimSimp <- nsim
 
 In this case I use a log-series SAD with $\beta =$ `r b`, a negative binomial with $k = $`r oneK`, and consider an assembledge with on average `r nsiteSimp` sites and `r nsppSimp` species.
 
-```{r, sim_simple_nb_plusMinus_comp, dependson = 'sim_simple_nb_plusMinus_setup'}
-oneK <- 0.1
-b <- 0.01
-nsiteSimp <- 20
-nsppSimp <- 50
-nsimSimp <- nsim
-
+```{r, sim_simple_nb_plusMinus_comp, dependson = c('sim_simple_setup', 'threading')}
 simPMSimpNB <- simpleSim(nsiteSimp, nsppSimp, nthrd, sadfun = function(n) rfish(n, b),
                          ssadfun = function(n, mu) rnbinom(n, oneK, mu = mu),
                          nsim = nsimSimp)
 ```
 
-```{r, sim_simple_pois_plusMinus_comp}
+```{r, sim_simple_pois_plusMinus_comp, dependson = c('sim_simple_setup', 'threading')}
 simPMSimpPo <- simpleSim(nsiteSimp, nsppSimp, nthrd, sadfun = function(n) rfish(n, b),
                          ssadfun = function(n, mu) rpois(n, lambda = mu),
                          nsim = nsimSimp)
@@ -522,31 +531,36 @@ In Supplementary Figure \ref{fig:simpleSim} we see that indeed, when we use a re
 
 <!-- As note in the main text, the prevelance of rare species seems to drive this residual spurious association of rare to positive interactions and common to negative interactions. -->
 
-```{r sim_simple_plot, fig.width = figW * 1.95, fig.height = figH * 1.95, cache = FALSE, fig.cap = "bla bla bla \\label{fig:simpleSim}"}
+```{r sim_simple_plot, fig.width = figW * 1.95, fig.height = figH * 1.95, cache = FALSE, fig.cap = "Results from simulated abundances and interaction networks when only a single SAD shape and a single SSAD shape are used (as described in the text). Panel (A) shows correlations between abundance and centrality in positive or negative associations networks; panel (B) shows frequencies of different abundances in the two types of interaction networks. \\label{fig:simpleSim}"}
+# calculate breaks
+wmmax <- ceiling(max(simPMSimpNB$pos.wm, simPMSimpNB$neg.wm, 
+                     simPMSimpPo$pos.wm, simPMSimpPo$neg.wm, 
+                     na.rm = TRUE) * 9) / 3
+
 split.screen(c(2, 1))
 
 screen(1)
-fig2bc(simPMSimpNB, breaksRho = seq(-2, 2, by = 1/5), 
-       breaksWM = seq(-0.3, 0.3, by = 0.1/3), addxlab = FALSE, figLabs = c('A', 'B'))
+fig2bc(simPMSimpNB, breaksRho = seq(-2, 2, by = 1/5),
+       breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = FALSE, figLabs = c('A', 'B'))
 
 screen(2)
-fig2bc(simPMSimpPo, breaksRho = seq(-2, 2, by = 1/5), 
-       breaksWM = seq(-0.3, 0.3, by = 0.1/3), figLabs = c('C', 'D'))
+fig2bc(simPMSimpPo, breaksRho = seq(-2, 2, by = 1/5),
+       breaksWM = seq(-wmmax, wmmax, by = 0.1/3), figLabs = c('C', 'D'))
 
-close.screen(all.screens = TRUE)
+foo <- close.screen(all.screens = TRUE)
 ```
 
 To understand why these sperious results occur we must understand what the fixed-fixed null model [@ulrich2010; @patefield1981] does to the underlying SSAD.  We know that the fixed-fixed algorithm preserves, by definition, the SAD and the total abundances across sites, but within any given species, the allocation of its abundances has a potentially large combinatorial space.  In Supplementary Figure \ref{fig:ssadPerm} I show that the fixed-fixed permutation algorithm has no net effect on Poisson SSAD's, but when the original SSAD's come from a negative binomial, the fixed-fixed algorithm tends to spread out abundances acorss more sites, and consiquently inflates the inferred $k$ parameters of those SSAD's. This has the overall effect of pushing observed negative binomial SSAD's more toward a Poisson shape.
 
-```{r ssad_perm_comp}
+```{r ssad_perm_comp, dependson = c('threading', 'sim_simple_setup')}
 nsite <- 30
 nspp <- 50
 nsim <- 100
 
-simNBPerm <- ssadSim(nsite, nspp, nthrd, function(n) {rfish(n, 0.01)},
-                     function(n, mu) {rnbinom(n, 0.1, mu = mu)}, nsim = nsim)
+simNBPerm <- ssadSim(nsite, nspp, nthrd, function(n) {rfish(n, b)},
+                     function(n, mu) {rnbinom(n, oneK, mu = mu)}, nsim = nsim)
 
-simPoPerm <- ssadSim(nsite, nspp, nthrd, function(n) {rfish(n, 0.01)},
+simPoPerm <- ssadSim(nsite, nspp, nthrd, function(n) {rfish(n, b)},
                      function(n, mu) {rpois(n, lambda = mu)}, nsim = nsim)
 ```
 
@@ -607,7 +621,7 @@ commPair <- cbind(c(Ncomm, rep(0, nsite - 1)), c(0, Ncomm, rep(0, nsite - 2)))
 commPairMax <- matrix(rep(Ncomm / nsite, nsite * 2), ncol = 2)
 ```
 
-First we consider two rare species, one with abundance 1, and the other with abundance `r Nrare`.  If we consider dataset with `r nsite` total sites, then the configuration that maximizes the Schoener similarity between these two species is
+First we consider two rare species, one with abundance 1, and the other with abundance `r Nrare`.  If we consider a dataset with `r nsite` total sites, then the configuration that maximizes the Schoener similarity between these two species is
 $$
 `r mathmat(rarePair)`
 $$
@@ -628,7 +642,7 @@ $$
 $$
 We can calculate the probabilities of any such configuration like this
 
-```{r mathEG_comm, dependson = 'mathEG_setup'}
+```{r mathEG_comm, dependson = c('mathEG_setup', 'mathEG_rare')}
 nbCommP <- prod(dnbinom(commPair[, 1], k, mu = Ncomm / nsite)) * (nsite - 1) * 
     prod(dnbinom(commPair[, 2], k, mu = Ncomm / nsite))
 
@@ -645,7 +659,7 @@ $$
 
 We calculate the probability of this configuration like
 
-```{r mathEG_commMax, dependson = 'mathEG_setup'}
+```{r mathEG_commMax, dependson = c('mathEG_setup', 'mathEG_rare')}
 nbCommPMax <- prod(dnbinom(as.vector(commPairMax), k, mu = Ncomm / nsite))
 poCommPMax <- prod(dpois(as.vector(commPairMax), Ncomm / nsite))
 ```
