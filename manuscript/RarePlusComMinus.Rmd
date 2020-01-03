@@ -65,10 +65,6 @@ All analyses are carried out in R [@rcore] and can be fully reproduced by instal
 
 In the case of a Poisson SSAD the one parameter (the mean) is fully specified by the average site-level abundance of a given species. In the case of a negative binomial SSAD, the mean parameter is again specified by the site-level average, but the size or clustering parameter $k$ is not fully specified.  To capture the rough features of the data, I sample $k$ from a linear relationship (with noise) between the maximum likelihood estimates of $k$ and the relative abundance of each species.
 
-Figure \ref{fig:plusMinus} shows that with a negative binomial SSAD, the simulated data closely match the observed findings. This correspondence largely dissapears when we instead use a Poisson SSAD, highlighting the importance of spatial aggregation in driving the artifactual results.  However, we still observe a slight skew toward rare species being slighly more prevelent with positive interactions (Fig. \ref{fig:plusMinus}F). 
-
-<!-- To investigate this further, I sample from uniform species abundances, again with Poisson spatial distributions. Now there is no skewed association between abundance and interaction type (Fig. \ref{fig:plusMinus}). -->
-
 ```{r fig_plusMinus_prep, include = FALSE}
 # load plotting funs
 lazyLoad(findChunk('plusMinus_plotFuns', 'RarePlusComMinus_supp'))
@@ -109,7 +105,11 @@ foo <- fig2bc(simPMDataPois, breaksRho = seq(-2, 2, by = 1/5),
 foo <- close.screen(all.screens = TRUE)
 ```
 
-First we seek to understand why negative binomial SSADs reproduce the results while Poisson SSADs fail to.  The spatial clustering or evenness of the SSAD is central: in Supplementary Figure \ref{fig} I show that the spurious relationship between abundance and interaction type occurs even when simulating data from just one SAD function with the same spatially clustered SSAD for all species.  In this simulation replacing the one spatially clustered SSAD with a Poisson SSAD again partially breaks the spurious association as in Figure \ref{fig:plusMinus}.
+Figure \ref{fig:plusMinus} shows that with a negative binomial SSAD, the simulated data closely match the observed findings. This correspondence largely dissapears when we instead use a Poisson SSAD, highlighting the importance of spatial aggregation in driving the artifactual results.  However, we still observe a slight skew toward rare species being slighly more prevelent with positive interactions (Fig. \ref{fig:plusMinus}F). 
+
+<!-- To investigate this further, I sample from uniform species abundances, again with Poisson spatial distributions. Now there is no skewed association between abundance and interaction type (Fig. \ref{fig:plusMinus}). -->
+
+We seek to understand why negative binomial SSADs reproduce the results while Poisson SSADs fail to.  The spatial clustering or evenness of the SSAD is central: in Supplementary Figure \ref{fig} I show that the spurious relationship between abundance and interaction type occurs even when simulating data from just one SAD function with the same spatially clustered SSAD for all species.  In this simulation replacing the one spatially clustered SSAD with a Poisson SSAD again partially breaks the spurious association as in Figure \ref{fig:plusMinus}.
 
 The null model algorithm used here and in CEA [@calatayud2019] fixes row and column marginals, but within any given species, the way its total abundance is allocated across sites by the null model has a potentially large combinitorial space to explore. I compare known SSADs to their permuted counterpart in Figure \ref{fig:ssadPerm} and find that the null model transforms negative binomial SSADs to a more Poisson shape, while leaving Poisson SSADs probabilistically unchanged. Specifically, when starting with a negative binomial SSAD, the null model inflates the number of sites individuals are allocated to (more similarely to a Poisson SSAD) and consiquently the inferred $k$ parameter of these permuted SSADs is increase, indicating less spatial clustering.
 
@@ -197,11 +197,9 @@ $$
 $$
 The probability of this configuration is $Q(`r commPairMax[1, 1]`; \mu = `r Ncomm / nsite`)^{`r 2 * nsite`}$ which, for the same negative binomial equals $`r formatNice(nbCommPMax)`$, and for the Poisson equals $`r formatNice(poCommPMax)`$.
 
-Thus a clustered SSAD makes rare species appear aggregated, compared to an even SSAD that, if anything, makes common species appear more aggregated.  Because the null model algorithm preserves even SSADs this is less of an issue; however, when presented with spatially clustered abundances, the null model will spuriously identify rare species as aggregated and common species as repelling each other.  This statistical property accounts for the prevelance of rare species in positive interaction networks and common species in negative interaction networks. Great caution should be used when infering species interactions from abundance data.  In the purely random simulated data sets `r 10` 
+Thus a clustered SSAD makes rare species appear aggregated, compared to an even SSAD that, if anything, makes common species appear more aggregated.  Because the null model algorithm preserves even SSADs this is less of an issue; however, when presented with spatially clustered abundances, the null model will spuriously identify rare species as aggregated and common species as repelling each other.  This statistical property accounts for the prevelance of rare species in positive interaction networks and common species in negative interaction networks. 
 
-```{r}
-
-```
+Great caution should be used when infering species interactions from abundance data.  At an even more fundamental level than the spurious association of abundance with interaction type, in the purely random data sets simulated with a negative binomial SSAD `r 10`% of species were placed in positive interaction networks and `r 20`% where placed in negative interaction networks with a significance cuttoff of $\alpha = 0.05$.  With the Poisson SSAD these simulated numbers were `r 10`% for positive networks and `r 20`% for negative networks.  These are not robust estimates of species interaction.
 
 
 \clearpage
