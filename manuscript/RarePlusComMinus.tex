@@ -96,48 +96,49 @@ also from poorly adapted species-environment and species-species
 interactions\textsuperscript{2}, though negative density-dependence may
 help rare species persist\textsuperscript{3,4}. The question of rarity
 and persistence thus remains unresolved. In a recent paper, Calatayuda
-et al.\textsuperscript{5} (CEA) infered species-species interaction
+et al.\textsuperscript{5} (CEA) inferred species-species interaction
 networks from spatially replicated abundance data across many taxa and
 environments. CEA found that rare species were associated with positive
 interactions whereas common species were associated with negative
-interactions, indicating that postive interactions, such as
+interactions, indicating that positive interactions, such as
 facilitation, may help rare species persist\textsuperscript{5}. However,
-the use of abundance and co-occurence data to infer species interactions
-is difficult and often inaccurate\textsuperscript{6--8}. This issue
-arrises in no small part becuase the underlying null models used to
-infer interactions themselves are known to have type I and II error
-problems in real world applications\textsuperscript{9--11}. Here, I show
-that the finding of rare species being more associated with positive
-interactions as found by CEA\textsuperscript{5} can be explained by
-statistical artifacts in the inference of species interactions from
-abundance data. It would therefore not be supported to assign biological
-interpretations to these findings until more data can be brought to bear
-on the subject or interaction types and the persistence of rare species.
+the use of abundance and co-occurrence data to infer species
+interactions is difficult and often inaccurate\textsuperscript{6--8}.
+This issue arises in no small part because the underlying null models
+used to infer interactions themselves are known to have type I and II
+error problems in real world applications\textsuperscript{9,10}. Here, I
+show that the finding of rare species being more associated with
+positive interactions as found by CEA\textsuperscript{5} can be
+explained by statistical artifacts in the inference of species
+interactions from abundance data. It would therefore not be supported to
+assign biological interpretations to these findings until more data can
+be brought to bear on the subject or interaction types and the
+persistence of rare species.
 
 Species abundances are not evenly distributed across
-species\textsuperscript{12--14}, nor evenly distributed within species
-across space (often refered to as spatial
-clustering)\textsuperscript{14--18}. These two simple observations
+species\textsuperscript{11--13}, nor evenly distributed within species
+across space (often referred to as spatial
+clustering)\textsuperscript{13--16}. These two simple observations
 account for the result of rare species being associated with positive
 interactions while common species appear associated with negative
-interactions. When interaction networks are infered from spatially
+interactions. When interaction networks are inferred from spatially
 replicated abundance data, a null model is used to assess whether
-patterns of species-species co-occurrences deveate substantially enough
+patterns of species-species co-occurrences deviate substantially enough
 from null expectations to suggest a non-random interaction. However, if
 abundances are driven by factors, both probabilistic or deterministic,
 other than species-species interactions, these null models may not
 reveal true interactions, but artifacts of other processes The
 unevenness of species abundances is ubiquitous and can be accounted for
 by purely probabilistic processes from neutral
-birth-death-immigration\textsuperscript{19} to mechanistically agnostic
-statistical-mechanical propertiries of large
-assembledges\textsuperscript{14}, thus the simple observation of uneven
+birth-death-immigration\textsuperscript{17} to mechanistically agnostic
+statistical-mechanical properties of large
+assemblages\textsuperscript{13}, thus the simple observation of uneven
 abundances does by itself indicate deterministic mechanisms.
 
 The data compiled by CEA\textsuperscript{5} indeed conform to the
-ubiquity of uneaveness (Supplementary Figs. \ref{fig:ssad} and
+ubiquity of unevenness (Supplementary Figs. \ref{fig:ssad} and
 \ref{fig:sadShape}). To evaluate whether this drives the results about
-interaction type and abudance, in Figure \ref{fig:plusMinus} I first
+interaction type and abundance, in Figure \ref{fig:plusMinus} I first
 reproduce key results from CEA's Figure 2(b-c); I then simulate purely
 random data that match key characteristics of observed data but contain
 absolutely no species interactions. These random data are simulated as
@@ -158,12 +159,12 @@ follows:
   (SSAD) that is either negative binomial (in the case of spatial
   clustering) or Poisson (in the case of spatial evenness)
 \item
-  The resulting simualted site by species matrix is fed through the same
-  pipeline as the observed data to infer positive and negative
-  interactions.
+  The resulting simulated site by species matrix is fed through the same
+  pipeline as the observed data (described in CEA\textsuperscript{5}) to
+  infer positive and negative interactions.
 \end{enumerate}
 
-All analyses are carried out in R\textsuperscript{20} and can be fully
+All analyses are carried out in R\textsuperscript{18} and can be fully
 reproduced by installing the R package accompanying this paper, as
 detailed in the supplement.
 
@@ -187,10 +188,10 @@ species.
 
 Figure \ref{fig:plusMinus} shows that with a negative binomial SSAD, the
 simulated data closely match the observed findings. This correspondence
-largely dissapears when we instead use a Poisson SSAD, highlighting the
-importance of spatial aggregation in driving the artifactual results.
+largely disappears when we instead use a Poisson SSAD, highlighting the
+importance of spatial aggregation in driving the spurious results.
 However, we still observe a slight skew toward rare species being
-slighly more prevelent with positive interactions (Fig.
+slightly more prevalent with positive interactions (Fig.
 \ref{fig:plusMinus}F).
 
 These findings do not depend on simulating SAD and SSAD shapes from the
@@ -205,15 +206,15 @@ We seek to understand why negative binomial SSADs reproduce the results
 while Poisson SSADs fail to. The null model algorithm used here and in
 CEA\textsuperscript{5} fixes row and column marginals, but within any
 given species, the way its total abundance is allocated across sites by
-the null model has a potentially large combinitorial space to explore. I
+the null model has a potentially large combinatorial space to explore. I
 compare known SSADs to their permuted counterpart in Figure
 \ref{fig:ssadPerm} and find that the null model transforms negative
 binomial SSADs to a more Poisson shape, while leaving Poisson SSADs
 probabilistically unchanged. Specifically, when starting with a negative
 binomial SSAD, the null model inflates the number of sites individuals
-are allocated to (more similarely to a Poisson SSAD) and consiquently
-the inferred \(k\) parameter of these permuted SSADs is increase,
-indicating less spatial clustering.
+are allocated to (more similarly to a Poisson SSAD) and consequently the
+inferred \(k\) parameter of these permuted SSADs is increase, indicating
+less spatial clustering.
 
 \begin{figure}
 
@@ -229,7 +230,7 @@ SSADs, actually increase the probability that rare species will appear
 aggregated with each other and common species will appear repelled, this
 difference between clustered and even SSADs explains the results.
 Consider for example two rare species, one with a single individual and
-the other with abundance 5, distributed acorss 5 sites. Their Schoener
+the other with abundance 5, distributed across 5 sites. Their Schoener
 similarity is maximized when all individuals occur in the same site,
 such as \[
 \begin{bmatrix} 1 & 5 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ \end{bmatrix}
@@ -240,11 +241,11 @@ such as \[
 \(k = 0.1\) this equals \(4.58 \times 10^{-3}\) whereas under a Poisson
 SSAD this equals \(5.61 \times 10^{-5}\).
 
-Converseley, for two common species, say each with abundance 50, an
+Conversely, for two common species, say each with abundance 50, an
 example configuration that \emph{minimizes} their Schoener similarity
 would be \[
 \begin{bmatrix} 50 & 0 \\ 0 & 50 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ \end{bmatrix}
-\] We calculate the probability of any such scenerio where no abundances
+\] We calculate the probability of any such scenario where no abundances
 overlap as \(4 [Q(50; \mu = 10) Q(0; \mu = 10)^{4}]^2\). With a negative
 binomial SSAD with \(k = 0.1\) this equals \(1.41 \times 10^{-7}\)
 whereas with a Poisson SSAD this equals \(1.61 \times 10^{-72}\).
@@ -262,16 +263,16 @@ aggregated. Because the null model algorithm preserves even SSADs this
 is less of an issue; however, when presented with spatially clustered
 abundances, the null model will spuriously identify rare species as
 aggregated and common species as repelling each other. This statistical
-property accounts for the prevelance of rare species in positive
+property accounts for the prevalence of rare species in positive
 interaction networks and common species in negative interaction
 networks.
 
-Great caution should be used when infering species interactions from
+Great caution should be used when inferring species interactions from
 abundance data. At an even more fundamental level than the spurious
 association of abundance with interaction type, in the purely random
 data sets simulated with a negative binomial SSAD, on average 75\% of
 species were placed in positive interaction networks and 74\% in
-negative interaction networks with a significance cuttoff of
+negative interaction networks with a significance cutoff of
 \(\alpha = 0.05\). With the Poisson SSAD these simulated numbers were
 74\% for positive networks and 25\% for negative networks. For the
 observed data, on average 73\% of species were placed in positive
@@ -333,48 +334,39 @@ associations using abundance data. \emph{Ecology} \textbf{91},
 hypothesis testing theory. \emph{Theoretical Ecology} \textbf{1},
 241--248 (2008).
 
-\hypertarget{ref-ladau2017}{}
-11. Ladau, J. The architecture and design of ecological null models.
-\emph{bioRxiv} 195131 (2017).
-
 \hypertarget{ref-hubbell2001}{}
-12. Hubbell, S. P. \emph{The unified neutral theory of biodiversity and
+11. Hubbell, S. P. \emph{The unified neutral theory of biodiversity and
 biogeography}. (Princeton University Press, 2001).
 
 \hypertarget{ref-mcgill2010}{}
-13. McGill, B. J. Towards a unification of unified theories of
+12. McGill, B. J. Towards a unification of unified theories of
 biodiversity. \emph{Ecology letters} \textbf{13}, 627--642 (2010).
 
 \hypertarget{ref-harte2011}{}
-14. Harte, J. \emph{The maximum entropy theory of ecology}. (Oxford
+13. Harte, J. \emph{The maximum entropy theory of ecology}. (Oxford
 University Press, 2011).
 
-\hypertarget{ref-mcgill2003}{}
-15. McGill, B. \& Collins, C. A unified theory for macroecology based on
-spatial patterns of abundance. \emph{Evolutionary Ecology Research}
-\textbf{5}, 469--492 (2003).
-
 \hypertarget{ref-engen2008}{}
-16. Engen, S., Lande, R. \& Sæther, B.-E. A general model for analyzing
+14. Engen, S., Lande, R. \& Sæther, B.-E. A general model for analyzing
 taylor's spatial scaling laws. \emph{Ecology} \textbf{89}, 2612--2622
 (2008).
 
 \hypertarget{ref-zillio2010}{}
-17. Zillio, T. \& He, F. Modeling spatial aggregation of finite
+15. Zillio, T. \& He, F. Modeling spatial aggregation of finite
 populations. \emph{Ecology} \textbf{91}, 3698--3706 (2010).
 
 \hypertarget{ref-connolly2017}{}
-18. Connolly, S. R., Hughes, T. P. \& Bellwood, D. R. A unified model
+16. Connolly, S. R., Hughes, T. P. \& Bellwood, D. R. A unified model
 explains commonness and rarity on coral reefs. \emph{Ecology letters}
 \textbf{20}, 477--486 (2017).
 
 \hypertarget{ref-kendall1949}{}
-19. Kendall, D. G. Stochastic processes and population growth.
+17. Kendall, D. G. Stochastic processes and population growth.
 \emph{Journal of the Royal Statistical Society. Series B
 (Methodological)} \textbf{11}, 230--282 (1949).
 
 \hypertarget{ref-rcore}{}
-20. R Core Team. \emph{R: A language and environment for statistical
+18. R Core Team. \emph{R: A language and environment for statistical
 computing}. (R Foundation for Statistical Computing, 2018).
 
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  3 JAN 2020 12:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  3 JAN 2020 12:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -674,19 +674,19 @@ File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 ) [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-Underfull \vbox (badness 10000) detected at line 431
+Underfull \vbox (badness 10000) detected at line 439
  []
 
 
-Underfull \vbox (badness 10000) detected at line 431
+Underfull \vbox (badness 10000) detected at line 439
  []
 
 [3]
-Underfull \vbox (badness 10000) detected at line 431
+Underfull \vbox (badness 10000) detected at line 439
  []
 
 
-Underfull \vbox (badness 10000) detected at line 431
+Underfull \vbox (badness 10000) detected at line 439
  []
 
 [4]
@@ -696,29 +696,29 @@ File: RarePlusComMinus_supp_files/figure-latex/obs_plusMinus_plot-1.pdf Graphic
  file (type pdf)
 <use RarePlusComMinus_supp_files/figure-latex/obs_plusMinus_plot-1.pdf>
 Package pdftex.def Info: RarePlusComMinus_supp_files/figure-latex/obs_plusMinus
-_plot-1.pdf  used on input line 442.
+_plot-1.pdf  used on input line 450.
 (pdftex.def)             Requested size: 469.75186pt x 252.22205pt.
-[5]
-Underfull \vbox (badness 10000) detected at line 523
- []
-
-[6 <./RarePlusComMinus_supp_files/figure-latex/obs_plusMinus_plot-1.pdf>]
+[5] [6 <./RarePlusComMinus_supp_files/figure-latex/obs_plusMinus_plot-1.pdf>]
 <RarePlusComMinus_supp_files/figure-latex/ssad_plot-1.pdf, id=86, 515.9275pt x 
 251.94125pt>
 File: RarePlusComMinus_supp_files/figure-latex/ssad_plot-1.pdf Graphic file (ty
 pe pdf)
 <use RarePlusComMinus_supp_files/figure-latex/ssad_plot-1.pdf>
 Package pdftex.def Info: RarePlusComMinus_supp_files/figure-latex/ssad_plot-1.p
-df  used on input line 550.
+df  used on input line 558.
 (pdftex.def)             Requested size: 469.7703pt x 229.40144pt.
-[7 <./RarePlusComMinus_supp_files/figure-latex/ssad_plot-1.pdf>] [8]
-<RarePlusComMinus_supp_files/figure-latex/sadShape_plot-1.pdf, id=106, 253.9487
+[7]
+Underfull \vbox (badness 10000) detected at line 627
+ []
+
+[8 <./RarePlusComMinus_supp_files/figure-latex/ssad_plot-1.pdf>]
+<RarePlusComMinus_supp_files/figure-latex/sadShape_plot-1.pdf, id=105, 253.9487
 5pt x 251.94125pt>
 File: RarePlusComMinus_supp_files/figure-latex/sadShape_plot-1.pdf Graphic file
  (type pdf)
 <use RarePlusComMinus_supp_files/figure-latex/sadShape_plot-1.pdf>
 Package pdftex.def Info: RarePlusComMinus_supp_files/figure-latex/sadShape_plot
--1.pdf  used on input line 669.
+-1.pdf  used on input line 677.
 (pdftex.def)             Requested size: 253.94812pt x 251.94063pt.
 [9] [10 <./RarePlusComMinus_supp_files/figure-latex/sadShape_plot-1.pdf>]
 <RarePlusComMinus_supp_files/figure-latex/sim_simple_plot-1.pdf, id=127, 502.87
@@ -734,7 +734,7 @@ LaTeX Warning: Reference `fig:ssadPerm' on page 11 undefined on input line 803.
 
 
 
-Underfull \vbox (badness 1292) detected at line 858
+Overfull \vbox (2.05pt too high) detected at line 858
  []
 
 [11] [12 <./RarePlusComMinus_supp_files/figure-latex/sim_simple_plot-1.pdf>] [1
@@ -754,11 +754,11 @@ LaTeX Warning: There were undefined references.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1009.
  ) 
 Here is how much of TeX's memory you used:
- 12647 strings out of 492649
- 186693 string characters out of 6129622
- 331184 words of memory out of 5000000
+ 12645 strings out of 492649
+ 186675 string characters out of 6129622
+ 320621 words of memory out of 5000000
  16225 multiletter control sequences out of 15000+600000
- 56406 words of font info for 92 fonts, out of 8000000 for 9000
+ 56276 words of font info for 91 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  32i,7n,38p,600b,380s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/lo
@@ -779,7 +779,7 @@ xlive/2018/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2018
 /texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/texlive/2018/texmf-dis
 t/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2018/texmf-dist/fonts/ty
 pe1/public/lm/lmtti10.pfb>
-Output written on RarePlusComMinus_supp.pdf (15 pages, 848142 bytes).
+Output written on RarePlusComMinus_supp.pdf (15 pages, 848051 bytes).
 PDF statistics:
  248 PDF objects out of 1000 (max. 8388607)
  202 compressed objects within 3 object streams

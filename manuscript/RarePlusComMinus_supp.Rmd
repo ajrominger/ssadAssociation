@@ -537,7 +537,7 @@ wmmax <- ceiling(max(simPMSimpNB$pos.wm, simPMSimpNB$neg.wm,
                      simPMSimpPo$pos.wm, simPMSimpPo$neg.wm, 
                      na.rm = TRUE) * 9) / 3
 
-split.screen(c(2, 1))
+foo <- split.screen(c(2, 1))
 
 screen(1)
 fig2bc(simPMSimpNB, breaksRho = seq(-2, 2, by = 1/5),
