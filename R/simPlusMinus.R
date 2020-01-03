@@ -101,8 +101,9 @@ simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
 
 
 .simCleanup <- function(mat) {
-    defaultNames <- c('pos.n', 'pos.rho.rho', 'pos.p', 'pos.m', 'pos.wm',
-                      'neg.n', 'neg.rho.rho', 'neg.p', 'neg.m', 'neg.wm')
+    defaultNames <- c('all.v',
+                      'pos.n', 'pos.v', 'pos.rho.rho', 'pos.p', 'pos.m', 'pos.wm',
+                      'neg.n', 'neg.v', 'neg.rho.rho', 'neg.p', 'neg.m', 'neg.wm')
     mat <- mat[rowSums(mat) > 0, colSums(mat) > 0]
 
     if(any(dim(mat) < 10)) {
@@ -112,7 +113,6 @@ simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
     }
 
     names(o) <- defaultNames
-    o <- c(n = ncol(mat), o)
 
     return(o)
 }
