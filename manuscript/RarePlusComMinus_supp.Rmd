@@ -1,5 +1,5 @@
 ---
-title: "Supplement to: On the inference of positive and negative interactions and their relation to abundance"
+title: "Supplement to: On the inference of positive and negative species interactions and their relation to abundance"
 author: "Andrew J. Rominger"
 header-includes:
    - \renewcommand{\figurename}{Supplementary Figure}
@@ -117,11 +117,11 @@ commStats <- as.data.frame(do.call(rbind, commStats))
 commStats[is.na(commStats$pos.rho.rho) | is.na(commStats$neg.rho.rho), ] <- NA
 ```
 
-The `plusMinus` function is based on, but not copied from, the function the original authors make available at https://figshare.com/articles/Positive_associations_among_rare_species_and_their_persistence_in_ecological_assemblages/9906092. The new `plusMinus` function is more streamlined to be faster and thus able to be applied time-efficiently to many more simulations. It is unit tested against the authors' original function.
+The `plusMinus` function is based on, but not copied from, the function used by CEA in their analyses and made available by the authors at https://figshare.com/articles/Positive_associations_among_rare_species_and_their_persistence_in_ecological_assemblages/9906092. The new `plusMinus` function is streamlined to be faster and thus able to be applied to many more simulations. It is unit tested against the CEA's original function.
 
-It should be noted that the authors of the original analysis [@calatayud2019] retained 326 studies after filtering, whereas I retain `r sum(!is.na(commStats$pos.wm))`. This is because I removed any dataset for which there were fewer than three links in either the positive or negative networks, whereas the authors of the original analysis removed only those datasets with fewer than two links [@calatayud2019]. 
+It should be noted that CEA retained 326 studies after filtering, whereas I retain `r sum(!is.na(commStats$pos.wm))`. This is because I removed any dataset for which there were fewer than three links in either the positive or negative networks, whereas CEA removed only those datasets with fewer than two links [@calatayud2019]. 
 
-I use these calculations to make Supplementary Figure \ref{fig:plusMinus_obs}, which reproduce Figure 2 (B-C) from CEA [@calatayud2019].
+I use these calculations to make Supplementary Figure \ref{fig:plusMinus_obs}, which reproduce Figure 2 (B-C) from CEA.
 
 ```{r plusMinus_plotFuns}
 # ----
@@ -293,7 +293,7 @@ yred <- c(498, 375, 403, 419, 467, 482, 505)
 fig2est <- r * (sum((y0 - yblu)) + sum((y0 - yred)))
 ```
 
-It should be noted that my inset plot of mean weighted abundances (Supplementary Fig. \ref{fig:plusMinus_obs} B) differs from the original paper [@calatayud2019] in that their y-axis ranges from 0 to 220, while mine ranges from 0 to 120; I suspected the original authors mislabeled their axis, because the scale as presented would suggest over `r 100 * floor(fig2est / 100)` assemblages, while the number should be 326.  Re-scaling their axis to range from 0 to 120 brings the rough estimate from their figure more in line with the reported number of assemblages.
+It should be noted that my inset plot of mean weighted abundances (Supplementary Fig. \ref{fig:plusMinus_obs} B) differs from CEA Figure 2C in that their y-axis ranges from 0 to 220, while mine ranges from 0 to 120. I suspected the original authors mislabeled their axis, because the scale as presented would suggest over `r 100 * floor(fig2est / 100)` assemblages, while the number should be 326.  Re-scaling their axis to range from 0 to 120 brings the rough estimate from their figure more in line with the reported number of assemblages.
 
 # Exploring patterns of species abundance across space
 
@@ -550,13 +550,15 @@ fig2bc(simPMSimpPo, breaksRho = seq(-2, 2, by = 1/5),
 foo <- close.screen(all.screens = TRUE)
 ```
 
-To understand why these spurious results occur we must understand what the fixed-fixed null model [@ulrich2010; @patefield1981] does to the underlying SSAD.  We know that the fixed-fixed algorithm preserves, by definition, the SAD and the total abundances across sites, but within any given species, the allocation of its abundances has a potentially large combinatorial space.  In Supplementary Figure \ref{fig:ssadPerm} I show that the fixed-fixed permutation algorithm has no net effect on Poisson SSADs, but when the original SSADs come from a negative binomial, the fixed-fixed algorithm tends to spread out abundances across more sites, and consequently inflates the inferred $k$ parameters of those SSADs. This has the overall effect of pushing observed negative binomial SSADs more toward a Poisson shape.
-
-```{r ssad_perm_comp, dependson = c('threading', 'sim_simple_setup')}
+```{r ssad_perm_setup}
 nsite <- 30
 nspp <- 50
 nsim <- 100
+```
 
+To understand why these spurious results occur we must understand what the fixed-fixed null model [@ulrich2010; @patefield1981] does to the underlying SSAD.  We know that the fixed-fixed algorithm preserves, by definition, the SAD and the total abundances across sites, but within any given species, the allocation of its abundances has a potentially large combinatorial space.  To understand what happens to SSADs when permuted, I simulate `r nsim` assemblages, each with `nspp` species and `nsite` sites and compare the shape of the permuted SSAD with the true SSAD. I characterize SSAD shape by the number of sites occupied by a species and the maximum likelihood estimate of the negative binomial clustering parameter $k$.  The results of this simulation are discussed in the main text.
+
+```{r ssad_perm_comp, dependson = c('ssad_perm_setup', 'threading', 'sim_simple_setup')}
 simNBPerm <- ssadSim(nsite, nspp, nthrd, function(n) {rfish(n, b)},
                      function(n, mu) {rnbinom(n, oneK, mu = mu)}, nsim = nsim)
 
@@ -564,39 +566,6 @@ simPoPerm <- ssadSim(nsite, nspp, nthrd, function(n) {rfish(n, b)},
                      function(n, mu) {rpois(n, lambda = mu)}, nsim = nsim)
 ```
 
-
-```{r ssad_perm_plot, cache = FALSE, fig.width = figW * 1.95, eval = FALSE}
-layout(matrix(c(1, 1, 2, 3), nrow = 2, byrow = TRUE), heights = c(1, 5))
-par(mar = rep(0, 4))
-plot(1, type = 'n', axes = FALSE)
-legend(1, 1, legend = 'temp', pch = 1, bty = 'n')
-
-par(parArgs)
-plot(simPoPerm$nocc, simPoPerm$null_nocc, pch = 21,
-     col = 'red', bg = hsv(0, alpha = 0.1),
-     xlim = c(1, nsite), ylim = c(1, nsite),
-     xlab = 'True num. occupied sites',
-     ylab = 'Permuted num. occupied sites')
-points(simNBPerm$nocc, simNBPerm$null_nocc,
-       pch = 21, col = hsv(0.52, 1, 0.8), bg = hsv(0.52, 1, 0.8, 0.1))
-abline(0, 1, col = 'black', lwd = 2)
-
-
-foo <- rbind(simNBPerm, simPoPerm)
-foo <- foo[is.finite(foo$size) & is.finite(foo$null_size), ]
-
-par(parArgs)
-plot(simPoPerm$size, simPoPerm$null_size, log = 'xy', xaxt = 'n', yaxt = 'n',
-     pch = 21, col = 'red', bg = hsv(0, alpha = 0.1),
-     xlim = range(foo[, c('size', 'null_size')]),
-     ylim = range(foo[, c('size', 'null_size')]),
-     xlab = expression('True'~k),
-     ylab = expression('Permuted'~k))
-logAxis(1:2, expLab = TRUE)
-points(simNBPerm$size, simNBPerm$null_size,
-       pch = 21, col = hsv(0.52, 1, 0.8), bg = hsv(0.52, 1, 0.8, 0.1))
-abline(0, 1, lwd = 1.5)
-```
 
 Finally we very simply want to understand at a mathematical level why a spatially clustered versus spatially even SSAD would lead to these results.  To explore this we consider a very simple example of two species and their Sch similarity.  
 
