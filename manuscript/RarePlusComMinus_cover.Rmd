@@ -1,0 +1,14 @@
+---
+output: pdf_document
+csl: nature.csl
+bibliography: RarePlusComMinus.bib
+---
+
+
+
+
+Why do rare species persist in ecosystems? Rare species seem to be at a disadvantage by pure probabilistic odds [@mcgill2005] and perhaps also from poorly adapted species-environment and species-species interactions [@hutchinson1961], though negative density-dependence may help rare species persist [@leigh2004; @yenni2012]. The question of rarity and persistence thus remains unresolved.  In a recent paper, Calatayuda et al. [@calatayud2019] (CEA) inferred species-species interaction networks from spatially replicated abundance data across many taxa and environments.  CEA found that rare species were associated with positive interactions whereas common species were associated with negative interactions, indicating that positive interactions, such as facilitation, may help rare species persist [@calatayud2019]. However, the use of abundance and co-occurrence data to infer species interactions is difficult and often inaccurate [@freilich2018; @carr2019; @rajala2019]. This issue arises in no small part because the underlying null models used to infer interactions themselves are known to have type I and II error problems in real world applications [@ulrich2010; @ladau2008]. Here, I show that the finding of rare species being more associated with positive interactions as found by CEA [@calatayud2019] can be explained by statistical artifacts in the inference of species interactions from abundance data. It would therefore not be supported to assign biological interpretations to these findings until more data can be brought to bear on the subject or interaction types and the persistence of rare species.
+
+
+# References
+
