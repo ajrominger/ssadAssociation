@@ -23,7 +23,7 @@ This supplement combines a narrative account of how to reproduce the results in 
 
 # Reproducibility
 
-The results of this study can be fully reproduced by installing the package *RarePlusComMinus* (available on GitHub) written in R [@rcore].  Installation requires the package *devtools* [@devtools]:
+The results of this study can be fully reproduced by installing the package *RarePlusComMinus* (available on GitHub) written in R [@rcore].  Installation requires the package *devtools* [@devtools], and two other custom packages, *socorro* [@socorro] for plotting, and *pika* [@pika]:
 
 ```{r installation, results = 'hide', warning = FALSE, message = FALSE}
 dt <- require(devtools)
@@ -32,19 +32,16 @@ if(!dt) {
     library(devtools)
 }
 
-thisPack <- require(RarePlusComMinus)
-if(!thisPack) install_github('ajrominger/RarePlusComMinus')
-```
-
-Two additional custom packages are required, *socorro* [@socorro] for plotting, and *pika* [@pika] for simulating and analyzing species abundance distributions (SAD):
-
-```{r customPacks, results = 'hide', warning = FALSE, message = FALSE}
 socorroLoad <- require(socorro)
 if(!socorroLoad) install_github('ajrominger/socorro')
 
 pikaLoad <- require(pika)
 if(!pikaLoad) install_github('ajrominger/pika')
+
+thisPack <- require(RarePlusComMinus)
+if(!thisPack) install_github('ajrominger/RarePlusComMinus')
 ```
+
 
 All other required packages [@vegan; @viridis; @igraph; @spaa] are installed with the installation of *RarePlusComMinus*.  The *RarePlusComMinus* package includes documented [@roxygen2] and unit-tested [@testthat] functions to carry out all analyses.  The help documentation explains these functions, for example
 
@@ -299,7 +296,6 @@ It should be noted that my inset plot of mean weighted abundances (Supplementary
 
 Now we explore the shape of the spatial species abundance distributions (SSADs) in the real data provided by CEA [@calatayud2019].  The main function we use is `nbFit` from the *RarePlusComMinus* package which calculates summary statistics about the negative binomial and Poisson fits to SSAD data.
 
-In Supplementary Figure \ref{fig:ssad} I show that the data are well fit by the negative binomial via a likelihood-based goodness of fit test [@etienne2007; @romMeteR]. This test scales the observed likelihood by the sampling distribution of likelihoods given the hypothesis that the negative binomial is the correct distribution. This test statistic, when squared, follows a $\chi$-squared distribution with 1 degree of freedom [@romMeteR], allowing us to make a parametric cutoff of when the data are not well represented by a negative binomial.  No assemblage analyzed rejected the negative binomial distribution. In Supplementary Figure \ref{fig:ssad} I also explore the relationship of the clustering parameter $k$ with species relative abundance.  The purpose of this later analysis is to be able to simulate random but realistic data. 
 
 ```{r ssad_comp, dependson = c('obs_data', 'threading', 'obs_plusMinus_comp')}
 # limit to only those communities that yielded meaningful networks
@@ -314,6 +310,183 @@ summStats <- data.frame(study = rep(rownames(commStats[!is.na(commStats$pos.n), 
                         do.call(rbind, summStats))
 ```
 
+Some care is needed when fitting the negative binomial distribution to data. The negative binomial likelihood function does not have a finite maximum when the mean of the data is greater than or equal to the variance [@].  In the data compiled by CEA we see that the probability of this condition arrising is greatest for rare species and also when the number of special replicates is smaller (especially when the number of spatial replicates is equal to 10; Supp Fig. \ref{fig:finiteK}). The fact that numerical issues arrise with small sample size and low abundance should not be suprising (these cases are subject to sampling issues), and indeed, even when the generating distribution is a negative binomial, we expect that rare species will often be sampled in such a way to produce numerical issues (Supp Fig. \ref{fig:goodMLE}).
+
+```{r, finiteK_comp, dependson = c('threading', 'ssad_comp')}
+abundNsite <- as.matrix(expand.grid(abund = 1:40, nsite = 9:90))
+
+finiteK <- sapply(1:nrow(abundNsite), function(i) {
+    j <- summStats$abund >= abundNsite[i, 1] & summStats$nsite >= abundNsite[i, 2]
+    N <- sum(j)
+    good <- sum(is.finite(summStats$size[j]))
+
+    return(good / N)
+})
+```
+
+```{r, finiteK_plot, cache = FALSE, fig.width = figW * 1.25, fig.cap = 'Relationship between the solbability of the negative binomial likelihood function and the number of spatial replicates (sites) and total species abundances found in the real data. The color gradient indicates the cumulative proportion of species-level observations in the data for which a solution can be found for the negative binomila likelihood function. By cumulative I mean that the proportion in each cell represents all species with at least that abundance and at least that many spatial replicates. The white line shows the cuttoff above which all data yield solvable negative binomial likelihoods. \\label{fig:finiteK}'}
+colcut <- 0.8
+colmin <- min(finiteK)
+
+propLo <- (colcut - colmin) / (1 - colmin)
+ncolz <- 100
+nLo <- round(ncolz * propLo)
+nHi <- ncolz - nLo
+colLo <- rev(magma(nLo, begin = 0.3, end = 0.7))
+colHi <- viridis(nHi, begin = 0.4)
+
+
+finiteK <- list(x = sort(unique(abundNsite[, 1])),
+                y = sort(unique(abundNsite[, 2])),
+                z = matrix(finiteK, nrow = length(unique(abundNsite[, 1])),
+                           ncol = length(unique(abundNsite[, 2]))))
+
+# ----
+# plotting
+
+layout(matrix(1:2, ncol = 2), widths = c(4, 1))
+par(parArgs)
+
+image(finiteK$x, finiteK$y, ifelse(finiteK$z <= colcut, finiteK$z, NA), col = colLo,
+      xlab = 'Total species abundance', ylab = 'Number of sites')
+image(finiteK$x, finiteK$y, ifelse(finiteK$z > colcut, finiteK$z, NA), col = colHi,
+      add = TRUE)
+
+contour(finiteK$x, finiteK$y, finiteK$z,
+        method = 'edge', levels = c(1), col = 'white', drawlabels = FALSE, lwd = 3,
+        add = TRUE)
+box()
+
+
+par(parArgs)
+par(mar = c(parArgs$mar[1], 0.5, parArgs$mar[3], parArgs$mar[2]))
+
+plot(1:2, ylim = c(colmin, 1), type = 'n', axes = FALSE, xlab = '', ylab = '',
+     xaxs = 'i', yaxs = 'i')
+
+rect(xleft = 1, xright = 2,
+     ybottom = seq(colmin, 1, length.out = ncolz + 1)[-(ncolz + 1)],
+     ytop = seq(colmin, 1, length.out = ncolz + 1)[-1],
+     pch = 16, col = c(colLo, colHi), border = c(colLo, colHi))
+box()
+
+atz <- pretty(c(colmin, 1))
+atz <- atz[atz >= colmin]
+axis(4, at = atz)
+
+mtext('Proportion of species with solveable MLE', side = 4, line = parArgs$mgp[1])
+```
+
+
+```{r goodMLE_comp, dependson = 'threading'}
+pmleGood <- function(N, k, nsite) {
+    o <- mclapply(N, mc.cores = nthrd, FUN = function(n) {
+        o <- replicate(500, {
+            x <- rnbinom(nsite, k, mu = n / nsite)
+            mean(x) < var(x)
+        })
+        
+        return(mean(o))
+    })
+    
+    return(unlist(o))
+}
+
+N <- 1:100
+hiK <- 1
+loK <- 0.1
+pgood10loK <- pmleGood(N, loK, 10)
+pgood100loK <- pmleGood(N, loK, 100)
+pgood10hiK <- pmleGood(N, hiK, 10)
+pgood100hiK <- pmleGood(N, hiK, 100)
+```
+
+```{r goodMLE_plot, cache = FALSE, fig.cap = 'The relationship between total species abundance and the probability that the negative binomial likelihood function will be solvable. Different line colors correspond to different negative binomial parameterizations and different number of spatial replicates. \\label{fig:goodMLE}'}
+par(parArgs)
+
+plot(N, pgood10loK, type = 'l', ylim = 0:1, lwd = lwdDefault, col = gray(0.6), 
+     xlab = 'Total species abundance', ylab = 'Probability of solvable NB likelihood')
+lines(N, pgood100loK, lwd = lwdDefault)
+lines(N, pgood10hiK, lwd = lwdDefault, col = hsv(0, 0.6))
+lines(N, pgood100hiK, lwd = lwdDefault, col = hsv(0))
+
+legend('bottomright', legend = paste0('Num site = ', rep(c(10, 100), each = 2), '; ',
+                                      'k = ', rep(c(loK, hiK), 2)), 
+       lty = 1, lwd = lwdDefault, col = hsv(0, c(0, 0, 0.6, 1), c(0.6, 0, 1, 1)), 
+       bty = 'n')
+```
+
+Thus rare species are not really telling us very much about the shape of this distirbution (again, this should not be suprising).  Rare species are also the most prevelant in natural communities, thus when we look at the real data it seems that the Poisson most often beats the negative binomial in terms of AIC.  But when we look at this in terms of abundance we see that the Poisson clearly wins (i.e. $\Delta\text{AIC} > 2$) only for cases when total species abundance is small (Supp Fig. \ref{fig:dAIC}). In cases where $\Delta\text{AIC}$ favors the Poisson but there is little discrimination between models (i.e. $0 < \Delta\text{AIC} \leq 2$) we still see that abundances tend to be small.  When the negative binomial clearly wins (i.e. $\Delta\text{AIC} \leq -2$), it is for higher abundances.
+
+```{r dAIC_by_abund, cache = FALSE, fig.cap = 'Change in spatial species abundance (SSAD) model support of negative binomial versus Poisson versus total species abundance. Bars of different colors represent the proportion of species assigned to each level of model support as indicated by the legend. \\label{fig:dAIC}'}
+img1D <- function(subx, allx) {
+    o <- hist(subx[subx <= 800],
+              breaks = seq(0, 
+                           800,
+                           length.out = 14),
+              plot = FALSE)
+    
+    return(o[c('breaks', 'counts')])
+}
+
+poWin <- img1D(summStats$abund[summStats$dAIC > 2], summStats$abund)
+mixWin <- img1D(summStats$abund[summStats$dAIC > 0 & summStats$dAIC < 2], summStats$abund)
+nbWin <- img1D(summStats$abund[summStats$dAIC <= 0], summStats$abund)
+
+llImg <- cbind(nbWin$counts, mixWin$counts, poWin$counts)
+llImg <- llImg / rowSums(llImg)
+llImg[llImg == 0] <- NA
+
+
+colz <- hsv(c(0.53, 0.78, 0.1), c(1, 0.7, 1), c(0.8, 0.8, 0.95))
+
+par(parArgs)
+barplot(t(llImg), space = 0, border = NA, col = colz, ylim = c(-0.05, 1.05), 
+        xlab = 'Total species abundance', ylab = 'Proportion of species')
+box()
+
+axis(1, at = approxfun(nbWin$breaks, 1:length(nbWin$breaks))(pretty(nbWin$breaks)) - 1, 
+     labels = pretty(nbWin$breaks))
+
+legend('bottomright', legend = expression(Delta*AIC <= 0*', in favor of NB', 
+                                          Delta*AIC %in%~'(0, 2]', 
+                                          Delta*AIC > 2*', in favor of Pois'), 
+       fill = colz,
+       bg = 'white')
+```
+
+Additionally, the maximum $\Delta\text{AIC}$ in favor of the Poisson is `r round(max(summStats$dAIC), 6)` which is only very slightly above the threshold of 2 often considered to be the cuttoff between models with weakly or strongly different support [@burnham2003].  All cases in which $\Delta$AIC favors by Poisson by at least 2 are also those cases in which the mean of the data is greater than or equal to the variance, i.e. where the negative binomial cannot be fit.
+
+<!-- For lower abundances, the fact that the Poisson is sometimes marginally better is not suprising, because in such cases the distribution of maximum log likelihoods between the two models is largely indistinguishable, and because the Poisson has one less parameter this advantages it in AIC calculations. -->
+
+<!-- ```{r nb_po_llDist} -->
+<!-- thisK <- 1 -->
+<!-- abund <- 15 -->
+<!-- # nocc <- 10 -->
+
+<!-- # nsite <- uniroot(function(nsite) {(1 - exp(-(abund / nsite))) * nsite - nocc},  -->
+<!-- #                  c(1, abund * 100)) -->
+<!-- # nsite <- uniroot(function(nsite) {(1 - dnbinom(0, thisK, mu = abund / nsite)) * nsite - nocc},  -->
+<!-- #                  c(1, abund * 100)) -->
+<!-- # nsite <- floor(nsite$root) -->
+<!-- nsite <- 20 -->
+
+<!-- llcomp <- replicate(1000, { -->
+<!--     x <- rnbinom(nsite, thisK, mu = abund / nsite) -->
+<!--     llpo <- sum(dpois(x, abund / nsite, log = TRUE)) -->
+<!--     llnb <- sum(dnbinom(x, thisK, mu = abund / nsite, log = TRUE)) -->
+<!--     return(c(llnb, llpo)) -->
+<!-- }) -->
+
+<!-- plot(density(llcomp[1, ]), xlim = range(llcomp)) -->
+<!-- lines(density(llcomp[2, ])) -->
+<!-- ``` -->
+
+Taking all this into consideration, I rely on a different test to demonstrate the good fit of the negative binomial to the data. In Supplementary Figure \ref{fig:ssad} I show that the data are well fit by the negative binomial via a likelihood-based goodness of fit test [@etienne2007; @romMeteR]. This test scales the observed likelihood by the sampling distribution of likelihoods given the hypothesis that the negative binomial is the correct distribution. This test statistic, when squared, follows a $\chi$-squared distribution with 1 degree of freedom [@romMeteR], allowing us to make a parametric cutoff of when the data are not well represented by a negative binomial. No assemblage analyzed rejected the negative binomial distribution. 
+
+<!-- For cases in which the negative binomial cannot be fit, I instead use the predicted clustering parameter $k$ from a log-log linear model of $k$ versus mean per-site abundance (Supp Fig. \ref{fig:ssad} XYZ). Using this predicted $k$ parameter is in-line with how data are simulated for the purpose of calculating positive and negative associations as described in the main text. -->
+
+In Supplementary Figure \ref{fig:ssad} I also explore the relationship of the clustering parameter $k$ with species relative abundance.  The purpose of this later analysis is to be able to simulate random but realistic data.
 ```{r ssad_lm, dependson = c('ssad_comp', 'obs_plusMinus_comp')}
 # data for linear model of k, excluding sites that didn't produce a good network
 dat4k <- with(summStats[summStats$study %in%
@@ -635,6 +808,10 @@ poCommPMax <- prod(dpois(as.vector(commPairMax), Ncomm / nsite))
 
 The conclusions of these probability calculations are discussed in the main text. 
 
+
+# Simulations in CEA
+
+One might wonder why the simulations presented in CEA do not uncover the statistical artifacts resulting from spatial clustering presented here. Indeed CEA explore a neutral birth-death-immigration simulation that might be expected to produce negative binomial SSADs for simulated species. However, the 
 
 # References
 
