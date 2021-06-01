@@ -27,7 +27,7 @@ nbLLZ <- function(x, size, mu) {
     n <- length(x)
 
     # hypothetical distribution of probabilities
-    p0 <- .p0(x, size, mu)
+    p0 <- .p0(size, mu)
 
     # hypothetical mean and var
     m <- sum(p0 * exp(p0)) * n
@@ -40,16 +40,43 @@ nbLLZ <- function(x, size, mu) {
 }
 
 
+# @export
+
+dlogLik <- function(x, size, mu, n, mod = c('nbinom', 'pois')) {
+    mod <- match.arg(mod, c('nbinom', 'pois'))
+
+    # hypothetical distribution of probabilities
+    p0 <- .p0(size, mu, mod = mod)
+
+    # hypothetical mean and var
+    m <- sum(p0 * exp(p0)) * n
+    v <- sum((m/n - p0)^2 * exp(p0)) * n
+
+    return(dnorm(x, m, sqrt(v)))
+}
+
 # helper function to compute distribution of potential probabilities
-.p0 <- function(x, size, mu) {
+.p0 <- function(size, mu, mod = 'nbinom') {
     n0 <- 0:10^5
 
-    p0 <- dnbinom(n0, size = size, mu = mu, log = TRUE)
+    if(mod == 'nbinom') {
+        p0 <- dnbinom(n0, size = size, mu = mu, log = TRUE)
+    } else {
+        p0 <- dpois(n0, lambda = mu, log = TRUE)
+    }
+
     p0 <- p0[is.finite(p0)]
 
     if(exp(p0[length(p0)]) > .Machine$double.eps^0.75) {
         n0add <- (n0[length(p0)] + 1):10^6
         p0add <- dnbinom(n0add, size = size, mu = mu, log = TRUE)
+
+        if(mod == 'nbinom') {
+            p0add <- dnbinom(n0add, size = size, mu = mu, log = TRUE)
+        } else {
+            p0add <- dpois(n0add, lambda = mu, log = TRUE)
+        }
+
         p0add <- p0add[is.finite(p0add)]
 
         p0 <- c(p0, p0add)
