@@ -1,5 +1,5 @@
 ---
-title: "Supplement to: On the inference of positive and negative species interactions and their relation to abundance"
+title: "Supplement to: On the inference of positive and negative species associations and their relation to abundance"
 author: "Andrew J. Rominger"
 header-includes:
    - \renewcommand{\figurename}{Supplementary Figure}
@@ -267,7 +267,7 @@ fig2bc <- function(x, breaksRho, breaksWM, addxlab = TRUE, figLabs = LETTERS[1:2
 }
 ```
 
-```{r obs_plusMinus_plot, fig.width = figW * 1.95, cache = FALSE, fig.cap = 'Observed association between abundance and infered positive and negative interactions, reproducing Figure 2(B-C) from CEA. This figure is also found in the main text and discussed further there. \\label{fig:plusMinus_obs}'}
+```{r obs_plusMinus_plot, fig.width = figW * 1.95, cache = FALSE, fig.cap = 'Observed relationship between abundance and infered positive and negative association networks, reproducing Figure 2(B-C) from CEA. This figure is also found in the main text and discussed further there. \\label{fig:plusMinus_obs}'}
 fig2bc(commStats, breaksRho = seq(-2, 2, by = 1/5), 
        breaksWM = seq(-0.3, 0.3, by = 0.1/3))
 
@@ -310,7 +310,7 @@ summStats <- data.frame(study = rep(rownames(commStats[!is.na(commStats$pos.n), 
                         do.call(rbind, summStats))
 ```
 
-Some care is needed when fitting the negative binomial distribution to data. The negative binomial likelihood function does not have a finite maximum when the mean of the data is greater than or equal to the variance [@].  In the data compiled by CEA we see that the probability of this condition arrising is greatest for rare species and also when the number of special replicates is smaller (especially when the number of spatial replicates is equal to 10; Supp Fig. \ref{fig:finiteK}). The fact that numerical issues arrise with small sample size and low abundance should not be suprising (these cases are subject to sampling issues), and indeed, even when the generating distribution is a negative binomial, we expect that rare species will often be sampled in such a way to produce numerical issues (Supp Fig. \ref{fig:goodMLE}).
+Some care is needed when fitting the negative binomial distribution to data. The negative binomial likelihood function does not have a finite maximum when the mean of the data is greater than or equal to the variance.  In the data compiled by CEA we see that the probability of this condition arising is greatest for rare species and also when the number of spatial replicates is small (especially when the number of spatial replicates is equal to 10; Supp Fig. \ref{fig:finiteK}). The fact that numerical issues arise with small sample size and low abundance should not be surprising (these cases are subject to sampling issues), and indeed, even when the generating distribution is a negative binomial, we expect that rare species will often be sampled in such a way to produce numerical issues (Supp Fig. \ref{fig:goodMLE}).
 
 ```{r, finiteK_comp, dependson = c('threading', 'ssad_comp')}
 abundNsite <- as.matrix(expand.grid(abund = 1:40, nsite = 9:90))
@@ -324,7 +324,7 @@ finiteK <- sapply(1:nrow(abundNsite), function(i) {
 })
 ```
 
-```{r, finiteK_plot, cache = FALSE, fig.width = figW * 1.25, fig.cap = 'Relationship between the solbability of the negative binomial likelihood function and the number of spatial replicates (sites) and total species abundances found in the real data. The color gradient indicates the cumulative proportion of species-level observations in the data for which a solution can be found for the negative binomila likelihood function. By cumulative I mean that the proportion in each cell represents all species with at least that abundance and at least that many spatial replicates. The white line shows the cuttoff above which all data yield solvable negative binomial likelihoods. \\label{fig:finiteK}'}
+```{r, finiteK_plot, cache = FALSE, fig.width = figW * 1.25, fig.cap = 'Relationship between the solvability of the negative binomial likelihood function and the number of spatial replicates (sites) and total species abundances found in the real data. The color gradient indicates the cumulative proportion of species-level observations in the data for which a solution can be found for the negative binomila likelihood function. By cumulative I mean that the proportion in each cell represents all species with at least that abundance and at least that many spatial replicates. The white line shows the cuttoff above which all data yield solvable negative binomial likelihoods. \\label{fig:finiteK}'}
 colcut <- 0.8
 colmin <- min(finiteK)
 
@@ -416,7 +416,7 @@ legend('bottomright', legend = paste0('Num site = ', rep(c(10, 100), each = 2), 
        bty = 'n')
 ```
 
-Thus rare species are not really telling us very much about the shape of this distirbution (again, this should not be suprising).  Rare species are also the most prevelant in natural communities, thus when we look at the real data it seems that the Poisson most often beats the negative binomial in terms of AIC.  But when we look at this in terms of abundance we see that the Poisson clearly wins (i.e. $\Delta\text{AIC} > 2$) only for cases when total species abundance is small (Supp Fig. \ref{fig:dAIC}). In cases where $\Delta\text{AIC}$ favors the Poisson but there is little discrimination between models (i.e. $0 < \Delta\text{AIC} \leq 2$) we still see that abundances tend to be small.  When the negative binomial clearly wins (i.e. $\Delta\text{AIC} \leq -2$), it is for higher abundances.
+Thus rare species are not really telling us very much about the shape of this distribution (again, this should not be surprising).  Rare species are also the most prevalent in natural communities, thus when we look at the real data it seems that the Poisson most often beats the negative binomial in terms of AIC.  But when we look at this in terms of abundance we see that the Poisson clearly wins (i.e. $\Delta\text{AIC} > 2$) only for cases when total species abundance is small (Supp Fig. \ref{fig:dAIC}). In cases where $\Delta\text{AIC}$ favors the Poisson but there is little discrimination between models (i.e. $0 < \Delta\text{AIC} \leq 2$) we still see that abundances tend to be small.  When the negative binomial clearly wins (i.e. $\Delta\text{AIC} \leq -2$), it is for higher abundances.
 
 ```{r dAIC_by_abund, cache = FALSE, fig.cap = 'Change in spatial species abundance (SSAD) model support of negative binomial versus Poisson versus total species abundance. Bars of different colors represent the proportion of species assigned to each level of model support as indicated by the legend. \\label{fig:dAIC}'}
 img1D <- function(subx, allx) {
@@ -457,7 +457,7 @@ legend('bottomright', legend = expression(Delta*AIC <= 0*', in favor of NB',
 
 Additionally, the maximum $\Delta\text{AIC}$ in favor of the Poisson is `r round(max(summStats$dAIC), 6)` which is only very slightly above the threshold of 2 often considered to be the cuttoff between models with weakly or strongly different support [@burnham2003].  All cases in which $\Delta$AIC favors by Poisson by at least 2 are also those cases in which the mean of the data is greater than or equal to the variance, i.e. where the negative binomial cannot be fit.
 
-<!-- For lower abundances, the fact that the Poisson is sometimes marginally better is not suprising, because in such cases the distribution of maximum log likelihoods between the two models is largely indistinguishable, and because the Poisson has one less parameter this advantages it in AIC calculations. -->
+<!-- For lower abundances, the fact that the Poisson is sometimes marginally better is not surprising, because in such cases the distribution of maximum log likelihoods between the two models is largely indistinguishable, and because the Poisson has one less parameter this advantages it in AIC calculations. -->
 
 <!-- ```{r nb_po_llDist} -->
 <!-- thisK <- 1 -->
@@ -627,9 +627,9 @@ legend('topright',
 ```
 
 
-# Simulating random data and artifactual interactions
+# Simulating random data and artifactual associations
 
-Now we can simulate abundance data matching the overall shapes of the observed SADs and SSADs but with absolutely no real correlation or interaction between species.
+Now we can simulate abundance data matching the overall shapes of the observed SADs and SSADs but with absolutely no real association between species.
 
 ```{r sim_plusMinus_setup, dependson = 'obs_plusMinus_comp'}
 # number of simulations to run
@@ -657,7 +657,7 @@ simPMDataPois <- simPlusMinus(sadStats = sadStats, mcCores = nthrd,
 <!-- As seen in Figure 1 in the main text, the Poisson SSAD removes much of the correspondence between the observed and simulated results; however, even in the Poisson case, rare species do tend to be found slightly more often in positive interaction networks. To explore whether this is the result of there simply being many more rare species than common, I simulate assembledges with uniformly distributed SAD's, again using a Poisson SSAD.  These results are also shown in Figure 1 in the main text. -->
 
 ```{r sim_poisUnif_plusMinus_comp, eval = FALSE, include = FALSE, cache = FALSE}
-# a simple discrete uniform random variable funciton
+# a simple discrete uniform random variable function
 rdunif <- function(n, min, max) {
     sample(min:max, n, replace = TRUE)
 }
@@ -676,7 +676,7 @@ simPMDataUnifPois <- simPlusMinus(sadStats = sadUnif, mcCores = nthrd,
                                   ssadType = 'pois', kfun = NULL, nsim = nsim)
 ```
 
-Lastly we might be interested in whether we can produce a spurious association between abundance and interaction type without any reference to the observed data. For this experiment I imagine one arbitrary SAD and combine it with one of two arbitrary SSADs (either negative binomial or Poisson) and see if qualitatively similar results are found.
+Lastly we might be interested in whether we can produce a spurious relationship between abundance and association type without any reference to the observed data. For this experiment I imagine one arbitrary SAD and combine it with one of two arbitrary SSADs (either negative binomial or Poisson) and see if qualitatively similar results are found.
 
 ```{r, sim_simple_setup, dependson = 'sim_plusMinus_setup'}
 oneK <- 0.1
@@ -700,11 +700,11 @@ simPMSimpPo <- simpleSim(nsiteSimp, nsppSimp, nthrd, sadfun = function(n) rfish(
                          nsim = nsimSimp)
 ```
 
-In Supplementary Figure \ref{fig:simpleSim} we see that indeed, when we use a realistic SAD and pair it with a negative binomial SSAD, we reconstruct a spurious association between rare species and positive interactions versus common species and negative interactions.  When this same SAD shape is paired with a Poisson SSAD, we see this spurious association is substantially reduced.  
+In Supplementary Figure \ref{fig:simpleSim} we see that indeed, when we use a realistic SAD and pair it with a negative binomial SSAD, we reconstruct a spurious relationship between rare species and positive associations versus common species and negative associations.  When this same SAD shape is paired with a Poisson SSAD, we see this spurious association is substantially reduced.  
 
 <!-- As note in the main text, the prevelance of rare species seems to drive this residual spurious association of rare to positive interactions and common to negative interactions. -->
 
-```{r sim_simple_plot, fig.width = figW * 1.95, fig.height = figH * 1.95, cache = FALSE, fig.cap = "Results from simulated abundances and interaction networks when only a single SAD shape and a single SSAD shape are used (as described in the text). Panel (A) shows correlations between abundance and centrality in positive or negative associations networks; panel (B) shows frequencies of different abundances in the two types of interaction networks. \\label{fig:simpleSim}"}
+```{r sim_simple_plot, fig.width = figW * 1.95, fig.height = figH * 1.95, cache = FALSE, fig.cap = "Results from simulated abundances and association networks when only a single SAD shape and a single SSAD shape are used (as described in the text). Panel (A) shows correlations between abundance and centrality in positive or negative associations networks; panel (B) shows frequencies of different abundances in the two types of association networks. \\label{fig:simpleSim}"}
 # calculate breaks
 wmmax <- ceiling(max(simPMSimpNB$pos.wm, simPMSimpNB$neg.wm, 
                      simPMSimpPo$pos.wm, simPMSimpPo$neg.wm, 
@@ -809,9 +809,9 @@ poCommPMax <- prod(dpois(as.vector(commPairMax), Ncomm / nsite))
 The conclusions of these probability calculations are discussed in the main text. 
 
 
-# Simulations in CEA
+<!-- # Simulations in CEA -->
 
-One might wonder why the simulations presented in CEA do not uncover the statistical artifacts resulting from spatial clustering presented here. Indeed CEA explore a neutral birth-death-immigration simulation that might be expected to produce negative binomial SSADs for simulated species. However, the 
+<!-- One might wonder why the simulations presented in CEA do not uncover the statistical artifacts resulting from spatial clustering presented here. Indeed CEA explore a neutral birth-death-immigration simulation that might be expected to produce negative binomial SSADs for simulated species. However, the  -->
 
 # References
 
