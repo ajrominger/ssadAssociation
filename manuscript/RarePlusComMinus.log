@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  1 JUN 2021 13:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  2 JUN 2021 10:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -330,24 +330,42 @@ Package: xr 2019/07/22 v5.05 eXternal References (DPC)
 )
 Package xr Info: IMPORTING LABELS FROM RarePlusComMinus_supp.aux on input line 
 62.
+(/usr/local/texlive/2020/texmf-dist/tex/latex/lineno/lineno.sty
+Package: lineno 2005/11/02 line numbers on paragraphs v4.41
+\linenopenalty=\count270
+\output=\toks25
+\linenoprevgraf=\count271
+\linenumbersep=\dimen159
+\linenumberwidth=\dimen160
+\c@linenumber=\count272
+\c@pagewiselinenumber=\count273
+\c@LN@truepage=\count274
+\c@internallinenumber=\count275
+\c@internallinenumbers=\count276
+\quotelinenumbersep=\dimen161
+\bframerule=\dimen162
+\bframesep=\dimen163
+\bframebox=\box47
+LaTeX Info: Redefining \\ on input line 3056.
+)
 \cslhangindent=\skip54
 \csllabelwidth=\skip55
 (/usr/local/texlive/2020/texmf-dist/tex/latex/tools/calc.sty
 Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count270
-\calc@Bcount=\count271
-\calc@Adimen=\dimen159
-\calc@Bdimen=\dimen160
+\calc@Acount=\count277
+\calc@Bcount=\count278
+\calc@Adimen=\dimen164
+\calc@Bdimen=\dimen165
 \calc@Askip=\skip56
 \calc@Bskip=\skip57
 LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count272
+\calc@Ccount=\count279
 \calc@Cskip=\skip58
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count273
-\l__pdf_internal_box=\box47
+\l__kernel_color_stack_int=\count280
+\l__pdf_internal_box=\box48
 ) (./RarePlusComMinus.aux
 
 LaTeX Warning: Label `references' multiply defined.
@@ -355,32 +373,32 @@ LaTeX Warning: Label `references' multiply defined.
 )
 \openout1 = `RarePlusComMinus.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Info: Redefining \microtypecontext on input line 92.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 93.
+LaTeX Font Info:    ... okay on input line 93.
+LaTeX Info: Redefining \microtypecontext on input line 93.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 92.
+LaTeX Info: Redefining \showhyphens on input line 93.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -389,17 +407,17 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (RS)
 ) (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count274
-\scratchdimen=\dimen161
-\scratchbox=\box48
-\nofMPsegments=\count275
-\nofMParguments=\count276
-\everyMPshowfont=\toks25
-\MPscratchCnt=\count277
-\MPscratchDim=\dimen162
-\MPnumerator=\count278
-\makeMPintoPDFobject=\count279
-\everyMPtoPDFconversion=\toks26
+\scratchcounter=\count281
+\scratchdimen=\dimen166
+\scratchbox=\box49
+\nofMPsegments=\count282
+\nofMParguments=\count283
+\everyMPshowfont=\toks26
+\MPscratchCnt=\count284
+\MPscratchDim=\dimen167
+\MPnumerator=\count285
+\makeMPintoPDFobject=\count286
+\everyMPtoPDFconversion=\toks27
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -408,8 +426,8 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\AtBeginShipoutBox=\box49
-Package hyperref Info: Link coloring OFF on input line 92.
+\AtBeginShipoutBox=\box50
+Package hyperref Info: Link coloring OFF on input line 93.
 (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
 (/usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty
@@ -419,11 +437,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count280
+\c@section@level=\count287
 )
-LaTeX Info: Redefining \ref on input line 92.
-LaTeX Info: Redefining \pageref on input line 92.
-LaTeX Info: Redefining \nameref on input line 92.
+LaTeX Info: Redefining \ref on input line 93.
+LaTeX Info: Redefining \pageref on input line 93.
+LaTeX Info: Redefining \nameref on input line 93.
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -459,320 +477,116 @@ LaTeX Info: Redefining \nameref on input line 92.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 9
-4.
+5.
 (/usr/local/texlive/2020/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 9
-4.
+5.
 (/usr/local/texlive/2020/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-94.
+95.
 (/usr/local/texlive/2020/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-94.
+95.
 (/usr/local/texlive/2020/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 94.
+(Font)              <12> on input line 95.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 94.
+(Font)              <8> on input line 95.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 94.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 94.
+(Font)              <6> on input line 95.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 95.
 
 (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 94.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 95.
 
 (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 96.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 96.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 96.
+LaTeX Font Info:    Trying to load font information for T1+lmss on input line 1
+00.
+(/usr/local/texlive/2020/texmf-dist/tex/latex/lm/t1lmss.fd
+File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+Underfull \hbox (badness 10000) in paragraph at lines 104--119
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--119
+
+ []
+
 [1
 
 {/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 214.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 214.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 214.
 <RarePlusComMinus_files/figure-latex/fig_plusMinus-1.pdf, id=20, 479.7925pt x 6
 00.2425pt>
 File: RarePlusComMinus_files/figure-latex/fig_plusMinus-1.pdf Graphic file (typ
 e pdf)
 <use RarePlusComMinus_files/figure-latex/fig_plusMinus-1.pdf>
 Package pdftex.def Info: RarePlusComMinus_files/figure-latex/fig_plusMinus-1.pd
-f  used on input line 205.
+f  used on input line 236.
 (pdftex.def)             Requested size: 469.76147pt x 587.69325pt.
 
-LaTeX Warning: Float too large for page by 21.20767pt on input line 210.
+LaTeX Warning: Float too large for page by 21.20767pt on input line 241.
 
-<RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pdf, id=26, 427.5975pt x 2
+[2] [3 <./RarePlusComMinus_files/figure-latex/fig_plusMinus-1.pdf>]
+<RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pdf, id=55, 427.5975pt x 2
 13.79875pt>
 File: RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pdf Graphic file (typ
 e pdf)
 <use RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pdf>
 Package pdftex.def Info: RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pd
-f  used on input line 258.
+f  used on input line 289.
 (pdftex.def)             Requested size: 427.59645pt x 213.79822pt.
-[2] [3 <./RarePlusComMinus_files/figure-latex/fig_plusMinus-1.pdf>]
-Underfull \hbox (badness 1072) in paragraph at lines 285--291
+[4 <./RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pdf>]
+Underfull \hbox (badness 1072) in paragraph at lines 316--322
 \T1/lmr/m/n/10 (+20) We cal-cu-late the prob-a-bil-ity of any such sce-nario wh
 ere no abun-dances over-lap as $\OML/lmm/m/it/10 P\OT1/lmr/m/n/10 (+20) (\OML/l
 mm/m/it/10 Y[]\OT1/lmr/m/n/10 (+20) ) =
  []
 
-[4 <./RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pdf>] [5]
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 347--353
-[][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 347--353
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 354--358
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 354--358
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 359--364
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 359--364
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 365--370
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 365--370
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 371--376
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 371--376
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 377--382
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 377--382
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 383--389
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 383--389
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 390--396
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 390--396
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 397--402
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 397--402
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 403--408
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 403--408
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 409--414
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 409--414
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 415--420
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 415--420
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 421--426
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 421--426
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 427--432
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 427--432
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 433--437
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 433--437
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 438--442
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 438--442
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 443--448
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 443--448
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 449--454
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 449--454
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 455--459
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 455--459
-
- []
-
-[6
+[5] [6
 
 ]
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 460--464
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 460--464
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 465--471
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 465--471
-
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 472--477
-[][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 472--477
-
- []
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 480.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 494.
 [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 480.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 494.
 (./RarePlusComMinus.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 480.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 480.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 494.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 494.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 13094 strings out of 480608
- 192433 string characters out of 5903631
- 490174 words of memory out of 5000000
- 28628 multiletter control sequences out of 15000+600000
- 589294 words of font info for 113 fonts, out of 8000000 for 9000
+ 13356 strings out of 480608
+ 196454 string characters out of 5903631
+ 494610 words of memory out of 5000000
+ 28863 multiletter control sequences out of 15000+600000
+ 593000 words of font info for 122 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,7n,42p,815b,359s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,7n,42p,815b,399s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{figure.7} has been referenced but does not exist,
  replaced by a fixed one
 
@@ -792,15 +606,15 @@ lmbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx12.pfb
 al/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive
 /2020/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2020/texmf
 -dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts
-/type1/public/lm/lmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/publ
-ic/lm/lmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr7.
-pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/
+/type1/public/lm/lmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/publ
+ic/lm/lmr7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10
+.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss8.pfb></usr/
 local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texl
 ive/2020/texmf-dist/fonts/type1/public/lm/lmsy7.pfb>
-Output written on RarePlusComMinus.pdf (7 pages, 508735 bytes).
+Output written on RarePlusComMinus.pdf (7 pages, 504162 bytes).
 PDF statistics:
- 185 PDF objects out of 1000 (max. 8388607)
- 156 compressed objects within 2 object streams
- 44 named destinations out of 1000 (max. 500000)
- 12315 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 190 PDF objects out of 1000 (max. 8388607)
+ 161 compressed objects within 2 object streams
+ 46 named destinations out of 1000 (max. 500000)
+ 12323 words of extra memory for PDF output out of 14400 (max. 10000000)
 

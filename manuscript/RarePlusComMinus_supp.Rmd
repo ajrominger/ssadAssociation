@@ -1,6 +1,5 @@
 ---
 title: "Supplement to: On the inference of positive and negative species associations and their relation to abundance"
-author: "Andrew J. Rominger"
 header-includes:
    - \renewcommand{\figurename}{Supplementary Figure}
    - \renewcommand*{\thesection}{S\arabic{section}}
@@ -9,7 +8,7 @@ output:
     fig_caption: yes
     keep_tex: no
     number_sections: yes
-csl: nature.csl
+csl: geb.csl
 bibliography: RarePlusComMinus.bib
 ---
 

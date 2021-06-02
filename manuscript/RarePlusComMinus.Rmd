@@ -1,20 +1,17 @@
 ---
 title: "On the inference of positive and negative species associations and their relation to abundance"
-author: 
-- name: "Andrew J. Rominger"
-  affiliation: University of Maine
 header-includes:
    - \usepackage{xr}
    - \externaldocument{RarePlusComMinus_supp}
+   - \usepackage{lineno}
 output:
   pdf_document:
     fig_caption: yes
     keep_tex: yes
     number_sections: no
-csl: nature.csl
+csl: geb.csl
 bibliography: RarePlusComMinus.bib
 ---
-
 
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
@@ -50,9 +47,15 @@ knitr::opts_chunk$set(fig.width = figW, fig.height = figH, fig.align = 'center')
 lazyLoad(findChunk('threading', 'RarePlusComMinus_supp'))
 ```
 
+\linenumbers
 
+> ### Abstract
 
-Why do rare species persist in ecosystems? Rare species seem to be at a disadvantage by pure probabilistic odds [@mcgill2005] and perhaps also from poorly adapted species-environment and species-species interactions [@hutchinson1961], though negative density-dependence may help buoy rare species [@leigh2004; @yenni2012]. The question of rarity and persistence thus remains unresolved.  In a recent paper, Calatayuda et al. [@calatayud2019] (CEA) have contributed toward helping resolve this question. They compiled an impressive collection of datasets, across many taxa and environments, capturing spatially replicated species abundance measures. With these data they inferred species-species association networks. Such association networks are hypothesized to reflect both potential species-species interactions and/or shared environmental preferences, though there is debate about their accuracy and interpretation [@sander2017; @barner2018; @freilich2018; @carr2019; @rajala2019; @blanchet2020].  CEA found that rare species were statistically over-represented in positive-positive species association networks, while common species were statistically over-represented in negative-negative species association networks [@calatayud2019]. CEA interpreted this finding as possible evidence that the persistence of rare species may be aided by positive species interactions, such as mutualism or facilitation, or by shared use of similar microhabitats. However, this result could be compromised by the unreliability of inferring species associations from abundance data alone. Here, I show that the correlation between abundance and association type (positive or negative) as reported by CEA can be explained by statistical artifacts. These artifacts arise because of spatial clustering in intra-specific abundances. It would therefore not be supported to assign biological interpretations to correlations between association types and abundances until more data can be brought to bear on the subject.
+> The prevalence of rare species in ecosystems begs the question of how they persist. In a recent paper, Calatayuda et al. (CEA) provided a new hypothesis that rare species, in contrast to common species, share unique microhabitats and/or preferentially engage in mutualistic interactions. CEA support this hypotheses by reconstructing association networks from spatially replicated abundance data finding that rare species are over-representing in positive association networks while common species are over-representing in negative association networks. However, the use of abundance and co-occurrence data to infer true species associations is difficult and often inaccurate. Here, I show that the finding of rare species being more represented in positive association networks can be explained by statistical artifacts in the inference of species associations from abundance data. I caution against the inference of ecological association networks from abundance data alone.
+\newline
+\newline
+
+Why do rare species persist in ecosystems? Rare species seem to be at a disadvantage by pure probabilistic odds [@mcgill2005] and perhaps also from poorly adapted species-environment and species-species interactions [@hutchinson1961], though negative density-dependence may help buoy rare species [@leigh2004; @yenni2012]. The question of rarity and persistence thus remains unresolved.  In a recent paper, @calatayud2019 (CEA) have contributed toward helping resolve this question. They compiled an impressive collection of datasets, across many taxa and environments, capturing spatially replicated species abundance measures. With these data they inferred species-species association networks. Such association networks are hypothesized to reflect both potential species-species interactions and/or shared environmental preferences, though there is debate about their accuracy and interpretation [@sander2017; @barner2018; @freilich2018; @carr2019; @rajala2019; @blanchet2020].  CEA found that rare species were statistically over-represented in positive-positive species association networks, while common species were statistically over-represented in negative-negative species association networks [@calatayud2019]. CEA interpreted this finding as possible evidence that the persistence of rare species may be aided by positive species interactions, such as mutualism or facilitation, or by shared use of similar microhabitats. However, this result could be compromised by the unreliability of inferring species associations from abundance data alone. Here, I show that the correlation between abundance and association type (positive or negative) as reported by CEA can be explained by statistical artifacts. These artifacts arise because of spatial clustering in intra-specific abundances. It would therefore not be supported to assign biological interpretations to correlations between association types and abundances until more data can be brought to bear on the subject.
 
 
 
@@ -219,9 +222,10 @@ Caution should be used when inferring species association from abundance data.  
 
 It is becoming increasingly appreciated that abundance data alone are not sufficient to distinguish between different ecological processes [@mcgill2007; @morlon2009]. The question of why rare species persist is fascinating, and CEA should be commended for making a concerted effort to illuminate possible mechanisms underlying the phenomenon; however, to reach robust conclusions, other types of data, such as actual experimental measurement of shared environmental associations or species-species interaction strengths, are needed in addition to abundance data. 
 
-## Acknowledgements
+## Data and Code Availability
 
-I thank J. Calatayud, J. Hines, and P. Keil for constructive conversation on this manuscript. I also acknowledge funding support from the National Science Foundation grants DBI-1927319 to AJR and OIA-1849227 to Maine EPSCoR.
+All data and code needed to reproduce the results of this manuscript are available at https://github.com/ajrominger/RarePlusComMinus and a detailed description of the analytical approach is availile in the supplement.
+
 
 \clearpage
 

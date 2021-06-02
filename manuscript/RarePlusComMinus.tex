@@ -60,6 +60,7 @@
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 \usepackage{xr}
 \externaldocument{RarePlusComMinus_supp}
+\usepackage{lineno}
 \ifluatex
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -86,35 +87,63 @@
 
 \title{On the inference of positive and negative species associations
 and their relation to abundance}
-\author{true}
-\date{}
+\author{}
+\date{\vspace{-2.5em}}
 
 \begin{document}
 \maketitle
 
+\linenumbers
+
+\begin{quote}
+\hypertarget{abstract}{%
+\subsubsection{Abstract}\label{abstract}}
+\end{quote}
+
+\begin{quote}
+The prevalence of rare species in ecosystems begs the question of how
+they persist. In a recent paper, Calatayuda et al.~(CEA) provided a new
+hypothesis that rare species, in contrast to common species, share
+unique microhabitats and/or preferentially engage in mutualistic
+interactions. CEA support this hypotheses by reconstructing association
+networks from spatially replicated abundance data finding that rare
+species are over-representing in positive association networks while
+common species are over-representing in negative association networks.
+However, the use of abundance and co-occurrence data to infer true
+species associations is difficult and often inaccurate. Here, I show
+that the finding of rare species being more represented in positive
+association networks can be explained by statistical artifacts in the
+inference of species associations from abundance data. I caution against
+the inference of ecological association networks from abundance data
+alone. \newline \newline
+\end{quote}
+
 Why do rare species persist in ecosystems? Rare species seem to be at a
-disadvantage by pure probabilistic odds\textsuperscript{1} and perhaps
-also from poorly adapted species-environment and species-species
-interactions,\textsuperscript{2} though negative density-dependence may
-help buoy rare species.\textsuperscript{3,4} The question of rarity and
-persistence thus remains unresolved. In a recent paper, Calatayuda et
-al.\textsuperscript{5} (CEA) have contributed toward helping resolve
-this question. They compiled an impressive collection of datasets,
-across many taxa and environments, capturing spatially replicated
-species abundance measures. With these data they inferred
-species-species association networks. Such association networks are
-hypothesized to reflect both potential species-species interactions
-and/or shared environmental preferences, though there is debate about
-their accuracy and interpretation.\textsuperscript{6--11} CEA found that
-rare species were statistically over-represented in positive-positive
-species association networks, while common species were statistically
-over-represented in negative-negative species association
-networks.\textsuperscript{5} CEA interpreted this finding as possible
-evidence that the persistence of rare species may be aided by positive
-species interactions, such as mutualism or facilitation, or by shared
-use of similar microhabitats. However, this result could be compromised
-by the unreliability of inferring species associations from abundance
-data alone. Here, I show that the correlation between abundance and
+disadvantage by pure probabilistic odds (McGill \emph{et al.}, 2005) and
+perhaps also from poorly adapted species-environment and species-species
+interactions (Hutchinson, 1961), though negative density-dependence may
+help buoy rare species (Leigh Jr \emph{et al.}, 2004; Yenni \emph{et
+al.}, 2012). The question of rarity and persistence thus remains
+unresolved. In a recent paper, Calatayud \emph{et al.} (2019) (CEA) have
+contributed toward helping resolve this question. They compiled an
+impressive collection of datasets, across many taxa and environments,
+capturing spatially replicated species abundance measures. With these
+data they inferred species-species association networks. Such
+association networks are hypothesized to reflect both potential
+species-species interactions and/or shared environmental preferences,
+though there is debate about their accuracy and interpretation (Sander
+\emph{et al.}, 2017; Barner \emph{et al.}, 2018; Freilich \emph{et al.},
+2018; Carr \emph{et al.}, 2019; Rajala \emph{et al.}, 2019; Blanchet
+\emph{et al.}, 2020). CEA found that rare species were statistically
+over-represented in positive-positive species association networks,
+while common species were statistically over-represented in
+negative-negative species association networks (Calatayud \emph{et al.},
+2019). CEA interpreted this finding as possible evidence that the
+persistence of rare species may be aided by positive species
+interactions, such as mutualism or facilitation, or by shared use of
+similar microhabitats. However, this result could be compromised by the
+unreliability of inferring species associations from abundance data
+alone. Here, I show that the correlation between abundance and
 association type (positive or negative) as reported by CEA can be
 explained by statistical artifacts. These artifacts arise because of
 spatial clustering in intra-specific abundances. It would therefore not
@@ -124,38 +153,40 @@ to bear on the subject.
 
 When association networks are inferred from spatially replicated
 abundance data, species-species co-occurrences are quantified by a
-metric (e.g., CEA use Schoener similarity)\textsuperscript{12} and then
-a null model is used to assess whether these co-occurrence metrics
-deviate substantially enough from null expectations to suggest a
-non-random association, either in the positive or negative direction.
-However, seemingly non-random patterns in abundance can arise from many
+metric (e.g., CEA use Schoener similarity (Schoener, 1968)) and then a
+null model is used to assess whether these co-occurrence metrics deviate
+substantially enough from null expectations to suggest a non-random
+association, either in the positive or negative direction. However,
+seemingly non-random patterns in abundance can arise from many
 processes, including neutrality, that are not driven by species
 interactions or associations. As such, deviations of abundance patterns
 from null models might not, by itself, indicate true associations or
 interactions. One critical, and widely observed, property of species
 abundances is that they are not evenly distributed across species nor
 across space within a given species (often referred to as spatial
-clustering).\textsuperscript{13--17} Both ubiquitous patterns can be
-accounted for by purely probabilistic processes from neutral
-birth-death-immigration\textsuperscript{18,19} to mechanistically
-agnostic statistical-mechanical properties of large
-assemblages.\textsuperscript{16} Importantly, the negative binomial
+clustering) (McGill \& Collins, 2003; Engen \emph{et al.}, 2008; Zillio
+\& He, 2010; Harte, 2011; Connolly \emph{et al.}, 2017). Both ubiquitous
+patterns can be accounted for by purely probabilistic processes from
+neutral birth-death-immigration (Kendall, 1949; Hubbell, 2001) to
+mechanistically agnostic statistical-mechanical properties of large
+assemblages (Harte, 2011). Importantly, the negative binomial
 probability distribution both accurately reflects many empirical
-measurements of spatial variation in intra-specific
-abundances\textsuperscript{16,17} and is independently derived by
-disparate null or neutral ecological theories.\textsuperscript{14,16,18}
+measurements of spatial variation in intra-specific abundances (Harte,
+2011; Connolly \emph{et al.}, 2017) and is independently derived by
+disparate null or neutral ecological theories (Kendall, 1949; Engen
+\emph{et al.}, 2008; Harte, 2011).
 
 Thus, the simple observation of uneven or clustered intra-specific
 abundances does by itself indicate the influence of deterministic
-species associations. The data compiled by CEA\textsuperscript{5} indeed
-confirm the ubiquity of uneven species abundances both at an
-intra-specific level across space (Supplementary Fig. \ref{fig:ssad}) at
-an inter-specific level (Supplementary Fig. \ref{fig:sadShape}). For
+species associations. The data compiled by CEA (Calatayud \emph{et al.},
+2019) indeed confirm the ubiquity of uneven species abundances both at
+an intra-specific level across space (Supplementary Fig. \ref{fig:ssad})
+at an inter-specific level (Supplementary Fig. \ref{fig:sadShape}). For
 consistency, I will refer to the spatial distribution of intra-specific
 abundances as the spatial species abundance distribution (SSAD)
-following Harte\textsuperscript{16} and the inter-specific distribution
-of abundances as the species abundance distribution SAD. To reiterate
-for clarity, the SSAD is a measure of spatial variability in
+following Harte (Harte, 2011) and the inter-specific distribution of
+abundances as the species abundance distribution SAD. To reiterate for
+clarity, the SSAD is a measure of spatial variability in
 \emph{intra}-specific abundances across space and is measured once for
 each species; the SAD is a measure of variability in abundance across
 species (i.e.~\emph{inter}-specific abundances).
@@ -195,7 +226,7 @@ are simulated as follows:
   positive and negative associations.
 \end{enumerate}
 
-All analyses are carried out in R\textsuperscript{20} and can be fully
+All analyses are carried out in R (R Core Team, 2018) and can be fully
 reproduced by installing the R package
 (\url{https://github.com/ajrominger/RarePlusComMinus}) accompanying this
 paper, as detailed in the supplement.
@@ -319,22 +350,23 @@ observed data, on average 73\% of species were placed in positive
 association networks and 60\% in negative association networks.
 
 It is becoming increasingly appreciated that abundance data alone are
-not sufficient to distinguish between different ecological
-processes.\textsuperscript{21,22} The question of why rare species
-persist is fascinating, and CEA should be commended for making a
-concerted effort to illuminate possible mechanisms underlying the
-phenomenon; however, to reach robust conclusions, other types of data,
-such as actual experimental measurement of shared environmental
-associations or species-species interaction strengths, are needed in
-addition to abundance data.
+not sufficient to distinguish between different ecological processes
+(McGill \emph{et al.}, 2007; Morlon \emph{et al.}, 2009). The question
+of why rare species persist is fascinating, and CEA should be commended
+for making a concerted effort to illuminate possible mechanisms
+underlying the phenomenon; however, to reach robust conclusions, other
+types of data, such as actual experimental measurement of shared
+environmental associations or species-species interaction strengths, are
+needed in addition to abundance data.
 
-\hypertarget{acknowledgements}{%
-\subsection{Acknowledgements}\label{acknowledgements}}
+\hypertarget{data-and-code-availability}{%
+\subsection{Data and Code
+Availability}\label{data-and-code-availability}}
 
-I thank J. Calatayud, J. Hines, and P. Keil for constructive
-conversation on this manuscript. I also acknowledge funding support from
-the National Science Foundation grants DBI-1927319 to AJR and
-OIA-1849227 to Maine EPSCoR.
+All data and code needed to reproduce the results of this manuscript are
+available at \url{https://github.com/ajrominger/RarePlusComMinus} and a
+detailed description of the analytical approach is availile in the
+supplement.
 
 \clearpage
 
@@ -343,137 +375,119 @@ OIA-1849227 to Maine EPSCoR.
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
-\begin{CSLReferences}{0}{0}
-\leavevmode\hypertarget{ref-mcgill2005}{}%
-\CSLLeftMargin{1. }
-\CSLRightInline{McGill, B. J., Hadly, E. A. \& Maurer, B. A. Community
-inertia of quaternary small mammal assemblages in north america.
-\emph{Proceedings of the National Academy of Sciences} \textbf{102},
-16701--16706 (2005).}
-
-\leavevmode\hypertarget{ref-hutchinson1961}{}%
-\CSLLeftMargin{2. }
-\CSLRightInline{Hutchinson, G. E. The paradox of the plankton. \emph{The
-American Naturalist} \textbf{95}, 137--145 (1961).}
-
-\leavevmode\hypertarget{ref-leigh2004}{}%
-\CSLLeftMargin{3. }
-\CSLRightInline{Leigh Jr, E. G. \emph{et al.} Why do some tropical
-forests have so many species of trees? \emph{Biotropica} \textbf{36},
-447--473 (2004).}
-
-\leavevmode\hypertarget{ref-yenni2012}{}%
-\CSLLeftMargin{4. }
-\CSLRightInline{Yenni, G., Adler, P. B. \& Ernest, S. M. Strong
-self-limitation promotes the persistence of rare species. \emph{Ecology}
-\textbf{93}, 456--461 (2012).}
-
-\leavevmode\hypertarget{ref-calatayud2019}{}%
-\CSLLeftMargin{5. }
-\CSLRightInline{Calatayud, J. \emph{et al.} Positive associations among
-rare species and their persistence in ecological assemblages. \emph{Nat
-Ecol Evol} (2019).}
-
-\leavevmode\hypertarget{ref-sander2017}{}%
-\CSLLeftMargin{6. }
-\CSLRightInline{Sander, E. L., Wootton, J. T. \& Allesina, S. Ecological
-network inference from long-term presence-absence data. \emph{Scientific
-reports} \textbf{7}, 7154 (2017).}
-
+\begin{CSLReferences}{1}{0}
 \leavevmode\hypertarget{ref-barner2018}{}%
-\CSLLeftMargin{7. }
-\CSLRightInline{Barner, A. K., Coblentz, K. E., Hacker, S. D. \& Menge,
-B. A. Fundamental contradictions among observational and experimental
-estimates of non-trophic species interactions. \emph{Ecology}
-\textbf{99}, 557--566 (2018).}
-
-\leavevmode\hypertarget{ref-freilich2018}{}%
-\CSLLeftMargin{8. }
-\CSLRightInline{Freilich, M. A., Wieters, E., Broitman, B. R., Marquet,
-P. A. \& Navarrete, S. A. Species co-occurrence networks: Can they
-reveal trophic and non-trophic interactions in ecological communities?
-\emph{Ecology} \textbf{99}, 690--699 (2018).}
-
-\leavevmode\hypertarget{ref-carr2019}{}%
-\CSLLeftMargin{9. }
-\CSLRightInline{Carr, A., Diener, C., Baliga, N. S. \& Gibbons, S. M.
-Use and abuse of correlation analyses in microbial ecology. \emph{The
-ISME journal} \textbf{13}, 2647--2655 (2019).}
-
-\leavevmode\hypertarget{ref-rajala2019}{}%
-\CSLLeftMargin{10. }
-\CSLRightInline{Rajala, T., Olhede, S. C. \& Murrell, D. J. When do we
-have the power to detect biological interactions in spatial point
-patterns? \emph{Journal of Ecology} \textbf{107}, 711--721 (2019).}
+Barner, A.K., Coblentz, K.E., Hacker, S.D. \& Menge, B.A. (2018)
+Fundamental contradictions among observational and experimental
+estimates of non-trophic species interactions. \emph{Ecology},
+\textbf{99}, 557--566.
 
 \leavevmode\hypertarget{ref-blanchet2020}{}%
-\CSLLeftMargin{11. }
-\CSLRightInline{Blanchet, F. G., Cazelles, K. \& Gravel, D.
-Co-occurrence is not evidence of ecological interactions. \emph{Ecology
-Letters} \textbf{23}, 1050--1063 (2020).}
+Blanchet, F.G., Cazelles, K. \& Gravel, D. (2020) Co-occurrence is not
+evidence of ecological interactions. \emph{Ecology Letters},
+\textbf{23}, 1050--1063.
 
-\leavevmode\hypertarget{ref-schoener1968}{}%
-\CSLLeftMargin{12. }
-\CSLRightInline{Schoener, T. W. The anolis lizards of bimini: Resource
-partitioning in a complex fauna. \emph{Ecology} \textbf{49}, 704--726
-(1968).}
+\leavevmode\hypertarget{ref-calatayud2019}{}%
+Calatayud, J., Andivia, E., Escudero, A., Melián, C.J., Bernardo-Madrid,
+R., Stoffel, M., Aponte, C., Medina, N.G., Molina-Venegas, R., Arnan,
+X., Rosvall, M., Neuman, M., Noriega, J.A., Alves-Martins, F., Draper,
+I., Luzuriaga, A., Ballesteros-Cánovas, J.A., Morales-Molino, C.,
+Ferrandis, P., Herrero, A., Pataro, L., Juen, L., Cea, A. \&
+Madrigal-González, J. (2019) Positive associations among rare species
+and their persistence in ecological assemblages. \emph{Nat Ecol Evol}.
 
-\leavevmode\hypertarget{ref-mcgill2003}{}%
-\CSLLeftMargin{13. }
-\CSLRightInline{McGill, B. \& Collins, C. A unified theory for
-macroecology based on spatial patterns of abundance. \emph{Evolutionary
-Ecology Research} \textbf{5}, 469--492 (2003).}
-
-\leavevmode\hypertarget{ref-engen2008}{}%
-\CSLLeftMargin{14. }
-\CSLRightInline{Engen, S., Lande, R. \& Sæther, B.-E. A general model
-for analyzing taylor's spatial scaling laws. \emph{Ecology} \textbf{89},
-2612--2622 (2008).}
-
-\leavevmode\hypertarget{ref-zillio2010}{}%
-\CSLLeftMargin{15. }
-\CSLRightInline{Zillio, T. \& He, F. Modeling spatial aggregation of
-finite populations. \emph{Ecology} \textbf{91}, 3698--3706 (2010).}
-
-\leavevmode\hypertarget{ref-harte2011}{}%
-\CSLLeftMargin{16. }
-\CSLRightInline{Harte, J. \emph{The maximum entropy theory of ecology}.
-(Oxford University Press, 2011).}
+\leavevmode\hypertarget{ref-carr2019}{}%
+Carr, A., Diener, C., Baliga, N.S. \& Gibbons, S.M. (2019) Use and abuse
+of correlation analyses in microbial ecology. \emph{The ISME journal},
+\textbf{13}, 2647--2655.
 
 \leavevmode\hypertarget{ref-connolly2017}{}%
-\CSLLeftMargin{17. }
-\CSLRightInline{Connolly, S. R., Hughes, T. P. \& Bellwood, D. R. A
-unified model explains commonness and rarity on coral reefs.
-\emph{Ecology letters} \textbf{20}, 477--486 (2017).}
+Connolly, S.R., Hughes, T.P. \& Bellwood, D.R. (2017) A unified model
+explains commonness and rarity on coral reefs. \emph{Ecology letters},
+\textbf{20}, 477--486.
 
-\leavevmode\hypertarget{ref-kendall1949}{}%
-\CSLLeftMargin{18. }
-\CSLRightInline{Kendall, D. G. Stochastic processes and population
-growth. \emph{Journal of the Royal Statistical Society. Series B
-(Methodological)} \textbf{11}, 230--282 (1949).}
+\leavevmode\hypertarget{ref-engen2008}{}%
+Engen, S., Lande, R. \& Sæther, B.-E. (2008) A general model for
+analyzing taylor's spatial scaling laws. \emph{Ecology}, \textbf{89},
+2612--2622.
+
+\leavevmode\hypertarget{ref-freilich2018}{}%
+Freilich, M.A., Wieters, E., Broitman, B.R., Marquet, P.A. \& Navarrete,
+S.A. (2018) Species co-occurrence networks: Can they reveal trophic and
+non-trophic interactions in ecological communities? \emph{Ecology},
+\textbf{99}, 690--699.
+
+\leavevmode\hypertarget{ref-harte2011}{}%
+Harte, J. (2011) \emph{The maximum entropy theory of ecology}, Oxford
+University Press.
 
 \leavevmode\hypertarget{ref-hubbell2001}{}%
-\CSLLeftMargin{19. }
-\CSLRightInline{Hubbell, S. P. \emph{The unified neutral theory of
-biodiversity and biogeography}. (Princeton University Press, 2001).}
+Hubbell, S.P. (2001) \emph{The unified neutral theory of biodiversity
+and biogeography}, Princeton University Press.
 
-\leavevmode\hypertarget{ref-rcore}{}%
-\CSLLeftMargin{20. }
-\CSLRightInline{R Core Team. \emph{R: A language and environment for
-statistical computing}. (R Foundation for Statistical Computing, 2018).}
+\leavevmode\hypertarget{ref-hutchinson1961}{}%
+Hutchinson, G.E. (1961) The paradox of the plankton. \emph{The American
+Naturalist}, \textbf{95}, 137--145.
+
+\leavevmode\hypertarget{ref-kendall1949}{}%
+Kendall, D.G. (1949) Stochastic processes and population growth.
+\emph{Journal of the Royal Statistical Society. Series B
+(Methodological)}, \textbf{11}, 230--282.
+
+\leavevmode\hypertarget{ref-leigh2004}{}%
+Leigh Jr, E.G., Davidar, P., Dick, C.W., Terborgh, J., Puyravaud, J.-P.,
+Steege, H. ter \& Wright, S.J. (2004) Why do some tropical forests have
+so many species of trees? \emph{Biotropica}, \textbf{36}, 447--473.
+
+\leavevmode\hypertarget{ref-mcgill2003}{}%
+McGill, B. \& Collins, C. (2003) A unified theory for macroecology based
+on spatial patterns of abundance. \emph{Evolutionary Ecology Research},
+\textbf{5}, 469--492.
 
 \leavevmode\hypertarget{ref-mcgill2007}{}%
-\CSLLeftMargin{21. }
-\CSLRightInline{McGill, B. J. \emph{et al.} Species abundance
-distributions: Moving beyond single prediction theories to integration
-within an ecological framework. \emph{Ecology letters} \textbf{10},
-995--1015 (2007).}
+McGill, B.J., Etienne, R.S., Gray, J.S., Alonso, D., Anderson, M.J.,
+Benecha, H.K., Dornelas, M., Enquist, B.J., Green, J.L., He, F. \&
+others (2007) Species abundance distributions: Moving beyond single
+prediction theories to integration within an ecological framework.
+\emph{Ecology letters}, \textbf{10}, 995--1015.
+
+\leavevmode\hypertarget{ref-mcgill2005}{}%
+McGill, B.J., Hadly, E.A. \& Maurer, B.A. (2005) Community inertia of
+quaternary small mammal assemblages in north america. \emph{Proceedings
+of the National Academy of Sciences}, \textbf{102}, 16701--16706.
 
 \leavevmode\hypertarget{ref-morlon2009}{}%
-\CSLLeftMargin{22. }
-\CSLRightInline{Morlon, H. \emph{et al.} Taking species abundance
-distributions beyond individuals. \emph{Ecology Letters} \textbf{12},
-488--501 (2009).}
+Morlon, H., White, E.P., Etienne, R.S., Green, J.L., Ostling, A.,
+Alonso, D., Enquist, B.J., He, F., Hurlbert, A., Magurran, A.E. \&
+others (2009) Taking species abundance distributions beyond individuals.
+\emph{Ecology Letters}, \textbf{12}, 488--501.
+
+\leavevmode\hypertarget{ref-rcore}{}%
+R Core Team (2018) \emph{R: A language and environment for statistical
+computing}, R Foundation for Statistical Computing, Vienna, Austria.
+
+\leavevmode\hypertarget{ref-rajala2019}{}%
+Rajala, T., Olhede, S.C. \& Murrell, D.J. (2019) When do we have the
+power to detect biological interactions in spatial point patterns?
+\emph{Journal of Ecology}, \textbf{107}, 711--721.
+
+\leavevmode\hypertarget{ref-sander2017}{}%
+Sander, E.L., Wootton, J.T. \& Allesina, S. (2017) Ecological network
+inference from long-term presence-absence data. \emph{Scientific
+reports}, \textbf{7}, 7154.
+
+\leavevmode\hypertarget{ref-schoener1968}{}%
+Schoener, T.W. (1968) The anolis lizards of bimini: Resource
+partitioning in a complex fauna. \emph{Ecology}, \textbf{49}, 704--726.
+
+\leavevmode\hypertarget{ref-yenni2012}{}%
+Yenni, G., Adler, P.B. \& Ernest, S.M. (2012) Strong self-limitation
+promotes the persistence of rare species. \emph{Ecology}, \textbf{93},
+456--461.
+
+\leavevmode\hypertarget{ref-zillio2010}{}%
+Zillio, T. \& He, F. (2010) Modeling spatial aggregation of finite
+populations. \emph{Ecology}, \textbf{91}, 3698--3706.
 
 \end{CSLReferences}
 
