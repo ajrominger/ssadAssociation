@@ -1,0 +1,17 @@
+---
+title: "On the inference of positive and negative species associations and their relation to abundance"
+author: "Andrew J. Rominger"
+output: pdf_document
+---
+
+\vspace{-2em}
+\begin{center}
+School of Biology and Ecology, University of Maine
+
+\href{mailto:andrew.rominger@maine.edu}{andrew.rominger@maine.edu}
+\end{center}
+\vspace{2em}
+
+## Acknowledgements
+
+I thank J. Calatayud, J. Hines, and P. Keil for constructive conversation on this manuscript. I also acknowledge funding support from the National Science Foundation grants DBI-1927319 to AJR and OIA-1849227 to Maine EPSCoR.
