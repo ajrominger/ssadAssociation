@@ -739,7 +739,29 @@ simPoPerm <- ssadSim(nsite, nspp, nthrd, function(n) {rfish(n, b)},
 ```
 
 
-Finally we very simply want to understand at a mathematical level why a spatially clustered versus spatially even SSAD would lead to these results.  To explore this we consider a very simple example of two species and their Sch similarity.  
+# Exploring the independent swap null model algorithm
+
+As discussed in the main text, a null model algorithm that constrains the shape of the SSAD for each species might be robust to statistical artifacts such as spatial clustering of abundances.  To evaluate if that is true I repeat the simulation experiment that producing community data with absolutely no real species associations while still maintaining SSAD and SAD shapes extracted from the data.  In this new simulation experiment, however, I use the independent swap algorithm [@ulrich2010; @picante] instead of the fixed-fixed algorithm.  The independent swap algorithm preserves the shape of the SSAD for each species while randomizing its occurrences.  Despite the conservative nature of this null model algorithm it still detects spurious species association networks from simulated data, and still produces spurious relationships between abundances and positive or negative associations (Supp. Fig. \ref{fig:indSwap}).  Supplementary Figure \ref{fig:indSwap} shows the results of this simulation experiment and closely matches Supplementary Figure 2 from CEA, indicating that their results can be reproduced with data that contain no real species associations even when using the more conservative independent swap algorithm.
+
+
+```{r sim_indSwap_comp, dependson = c('sim_plusMinus_setup', 'threading')}
+# re-set number of simulations to run
+nsim <- round(1.25 * sum(!is.na(commStats$pos.wm)))
+
+# explore independent swap algorithm instead of fixed-fixed algo
+simIndSwapData <- indSwapTest(sadStats = sadStats, mcCores = nthrd, 
+                              ssadType = 'nbinom', kfun = kfun, nsim = nsim)
+```
+
+```{r ind_swap_plot, fig.width = figW * 1.95, fig.height = figH, cache = FALSE, fig.cap = "Results from simulated abundances and association networks when the independent swap algorithm is used to infer species associations. Panel (A) shows correlations between abundance and centrality in positive or negative associations networks; panel (B) shows frequencies of different abundances in the two types of association networks. \\label{fig:indSwap}"}
+fig2bc(simIndSwapData, breaksRho = seq(-2, 2, by = 1/5), 
+       breaksWM = seq(-0.3, 0.3, by = 0.1/3))
+```
+
+
+# Mathematical exploration of different SSADs and Schoener similarity
+
+Finally we very simply want to understand at a mathematical level why a spatially clustered versus spatially even SSAD would lead to these results.  To explore this we consider a very simple example of two species and their Schoener similarity.  
 
 ```{r mathmat_fun, echo = FALSE}
 mathmat <- function(x) {

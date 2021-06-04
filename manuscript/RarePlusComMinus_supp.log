@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  2 JUN 2021 10:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  4 JUN 2021 16:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -617,23 +617,31 @@ le (type pdf)
 Package pdftex.def Info: RarePlusComMinus_supp_files/figure-latex/sim_simple_pl
 ot-1.pdf  used on input line 1016.
 (pdftex.def)             Requested size: 469.75186pt x 487.5668pt.
-[16] [17 <./RarePlusComMinus_supp_files/figure-latex/sim_simple_plot-1.pdf>] [1
-8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1231.
-[19]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1231.
+[16] [17 <./RarePlusComMinus_supp_files/figure-latex/sim_simple_plot-1.pdf>]
+<RarePlusComMinus_supp_files/figure-latex/ind_swap_plot-1.pdf, id=190, 502.8787
+5pt x 264.99pt>
+File: RarePlusComMinus_supp_files/figure-latex/ind_swap_plot-1.pdf Graphic file
+ (type pdf)
+<use RarePlusComMinus_supp_files/figure-latex/ind_swap_plot-1.pdf>
+Package pdftex.def Info: RarePlusComMinus_supp_files/figure-latex/ind_swap_plot
+-1.pdf  used on input line 1112.
+(pdftex.def)             Requested size: 469.75186pt x 247.5339pt.
+[18 <./RarePlusComMinus_supp_files/figure-latex/ind_swap_plot-1.pdf>] [19]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1292.
+[20]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1292.
 (./RarePlusComMinus_supp.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1231.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1231.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1292.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1292.
  ) 
 Here is how much of TeX's memory you used:
- 13711 strings out of 480608
- 203382 string characters out of 5903631
- 515857 words of memory out of 5000000
- 29180 multiletter control sequences out of 15000+600000
+ 13731 strings out of 480608
+ 204126 string characters out of 5903631
+ 516741 words of memory out of 5000000
+ 29192 multiletter control sequences out of 15000+600000
  596784 words of font info for 134 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,7n,42p,820b,370s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,7n,42p,848b,368s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texlive/20
 20/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/local/texlive/2020/texmf-dist
@@ -650,10 +658,10 @@ i10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></
 usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/
 texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/20
 20/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on RarePlusComMinus_supp.pdf (19 pages, 841992 bytes).
+Output written on RarePlusComMinus_supp.pdf (20 pages, 853023 bytes).
 PDF statistics:
- 298 PDF objects out of 1000 (max. 8388607)
- 241 compressed objects within 3 object streams
- 56 named destinations out of 1000 (max. 500000)
- 12372 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 329 PDF objects out of 1000 (max. 8388607)
+ 268 compressed objects within 3 object streams
+ 63 named destinations out of 1000 (max. 500000)
+ 12393 words of extra memory for PDF output out of 14400 (max. 10000000)
 

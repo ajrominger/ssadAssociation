@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  2 JUN 2021 10:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  4 JUN 2021 16:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -560,35 +560,38 @@ Package pdftex.def Info: RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pd
 f  used on input line 289.
 (pdftex.def)             Requested size: 427.59645pt x 213.79822pt.
 [4 <./RarePlusComMinus_files/figure-latex/ssadPerm_plot-1.pdf>]
-Underfull \hbox (badness 1072) in paragraph at lines 316--322
+Underfull \hbox (badness 1072) in paragraph at lines 332--338
 \T1/lmr/m/n/10 (+20) We cal-cu-late the prob-a-bil-ity of any such sce-nario wh
 ere no abun-dances over-lap as $\OML/lmm/m/it/10 P\OT1/lmr/m/n/10 (+20) (\OML/l
 mm/m/it/10 Y[]\OT1/lmr/m/n/10 (+20) ) =
  []
 
-[5] [6
+[5] [6] [7
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 494.
-[7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 494.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 521.
+[8]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 521.
 (./RarePlusComMinus.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 494.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 494.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 521.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 521.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 13356 strings out of 480608
- 196454 string characters out of 5903631
- 494610 words of memory out of 5000000
- 28863 multiletter control sequences out of 15000+600000
- 593000 words of font info for 122 fonts, out of 8000000 for 9000
+ 13370 strings out of 480608
+ 196715 string characters out of 5903631
+ 495494 words of memory out of 5000000
+ 28867 multiletter control sequences out of 15000+600000
+ 593343 words of font info for 125 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,7n,42p,815b,399s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{figure.7} has been referenced but does not exist,
+ 41i,7n,42p,851b,399s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{figure.8} has been referenced but does not exist,
  replaced by a fixed one
+
+pdfTeX warning (dest): name{figure.7} has been referenced but does not exist, r
+eplaced by a fixed one
 
 pdfTeX warning (dest): name{figure.6} has been referenced but does not exist, r
 eplaced by a fixed one
@@ -611,10 +614,10 @@ ic/lm/lmr7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10
 .pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss8.pfb></usr/
 local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texl
 ive/2020/texmf-dist/fonts/type1/public/lm/lmsy7.pfb>
-Output written on RarePlusComMinus.pdf (7 pages, 504162 bytes).
+Output written on RarePlusComMinus.pdf (8 pages, 506075 bytes).
 PDF statistics:
- 190 PDF objects out of 1000 (max. 8388607)
- 161 compressed objects within 2 object streams
- 46 named destinations out of 1000 (max. 500000)
+ 199 PDF objects out of 1000 (max. 8388607)
+ 169 compressed objects within 2 object streams
+ 50 named destinations out of 1000 (max. 500000)
  12323 words of extra memory for PDF output out of 14400 (max. 10000000)
 
