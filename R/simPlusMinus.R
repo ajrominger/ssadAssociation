@@ -19,6 +19,7 @@
 #' @param ssadType string specifying SSAD shape (e.g. \code{'nbinom'})
 #' @param sadfun function to generate random SAD sample
 #' @param ssadfun function to generate random SSAD sample
+#' @param kfun function to relate k parameter of the SSAD to abundance
 #' @param nsim number of simulations to run
 #'
 #' @return a \code{data.frame} with \code{<= nsim} rows (some simulations may be
