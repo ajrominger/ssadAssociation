@@ -79,13 +79,16 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
         x <- abund[as.integer(names(cen))]
 
         # correlation output
-        o <- cor.test(x, cen, method = 'spearman')
+        # o <- cor.test(x, cen, method = 'spearman')
+        o <- cor(x, cen, method = 'spearman')
 
         # relative abundance
         relx <- x / sum(abund)
 
         # return: corr coeff, corr p-val, mean abund, mean abund weighted by centrality
-        return(list(v = length(cen), rho = o$estimate, p = o$p.value,
+        return(list(v = length(cen),
+                    # rho = o$estimate, p = o$p.value,
+                    rho = o, p = NA,
                     m = mean(relx), wm = weighted.mean(relx, cen)))
     }
 }
