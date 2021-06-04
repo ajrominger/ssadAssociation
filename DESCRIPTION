@@ -14,7 +14,8 @@ LazyData: true
 Depends:
     R (>= 3.5.0), 
     pika,
-    vegan
+    vegan, 
+    picante
 Imports:
     socorro,
     spaa, 
