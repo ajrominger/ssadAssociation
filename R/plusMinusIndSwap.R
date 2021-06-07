@@ -1,10 +1,10 @@
-#' @title Positive and negative associations
+#' @title Duplicates \code{plusMinus} but using the independent swap algorithm
+#' from \{picante\}
 #'
-#' @description Calculate positive and negative associations based on Schoener similarity
-#'
-#' @details Faster implementation of the funciton \code{pos.neg.abun.r2d} from ((citation))
-#' that also only returns information relevant to testing the association of abundance and
-#' different types of connectivity (plus and minus).
+#' @details All details are the same as \code{plusMinus} but this function uses
+#' the independent swap algorithm from \{picante\} instead of the fixed-fixed
+#' null algorithm. This function is only really intended to be used with
+#' \code{indSwapTest}.
 #'
 #' @param x site by species matrix (sites as rows, species as columns, abundances in cells)
 #' @param alpha the significance level
@@ -16,7 +16,7 @@
 #'
 #' @export
 
-plusMinus <- function(x, alpha = 0.05, B = 999) {
+plusMinusIndSwap <- function(x, alpha = 0.05, B = 999) {
     # metacommunity "abundnace"
     metaX <- colSums(x)
 
@@ -25,9 +25,10 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
     sd <- sd[lower.tri(sd)]
 
     # null Schoener distances
-    nulls <- simulate(nullmodel(x, 'r2dtable'), nsim = B)
-    nullsd <- lapply(1:dim(nulls)[3], function(i) {
-        d <- schoener(nulls[, , i])
+    nullsd <- lapply(1:B, function(i) {
+        m <- randomizeMatrix(x, null.model = 'independentswap')
+        d <- schoener(m)
+
         return(d[lower.tri(d)])
     })
 
@@ -60,35 +61,4 @@ plusMinus <- function(x, alpha = 0.05, B = 999) {
     return(list(all = c(v = ncol(x)),
                 pos = c(n = npos, corMeanPos),
                 neg = c(n = nneg, corMeanNeg)))
-}
-
-
-# function to extract probabilities <= alpha
-.signi <- function(x, alpha) {
-    return(as.integer(x <= alpha))
-}
-
-
-# function to calculate correlation between abundance and centrality
-# and mean abundances, unweighted and weighted by centrality
-.abundCenCorMean <- function(elist, abund) {
-    if(nrow(elist) < 3) {
-        return(list(v = NA, rho = NA, p = NA, m = NA, wm = NA))
-    } else {
-        cen <- table(c(elist[, 1], elist[, 2]))
-        x <- abund[as.integer(names(cen))]
-
-        # correlation output
-        # o <- cor.test(x, cen, method = 'spearman')
-        o <- cor(x, cen, method = 'spearman')
-
-        # relative abundance
-        relx <- x / sum(abund)
-
-        # return: corr coeff, corr p-val, mean abund, mean abund weighted by centrality
-        return(list(v = length(cen),
-                    # rho = o$estimate, p = o$p.value,
-                    rho = o, p = NA,
-                    m = mean(relx), wm = weighted.mean(relx, cen)))
-    }
 }

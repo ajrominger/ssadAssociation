@@ -4,12 +4,14 @@
 \name{abundMats}
 \alias{abundMats}
 \title{Assemblage data from Calatayud et al.}
-\format{A list of 385 assemblages, each represented by a site by species matrix with
+\format{
+A list of 385 assemblages, each represented by a site by species matrix with
 \describe{
   \item{rows}{representing sites}
   \item{columns}{representing species}
   \item{cells}{recording the abundance or percent cover of each species in each site}
-}}
+}
+}
 \source{
 \url{https://figshare.com/articles/Positive_associations_among_rare_species_and_their_persistence_in_ecological_assemblages/9906092}
 }

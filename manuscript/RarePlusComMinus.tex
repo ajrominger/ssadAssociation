@@ -293,13 +293,29 @@ their non-permuted, negative binomial starting points.
 \caption{Comparison of SSAD statistics for true and permuted site by species matrices. Colors correspond to the true, un-permuted SSAD. Panel (A) shows how permutation affects number of occupied sites. Panel (B) shows how permutation affects maximum likelihood estimates of the clustering parameter $k$ (B). Points are semi-transparent to help display density. Lines are 1:1 lines. \label{fig:ssadPerm}}\label{fig:ssadPerm_plot}
 \end{figure}
 
-At a mathematical level, clustered SSADs, compared to spatially even
-SSADs, actually increase the probability that rare species will appear
-positively associated with each other and common species will appear
-negatively associated. Consider, for example, two rare species: one with
-a single individual and the other with abundance 5, distributed across 5
-sites. Their Schoener similarity is maximized when all individuals occur
-at the same site, such as this site by species matrix \[
+The negative binomial SSAD appears to be the key to producing presumably
+spurious relationships between abundance and positive or negative
+association networks. One might then expect that a null model which
+preserves the shape of the SSAD for each species would account for
+statistical artifacts deriving from the SSAD. CEA indeed explore such a
+null model algorithm (the ``independent swap algorithm'' (Kembel
+\emph{et al.}, 2010; Ulrich \& Gotelli, 2010); null model III in the CEA
+supplement) and find it still supports their results. I similarly apply
+the independent swap algorithm to data simulated with a negative
+binomial SSAD and no real species associations or interactions. I find
+that the same spurious relationships between abundance and association
+type, even when using the independent swap algorithm (Supp. Fig.
+\ref{fig:indSwap}). This again confirms that such association networks
+and further biological interpretations of them cannot be drawn from
+abundance data alone.
+
+At a mathematical level, clustered SSADs as compared to spatially even
+SSADs, increase the probability that rare species will appear positively
+associated with each other and common species will appear negatively
+associated. Consider, for example, two rare species: one with a single
+individual and the other with abundance 5, distributed across 5 sites.
+Their Schoener similarity is maximized when all individuals occur at the
+same site, such as this site by species matrix \[
 X_{rare} = \begin{bmatrix} 1 & 5 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ \end{bmatrix}
 \] If we define \(Q(x_i; \mu = 1)\) as the probability of observing
 \(x_i\) individuals in site \(i\) given an SSAD with mean parameter
@@ -365,7 +381,7 @@ Availability}\label{data-and-code-availability}}
 
 All data and code needed to reproduce the results of this manuscript are
 available at \url{https://github.com/ajrominger/RarePlusComMinus} and a
-detailed description of the analytical approach is availile in the
+detailed description of the analytical approach is available in the
 supplement.
 
 \clearpage
@@ -429,6 +445,12 @@ and biogeography}, Princeton University Press.
 Hutchinson, G.E. (1961) The paradox of the plankton. \emph{The American
 Naturalist}, \textbf{95}, 137--145.
 
+\leavevmode\hypertarget{ref-picante}{}%
+Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H.,
+Ackerly, D.D., Blomberg, S.P. \& Webb, C.O. (2010) Picante: R tools for
+integrating phylogenies and ecology. \emph{Bioinformatics}, \textbf{26},
+1463--1464.
+
 \leavevmode\hypertarget{ref-kendall1949}{}%
 Kendall, D.G. (1949) Stochastic processes and population growth.
 \emph{Journal of the Royal Statistical Society. Series B
@@ -479,6 +501,11 @@ reports}, \textbf{7}, 7154.
 \leavevmode\hypertarget{ref-schoener1968}{}%
 Schoener, T.W. (1968) The anolis lizards of bimini: Resource
 partitioning in a complex fauna. \emph{Ecology}, \textbf{49}, 704--726.
+
+\leavevmode\hypertarget{ref-ulrich2010}{}%
+Ulrich, W. \& Gotelli, N.J. (2010) Null model analysis of species
+associations using abundance data. \emph{Ecology}, \textbf{91},
+3384--3397.
 
 \leavevmode\hypertarget{ref-yenni2012}{}%
 Yenni, G., Adler, P.B. \& Ernest, S.M. (2012) Strong self-limitation

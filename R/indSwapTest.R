@@ -1,24 +1,15 @@
-#' @title Simulate positive and negative interactions from purely random data
+#' @title Explore the effect of using the independent swap algorithm on inference
+#' of connection between abundance and positive or negative association networks
 #'
-#' @description Simulate spatial replicates of abundance data and apply the same
-#' analytical pipeline to those data that would be applied to real data
+#' @description This is largely a copy of the function \code{simPlusMinus} but
+#' using the independent swap algorithm from \{picante\}
 #'
-#' @details \code{simPlusMinus} draws random SAD and SSAD shapes from the raw data
-#' and uses these to simulate more data and calculate network statistics on those
-#' simulated data. \code{simpleSim} assumes one SAD and one SSAD and simulates data from
-#' those, again calculated network statistics.
-#'
-#' Note: any value passed to \code{ssadType} other than \code{'nbinom'} results
-#' in a Poisson SSAD (i.e., there are only two options, negative binomial specified by
-#' \code{'nbinom'} or Poisson specified by anything else)
 #'
 #' @param sadStats a \code{data.frame} with columns \code{mod}, \code{par1}, \code{par2}
 #' @param nsite number of sites to simulate
 #' @param nspp number of species to simulate
 #' @param mcCores number of cores to use in \code{parallel::mclapply}
 #' @param ssadType string specifying SSAD shape (e.g. \code{'nbinom'})
-#' @param sadfun function to generate random SAD sample
-#' @param ssadfun function to generate random SSAD sample
 #' @param kfun function to relate k parameter of the SSAD to abundance
 #' @param nsim number of simulations to run
 #'
@@ -31,8 +22,8 @@
 #' @export
 #' @rdname simPlusMinus
 
-simPlusMinus <- function(sadStats, mcCores,
-                         ssadType = 'nbinom', kfun, nsim) {
+indSwapTest <- function(sadStats, mcCores,
+                        ssadType = 'nbinom', kfun, nsim) {
     # indeces for SAD data and nsite, nspp data
     iiSAD <- sample(nrow(sadStats), nsim, replace = TRUE)
     # jjNN <- sample(nrow(nsitenspp), nsim, replace = TRUE)
@@ -64,44 +55,14 @@ simPlusMinus <- function(sadStats, mcCores,
             mat <- .makeMat(nsite, nspp, rpois, lambda = mu)
         }
 
-        return(.simCleanup(mat))
+        return(.simCleanupIndSwap(mat))
     })
 
     return(.outCleanup(o))
 }
 
 
-
-#' @export
-#' @rdname simPlusMinus
-
-simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
-    # make SAD
-    ii <- rep(1:nsim, each = nspp)
-    X <- sadfun(nspp * nsim)
-    X <- split(X, ii)
-
-    o <- parallel::mclapply(X, mc.cores = mcCores, FUN = function(abund) {
-        # calculate known quantities from abund
-        J <- sum(abund)
-        mu <- abund / nsite
-
-        # loop over abundances and generate ssad
-        mat <- .makeMat(nsite, nspp, ssadfun, mu = mu)
-
-        return(.simCleanup(mat))
-    })
-
-    return(.outCleanup(o))
-}
-
-
-.makeMat <- function(nsite, nspp, rfun, ...) {
-    matrix(rfun(nsite * nspp, ...), nrow = nsite, byrow = TRUE)
-}
-
-
-.simCleanup <- function(mat) {
+.simCleanupIndSwap <- function(mat) {
     defaultNames <- c('all.v',
                       'pos.n', 'pos.v', 'pos.rho.rho', 'pos.p', 'pos.m', 'pos.wm',
                       'neg.n', 'neg.v', 'neg.rho.rho', 'neg.p', 'neg.m', 'neg.wm')
@@ -110,18 +71,10 @@ simpleSim <- function(nsite, nspp, mcCores, sadfun, ssadfun, nsim) {
     if(any(dim(mat) < 10)) {
         o <- rep(NA, length(defaultNames))
     } else {
-        o <- unlist(plusMinus(mat))
+        o <- unlist(plusMinusIndSwap(mat))
     }
 
     names(o) <- defaultNames
-
-    return(o)
-}
-
-.outCleanup <- function(o) {
-    o <- as.data.frame(do.call(rbind, o))
-    o[is.na(o$pos.rho.rho) | is.na(o$neg.rho.rho), ] <- NA
-    o <- o[!is.na(o$pos.n), ]
 
     return(o)
 }
