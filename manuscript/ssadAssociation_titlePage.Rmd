@@ -1,5 +1,5 @@
 ---
-title: "On the inference of positive and negative species associations and their relation to abundance"
+title: "Spatial aggregation could make species associations impossible to detect from abundance data alone"
 author: "Andrew J. Rominger"
 output: pdf_document
 ---
