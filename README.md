@@ -1,2 +1,3 @@
-# rarePlus_comMinus
-Evaluating the possibility that chance alone can lead to perceived associations between rarity being associated with positive interactions and commonness being associated with negative interactions
+# ssadAssociation
+
+An investigation of how the shape of the spatial species abundance distribution (SSAD) influences the detection of species associations and association networks.
