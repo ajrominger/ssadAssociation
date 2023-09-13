@@ -1,8 +1,8 @@
 ---
-title: "On the inference of positive and negative species associations and their relation to abundance"
+title: "Spatial aggregation makes species association networks impossible to detect from abundance data alone"
 header-includes:
    - \usepackage{xr}
-   - \externaldocument{RarePlusComMinus_supp}
+   - \externaldocument{ssadAssociation_supp}
    - \usepackage{lineno}
 output:
   pdf_document:
@@ -51,182 +51,115 @@ lazyLoad(findChunk('threading', 'RarePlusComMinus_supp'))
 
 > ### Abstract
 
-> The prevalence of rare species in ecosystems begs the question of how they persist. In a recent paper, Calatayuda et al. (CEA) provided a new hypothesis that rare species, in contrast to common species, share unique microhabitats and/or preferentially engage in mutualistic interactions. CEA support this hypotheses by reconstructing association networks from spatially replicated abundance data finding that rare species are over-representing in positive association networks while common species are over-representing in negative association networks. However, the use of abundance and co-occurrence data to infer true species associations is difficult and often inaccurate. Here, I show that the finding of rare species being more represented in positive association networks can be explained by statistical artifacts in the inference of species associations from abundance data. I caution against the inference of ecological association networks from abundance data alone.
+> There is growing interest in inferring species associations, and possibly even interactions, from spatially replicated abundance data.
 \newline
 \newline
 
-Why do rare species persist in ecosystems? Rare species seem to be at a disadvantage by pure probabilistic odds [@mcgill2005] and perhaps also from poorly adapted species-environment and species-species interactions [@hutchinson1961], though negative density-dependence may help buoy rare species [@leigh2004; @yenni2012]. The question of rarity and persistence thus remains unresolved.  In a recent paper, @calatayud2019 (CEA) have contributed toward helping resolve this question. They compiled an impressive collection of datasets, across many taxa and environments, capturing spatially replicated species abundance measures. With these data they inferred species-species association networks. Such association networks are hypothesized to reflect both potential species-species interactions and/or shared environmental preferences, though there is debate about their accuracy and interpretation [@sander2017; @barner2018; @freilich2018; @carr2019; @rajala2019; @blanchet2020].  CEA found that rare species were statistically over-represented in positive-positive species association networks, while common species were statistically over-represented in negative-negative species association networks [@calatayud2019]. CEA interpreted this finding as possible evidence that the persistence of rare species may be aided by positive species interactions, such as mutualism or facilitation, or by shared use of similar microhabitats. However, this result could be compromised by the unreliability of inferring species associations from abundance data alone. Here, I show that the correlation between abundance and association type (positive or negative) as reported by CEA can be explained by statistical artifacts. These artifacts arise because of spatial clustering in intra-specific abundances. It would therefore not be supported to assign biological interpretations to correlations between association types and abundances until more data can be brought to bear on the subject.
+## Introduction
 
-When association networks are inferred from spatially replicated abundance data, species-species co-occurrences are quantified by a metric (e.g., CEA use Schoener similarity [@schoener1968]) and then a null model is used to assess whether these co-occurrence metrics deviate substantially enough from null expectations to suggest a non-random association, either in the positive or negative direction. However, seemingly non-random patterns in abundance can arise from many processes, including neutrality, that are not driven by species interactions or associations. As such, deviations of abundance patterns from null models might not, by itself, indicate true associations or interactions. One critical, and widely observed, property of species abundances is that they are not evenly distributed across species nor across space within a given species (often referred to as spatial clustering) [@mcgill2003; @engen2008; @zillio2010; @harte2011; @connolly2017]. Both ubiquitous patterns can be accounted for by purely probabilistic processes from neutral birth-death-immigration [@kendall1949; @hubbell2001] to mechanistically agnostic statistical-mechanical properties of large assemblages [@harte2011]. Importantly, the negative binomial probability distribution both accurately reflects many empirical measurements of spatial variation in intra-specific abundances [@harte2011; @connolly2017] and is independently derived by disparate null or neutral ecological theories [@kendall1949; @engen2008; @harte2011].
+Species interactions are central to the evolution of biodiversity and the maintenance of that diversity in biological assemblages []. Not surprisingly, there is a rich research agenda in developing methods to quantify species interactions [].  Abundance or presence/absence data are among the most prevalent and accessible ecological data, and have consequentially been frequently leveraged [] to attempt to infer species interactions, beginning at least in the 1970s []. Two salient insights from decades of debate about inferring ecological processes from abundance/presence/absence data are: 1) interactions in the strict sense cannot be inferred, but *species associations* might be recoverable and these *associations* are assumed to map onto a combination of species-species or species-environment interactions []; 2) robust null models are necessary for any inference. Here I raise a new issue with null model approaches arising from the near universal [] spatial aggregation of individuals within species.  Spatial aggregation can arise from a large number of processes, both driven by deterministic mechanisms or complete demographic drift, thus aggregation in itself is not evidence of species association  The presence of spatial aggregation causes all currently employed null models to have overly high type I error rates, i.e., incorrectly detecting associations when there are none.
 
-Thus, the simple observation of uneven or clustered intra-specific abundances does by itself indicate the influence of deterministic species associations. The data compiled by CEA [@calatayud2019] indeed confirm the ubiquity of uneven species abundances both at an intra-specific level across space (Supplementary Fig. \ref{fig:ssad}) at an inter-specific level (Supplementary Fig. \ref{fig:sadShape}). For consistency, I will refer to the spatial distribution of intra-specific abundances as the spatial species abundance distribution (SSAD) following Harte [@harte2011] and the inter-specific distribution of abundances as the species abundance distribution SAD. To reiterate for clarity, the SSAD is a measure of spatial variability in *intra*-specific abundances across space and is measured once for each species; the SAD is a measure of variability in abundance across species (i.e. *inter*-specific abundances). 
+**Need to add something about the fact that major doubt has been cast on this approach, and yet people still do it**
 
-Using simulation, I show that intra-specific spatial clustering of the SSAD alone is sufficient to reproduce the apparent correlation between abundance and association type reported by CEA.  Spatial clustering is not, by itself, evidence that rare species positively associate with each other while common species negatively associate.  Therefore, the observations reported by CEA do not tell us about species associations, but rather that the null models used do not preserve important aspects of the SSAD.
+### Association networks
 
+**What do the people need to know?**
 
-In Figure \ref{fig:plusMinus} I first reproduce key results from CEA's Figure 2(B-C). Then to evaluate whether these results can be produced simply from spatial clustering alone I simulate purely random data (with absolutely no association or interaction between species) that match the unevenness of abundances found in the observed data. These random data are simulated as follows:
-
-1) The number of species $S$, number of sites $M$, and shape of the best fitting SAD are sampled (with replacement) from the observed data
-2) $S$ species abundances $x_i \ldots x_S$ are sampled from the SAD
-3) For each species $i$ with abundance $x_i$, within-species counts are distributed across the $M$ sites according to an SSAD that is either negative binomial (in the case of spatial clustering) or Poisson (in the case of spatial randomness)
-4) The resulting simulated site by species matrix is fed through the same analytically pipeline (described in CEA) as the observed data to infer positive and negative associations.
-
-All analyses are carried out in R [@rcore] and can be fully reproduced by installing the R package (https://github.com/ajrominger/RarePlusComMinus) accompanying this paper, as detailed in the supplement.
-
-```{r fig_plusMinus_prep, include = FALSE}
-# load plotting funs
-lazyLoad(findChunk('plusMinus_plotFuns', 'RarePlusComMinus_supp'))
-
-# load all data to plot
-lazyLoad(findChunk('obs_plusMinus_comp', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('sim_plusMinus_comp', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('sim_pois_plusMinus_comp', 'RarePlusComMinus_supp'))
-# lazyLoad(findChunk('sim_poisUnif_plusMinus_comp', 'RarePlusComMinus_supp'))
-```
-
-```{r fig_plusMinus, fig.width = figW * 2, fig.height = figH * 2.4, fig.cap = 'Distributions of correlations between network centrality (i.e. species degree) and abundance (left panels) and distributions of weighted mean abundances (right panels). The main figures show the differences between positive and negative association networks, while the inset figures show the sepparate distributions for each network. The results of CEA Figure 2(B-C) are reproduced here in panels A-B; panels C-D show data simulated with a negative binomial SSAD and no species associations; panels E-F show data simulated with a Poisson SSAD and no species associations. \\label{fig:plusMinus}'}
-wmmax <- ceiling(max(simPMData$pos.wm, simPMData$neg.wm, na.rm = TRUE) * 9) / 3
-xless <- 0.48
-yextra <- 0.55
-
-foo <- split.screen(c(3, 1))
-
-screen(1)
-fig2bc(commStats, breaksRho = seq(-2, 2, by = 1/5), 
-       breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = FALSE, 
-       figLabs = c('A', 'B'), insetxprop = xless, insetyprop = yextra)
-mtext('Observed', side = 4, outer = TRUE)
-
-screen(2)
-fig2bc(simPMData, breaksRho = seq(-2, 2, by = 1/5),
-       breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = FALSE,
-       figLabs = c('C', 'D'), insetxprop = xless, insetyprop = yextra)
-
-screen(3)
-fig2bc(simPMDataPois, breaksRho = seq(-2, 2, by = 1/5),
-       breaksWM = seq(-wmmax, wmmax, by = 0.1/3), addxlab = TRUE,
-       figLabs = c('E', 'F'), insetxprop = xless, insetyprop = yextra)
-
-foo <- close.screen(all.screens = TRUE)
-```
-
-In the case of a Poisson SSAD the one parameter (the mean) is fully specified by the average site-level abundance of a given species. In the case of a negative binomial SSAD, the mean parameter is again specified by the site-level average, but the size or clustering parameter $k$ is not fully specified.  To capture the rough features of the data, I sample $k$ from a linear relationship (with noise) between the maximum likelihood estimates of $k$ and the relative abundance of each species (Supplementary Fig. \ref{fig:ssad}).
-
-Figure \ref{fig:plusMinus} A--D shows that with a negative binomial SSAD, simulated data closely match observed findings: the correlation between abundance and species' network degree skews more negative in positive association networks (i.e. more rare species are more highly connected in positive association networks), and positive associations networks tend to contain more rare species than negative networks. This correspondence between real and simulated patterns largely disappears when we instead use a Poisson SSAD, highlighting the importance of spatial aggregation in driving the spurious results. 
+- people like making networks
+- they do it in all kinds of fields
+- the idea is that ++ is mutualism or shared niche, -- is comp or shared niche, and everything else +- +0 -0 00
+- *note: maybe don't bother with non-symmetric? it's super hard regardless*
+- *note: maybe make a figure for all this? maybe not worth it?*
+- various metrics are used to calculate a number for the "strength" of the association (all basically correlation)
+- but how do you tell if those associations are significant? --> null models
 
 
-My findings do not depend on simulating SAD and SSAD shapes from the data: in Supplementary Figure \ref{fig:simpleSim} I show that the spurious relationship between abundance and association type occurs even when simulating data from just one arbitrary SAD function with the one arbitrary spatially clustered SSAD for all species.  In this simulation, again, replacing the spatially clustered SSAD with a Poisson SSAD breaks the spurious connection between abundance and association type as in Figure \ref{fig:plusMinus} (E-F).
+### Null models 
 
-Why do negative binomial SSADs reproduce the results while Poisson SSADs fail to? The null model algorithm used here and in CEA fixes row and column marginals, thus the empirical shape of the SAD is preserved, and the *total* abundances (across all species) at each site are also preserved. However, the way a species' total abundance is allocated across sites by the null model has a potentially large combinatorial space to explore. In Figure \ref{fig:ssadPerm} I compare summary statistics of known SSADs to their permuted counterparts and find that the null model transforms negative binomial SSADs to a more Poisson shape, while leaving Poisson SSADs probabilistically unchanged. Specifically, when starting with a negative binomial SSAD, the null model inflates the number of sites individuals are allocated to (more similarly to a Poisson SSAD) and increases the inferred $k$ parameter, indicating less spatial clustering in the permuted matrices compared to their non-permuted, negative binomial starting points.
+**What do the people need to know?**
 
-```{r ssadPerm_prep, include = FALSE}
-lazyLoad(findChunk('ssad_perm_comp', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('ssad_perm_setup', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('sim_simple_setup', 'RarePlusComMinus_supp'))
-```
+- long ass debate about this, mostly about algorithms and how to add constraints
+- constraints are important because null models need to capture realistic configurations
+- however, even constraining marginals doesn't capture spatial aggregation due to demographic drift
 
-```{r ssadPerm_plot, fig.width = figW * 1.75, fig.cap = "Comparison of SSAD statistics for true and permuted site by species matrices. Colors correspond to the true, un-permuted SSAD. Panel (A) shows how permutation affects number of occupied sites. Panel (B) shows how permutation affects maximum likelihood estimates of the clustering parameter $k$ (B). Points are semi-transparent to help display density. Lines are 1:1 lines. \\label{fig:ssadPerm}"}
-nbCol <- hsv(0.53, 1, 0.8)
-poCol <- hsv(0.1, 1, 0.95)
+### Spatial aggregation
 
-layout(matrix(c(1, 1, 2, 3), nrow = 2, byrow = TRUE), heights = c(1, 5))
+**What do the people need to know?**
 
-lmar <- parArgs$mar
-lmar[c(1, 3)] <- 0
-par(mar = lmar)
-
-plot(1, type = 'n', axes = FALSE, xlab = '', ylab = '')
-legend(1, 1, legend = c('Negative binomial', 'Poisson'), pch = 21, pt.cex = 2,
-       col = c(nbCol, poCol), pt.bg = colAlpha(c(nbCol, poCol), 0.4),
-       bty = 'n', horiz = TRUE, xjust = 0.5)
-
-par(parArgs)
-plot(simPoPerm$nocc, simPoPerm$null_nocc, pch = 21,
-     col = poCol, bg = colAlpha(poCol, 0.1),
-     xlim = c(1, nsite), ylim = c(1, nsite),
-     xlab = 'True num. occupied sites',
-     ylab = 'Permuted num. occupied sites')
-
-points(simNBPerm$nocc, simNBPerm$null_nocc,
-       pch = 21, col = nbCol, bg = colAlpha(nbCol, 0.1))
-
-abline(0, 1, col = 'black', lwd = 2)
+- it's pervasive
+- it's neutral (or otherwise)
+- it's negative binomial
 
 
-foo <- rbind(simNBPerm, simPoPerm)
-foo <- foo[is.finite(foo$size) & is.finite(foo$null_size), ]
+Here I show how spatial aggregation obscures detection of species associations.  I do use using a combination of reanalysis of exemplar datasets from microbes to animals and plants, *in silico* experiments showing how spatial aggregation, driven solely by demographic drift, produces spurious association patterns, and a mathematical investigation of why this happens.
 
-par(parArgs)
-plot(simPoPerm$size, simPoPerm$null_size, log = 'xy', xaxt = 'n', yaxt = 'n',
-     pch = 21, col = poCol, bg = colAlpha(poCol, 0.1),
-     xlim = range(foo[, c('size', 'null_size')]),
-     ylim = range(foo[, c('size', 'null_size')]),
-     xlab = expression('True'~k),
-     ylab = expression('Permuted'~k))
-logAxis(1:2, expLab = TRUE)
 
-points(simNBPerm$size, simNBPerm$null_size,
-       pch = 21, col = nbCol, bg = colAlpha(nbCol, 0.1))
+## Methods
 
-abline(0, 1, lwd = 1.5)
-```
+### Reanalysis of exemplar datasets
 
-```{r, mathEG_prep, include = FALSE}
-lazyLoad(findChunk('mathmat_fun', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('mathEG_setup', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('mathEG_rare', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('mathEG_comm', 'RarePlusComMinus_supp'))
-lazyLoad(findChunk('mathEG_commMax', 'RarePlusComMinus_supp'))
+I reanalyze several exemplar datasets previously used to infer species associations for two reasons: 1) to re-affirm the pervasiveness of negative binomial spatial aggregation within species; and 2) to show that these negative binomially distributed spatial abundance distributions are sufficient by themselves (i.e. with no *real* species associations) to reproduce published inferences of species associations.
 
-formatNice <- function(x) {
-    o <- formatC(x, format = 'e', digits = 2)
-    o <- gsub('e', ' \\\\times 10^{', o)
-    o <- gsub('10\\^\\{-0', '10^\\{-', o)
-    o <- gsub('10\\^\\{0', '10^\\{', o)
-    
-    return(paste0(o, '}'))
-}
-```
+The datasets used are:
 
-The negative binomial SSAD appears to be the key to producing presumably spurious relationships between abundance and positive or negative association networks.  One might then expect that a null model which preserves the shape of the SSAD for each species would account for statistical artifacts deriving from the SSAD.  CEA indeed explore such a null model algorithm (the "independent swap algorithm" [@ulrich2010; @picante]; null model III in the CEA supplement) and find it still supports their results.  I similarly apply the independent swap algorithm to data simulated with a negative binomial SSAD and no real species associations or interactions.  I find that the same spurious relationships between abundance and association type, even when using the independent swap algorithm (Supp. Fig. \ref{fig:indSwap}). This again confirms that such association networks and further biological interpretations of them cannot be drawn from abundance data alone.
+**DS-1**: Calatayud, J., Andivia, E., Escudero, A., Meláin, C.J., Bernardo-Madrid,R., Stoffel, M.et al. (2020). Positive associations among rare species andtheir persistence in ecological assemblages.Nat. Ecol. Evol.,4,40–45.
 
-At a mathematical level, clustered SSADs as compared to spatially even SSADs, increase the probability that rare species will appear positively associated with each other and common species will appear negatively associated.  Consider, for example, two rare species: one with a single individual and the other with abundance `r Nrare`, distributed across `r nsite` sites. Their Schoener similarity is maximized when all individuals occur at the same site, such as this site by species matrix
-$$
-X_{rare} = `r mathmat(rarePair)`
-$$
-If we define $Q(x_i; \mu = `r Nrare / nsite`)$ as the probability of observing $x_i$ individuals in site $i$ given an SSAD with mean parameter $\mu$, then the probability of the above configuration is $P(X_{rare}) = Q(`r Nrare`; \mu = `r Nrare / nsite`) \left(Q(0; \mu = `r Nrare / nsite`)^{`r nsite - 1`}\right)$. Under a negative binomial SSAD with $k = `r k`$, $P(X_{rare}) = `r formatNice(nbRareP)`$ whereas under a Poisson SSAD $P(X_{rare}) = `r formatNice(poRareP)`$. 
+**DS-2**: *ocean microbes*
 
-Conversely, for two common species, say each with abundance `r Ncomm`, an example configuration that *minimizes* their Schoener similarity would be
-$$
-Y_{min} = `r mathmat(commPair)`
-$$
-We calculate the probability of any such scenario where no abundances overlap as $P(Y_{min}) = `r nsite - 1` \left(\left(Q(`r Ncomm`; \mu = `r Ncomm / nsite`) Q(0; \mu = `r Ncomm / nsite`)^{`r nsite - 1`}\right)^2\right)$. With a negative binomial SSAD with $k = `r k`$, $P(Y_{min}) = `r formatNice(nbCommP)`$ whereas with a Poisson SSAD $P(Y_{min}) = `r formatNice(poCommP)`$.
+**DS-3**: *soil microbes*
 
-We contrast this with a configuration that would *maximize* the Schoener similarity between these two common species:
-$$
-Y_{max} = `r mathmat(commPairMax)`
-$$
-The probability of this configuration is $P(Y_{max}) = Q(`r commPairMax[1, 1]`; \mu = `r Ncomm / nsite`)^{`r 2 * nsite`}$. For the same negative binomial $P(Y_{max}) = `r formatNice(nbCommPMax)`$, and for the Poisson $P(Y_{max}) = `r formatNice(poCommPMax)`$.
+Possible data:
+- Berry, D. & Widder, S. (2014). Deciphering microbial interactions anddetecting keystone species with co-occurrence networks.Frontiers  inMicrobiology, 5, 219, 1-14.
+- Cardillo, M. & Meijaard, E. (2010). Phylogeny and co-occurrence ofmammal species on Southeast Asian islands.Global  Ecol.  Biogeog. 19,465-474.
+- Kay, G.M.,  Tulloch, A.,  Barton, P.S.,  Cunningham, S.A.,  Driscoll,D.A. &  Lindenmayer, D.B. (2017). Species co-occurrence networksshow   reptile   community   reorganization   under   agriculturaltransformation.Ecography, 41, 113-125
+- Mandakovic, D., Rojas, C., Maldonado, J., Latorre, M., Travisany, D.,Delage, E. (2018). Structure and co-occurrence patterns in microbialcommunities under acute environmental stress reveal ecological factorsfostering resilience.Scientific Reports, 8. 5875, 1-12
+- Steele, J.A., Countway, P.D., Xia, L., Vigil, P.D., Beman, J.M., Kim,D.Y.et al. (2011). Marine bacterial, archaeal and protistan associationnetworks reveal ecological linkages.ISME J., 5, 1414–1425
+- Losapio, G., Schöb, C., Staniczenko, P. P., Carrara, F., Palamara, G. M., De Moraes, C. M., ... & Bascompte, J. (2021). Network motifs involving both competition and facilitation predict biodiversity in alpine plant communities. Proceedings of the National Academy of Sciences, 118(6), e2005759118.
 
-Thus a spatially clustered SSAD, compared to a spatially even SSAD, gives more probability to configurations where rare species appear aggregated and common species appear over-dispersed. Because the null model algorithm permutes site by species matrices to resemble more Poisson-like SSADs this probabilistic difference between spatially clustered versus even SSADs accounts for the prevalence of rare species in positive association networks and common species in negative association networks. 
 
-```{r}
-# function to calculate percent of species in networks
-percNet <- function(x, type) {
-    round(mean(100 * x[, paste(type, 'v', sep = '.')] / x$all.v, na.rm = TRUE))
-}
-```
 
-Caution should be used when inferring species association from abundance data.  More fundamentally than the spurious correlation of abundance with association type, my analysis shows that statistically significant species associations are inferred from data simulated without any real species associations.  In data simulated with a negative binomial SSAD, on average `r percNet(simPMData, 'pos')`% of species were placed in positive association networks and `r percNet(simPMData, 'neg')`% in negative association networks with a significance cutoff of $\alpha = 0.05$.  With the Poisson SSAD these simulated numbers were `r percNet(simPMDataPois, 'pos')`% for positive networks and `r percNet(simPMDataPois, 'neg')`% for negative networks.  For the observed data, on average `r percNet(commStats, 'pos')`% of species were placed in positive association networks and `r percNet(commStats, 'neg')`% in negative association networks. 
+### *In silico* investigation of spatial aggregation, demographic drift, and spurious associations
 
-It is becoming increasingly appreciated that abundance data alone are not sufficient to distinguish between different ecological processes [@mcgill2007; @morlon2009]. The question of why rare species persist is fascinating, and CEA should be commended for making a concerted effort to illuminate possible mechanisms underlying the phenomenon; however, to reach robust conclusions, other types of data, such as actual experimental measurement of shared environmental associations or species-species interaction strengths, are needed in addition to abundance data. 
+Make a spatial neutral model
+- source pool
+- linked local comms
+- should it be rosindell's coal method?
+
+Analyze for networks
+
+
+### Mathematical investigation of spatial aggregation causing spurious associations
+
 
 ## Data and Code Availability
 
-All data and code needed to reproduce the results of this manuscript are available at https://github.com/ajrominger/RarePlusComMinus and a detailed description of the analytical approach is available in the supplement.
+All data and code needed to reproduce the results of this manuscript are available at https://github.com/ajrominger/ssadAssociation and a detailed description of the analytically approach is available in the supplement.
 
 
 \clearpage
 
+# Bib notes
+
+- Brazeau, H.A. &  Schamp, B.S. (2019). Examining the link betweencompetition and negative co-occurrence patterns.Oikos, 128, 1358-1366.
+- Cazelles, K., Araujo, M.B., Mouquet, N. & Gravel, D. (2016). A theory forspecies co-occurrence in interaction networks.Theor. Ecol.,9,39–48
+- Connor, E.F., Collins, M.D. & Simberloff, D. (2013). The checkeredhistory of checkerboard distributions.Ecology, 94, 2403–2414.
+- Connor,  E.F.  &  Simberloff,  D.  (1979).  The  assembly  of  speciescommunities: Chance or competition?Ecology, 60, 1132.
+- D’Amen, M., Mod, H.K., Gotelli, N.J. & Guisan, A. (2018). Disentanglingbiotic interactions, environmental filters, and dispersal limitation asdrivers of species co-occurrence.Ecography, 41, 1233–1244
+- Diamond, J.M. (1975). Assembly of species communities. In:Ecology andEvolution of Communities(eds Cody, M.L. & Diamond, J.M.). HarvardUniv Press, Cambridge, Mass, pp. 342–444
+- Faisal, A., Dondelinger, F., Husmeier, D. & Beale, C.M. (2010). Inferringspecies  interaction  networks  from  species  abundance  data:  Acomparative evaluation of various statistical and machine learningmethods.Ecological Informatics, 5, 451–464
+- Faust, K. & Raes, J. (2012). Microbial interactions: From networks tomodels.Nat. Rev. Microbiol., 10, 538–550
+- Freilich, M.A., Wieters, E., Broitman, B.R., Marquet, P.A. & Navarrete,S.A. (2018). Species co-occurrence networks: Can they reveal trophicand non-trophic interactions in ecological communities?Ecology, 99,690–699
+- Gotelli, N.J., Graves, G.R. & Rahbek, C. (2010). Macroecological signalsof species interactions in the Danish avifauna.Proc.  Natl  Acad.  Sci.,107, 5030–5035.
+- Gotelli, N.J. & Ulrich, W. (2010). The empirical Bayes approach as a toolto identify non-random species associations.Oecologia, 162, 463–477.
+- Harris, D.J. (2016). Inferring species interactions from co-occurrence datawith Markov networks.Ecology, 97, 3308–3314
+- Morueta-Holme, N., Blonder, B., Sandel, B., McGill, B.J., Peet, R.K.,Ott, J.E.et   al. (2016). A network approach for inferring speciesassociations from co-occurrence data.Ecography, 39, 1139–1150.
+- Ovaskainen, O., Abrego, N., Halme, P. & Dunson, D. (2016). Usinglatent variable models to identify large networks of species-to-speciesassociations at different spatial scales.Methods Ecol. Evol., 7, 549–555.
+- Ovaskainen, O., Hottola, J. & Siitonen, J. (2010). Modeling species co-occurrence by multivariate logistic regression generates new hypotheseson fungal interactions.Ecology, 91, 2514–2521.
+- Ovaskainen, O., Tikhonov, G., Norberg, A., Guillaume Blanchet, F.,Duan, L., Dunson, D.et  al. (2017). How to make more out ofcommunity data? A conceptual framework and its implementation asmodels and software.Ecol. Lett., 20, 561–576
+- Popovic, G.C., Warton, D.I., Thomson, F.J., Hui, F.K.C. & Moles, A.T.(2019). Untangling direct species associations from indirect mediatorspecies effects with graphical models.Methods Ecol. Evol., 10, 1571–1583
+- Thurman, L.L., Barner, A.K., Garcia, T.S. & Chestnut, T. (2019). Testingthe link between species interactions and species co-occurrence in atrophic network.Ecography, 42, 1658–1670
+
+
 # References
+
 
