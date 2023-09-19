@@ -57,24 +57,34 @@ lazyLoad(findChunk('threading', 'RarePlusComMinus_supp'))
 
 ## Introduction
 
-Species interactions are central to the evolution of biodiversity and the maintenance of that diversity in biological assemblages []. Not surprisingly, there is a rich research agenda in developing methods to quantify species interactions [].  Abundance or presence/absence data are among the most prevalent and accessible ecological data, and have consequentially been frequently leveraged [] to attempt to infer species interactions, beginning at least in the 1970s []. Two salient insights from decades of debate about inferring ecological processes from abundance/presence/absence data are: 1) interactions in the strict sense cannot be inferred, but *species associations* might be recoverable and these *associations* are assumed to map onto a combination of species-species or species-environment interactions []; 2) robust null models are necessary for any inference. Here I raise a new issue with null model approaches arising from the near universal [] spatial aggregation of individuals within species.  Spatial aggregation can arise from a large number of processes, both driven by deterministic mechanisms or complete demographic drift, thus aggregation in itself is not evidence of species association  The presence of spatial aggregation causes all currently employed null models to have overly high type I error rates, i.e., incorrectly detecting associations when there are none.
+Species interactions are central to the evolution of biodiversity and the maintenance of that diversity in biological assemblages []. With the vigorous growth in popularity of network theory in ecology and evolution, these interactions are often cast as ecological networks.  Not surprisingly, there is a rich research agenda in developing methods to quantify species interactions [] and constructing ecological networks of interactions [].  Abundance or presence/absence data are among the most prevalent and accessible ecological data, and have consequentially been frequently leveraged [] to attempt to infer species interactions, beginning at least in the early 1900s [], and presently to attempt to infer ecological networks []. For simplicity I will refer to both abundance and presence/absence data as simply "abundance data" and focus on true abundance data with the assumed implication that methodological limitations in the case of true abundances will be even more confounding for presence/absence scenarious [].
 
-**Need to add something about the fact that major doubt has been cast on this approach, and yet people still do it**
+Two salient insights from decades of debate about inferring ecological processes from abundance data are: 1) interactions in the strict sense cannot be inferred, but *species associations* might be recoverable and these *associations* are assumed to map onto a combination of species-species or species-environment interactions []; and 2) robust null models are necessary for any inference. Thus, a current widespread practice is to reconstruct *association* networks aided by null models used to differentiate spurious associations from purputed real associations.
+
+Here I raise a new issue with the approach of inferring association networks from abundance data in combination with null models. The issue arises from the near universal [] spatial aggregation of individuals within species.  Spatial aggregation can arise from a large number of processes, both driven by deterministic mechanisms or complete demographic drift, thus aggregation in itself is not evidence of species association  The presence of spatial aggregation causes all currently employed null models to have overly high type I error rates, i.e., incorrectly detecting associations when there are none.  The present work complements a recent uptick in critical and cautionary assessments of approaches seeking to infer ecological network from abundance data []. The combined message of these contributions is that abundance-derived inferences of species interactions, and even species associations, should be viewed cautiously until other data can be brought to bear on the actuality of real interactions/associations.
+
+
+**Also maybe there are methods not based in null models, so might need to modify to specifically be about null models**
+
 
 ### Association networks
 
-**What do the people need to know?**
+The construction of association networks from abundance data has been reviewed extensively elsewhere [].  Here I aim to provide a very brief sketch such that the subsequent inquiry can be understood.
 
-- people like making networks
-- they do it in all kinds of fields
-- the idea is that ++ is mutualism or shared niche, -- is comp or shared niche, and everything else +- +0 -0 00
-- *note: maybe don't bother with non-symmetric? it's super hard regardless*
-- *note: maybe make a figure for all this? maybe not worth it?*
-- various metrics are used to calculate a number for the "strength" of the association (all basically correlation)
-- but how do you tell if those associations are significant? --> null models
+Firstly, it is of note that abundance-derived association networks are prevalent in studies across the tree of life, from microbes to plants and animals, and across ecosystems globally [].  While preferred inference methods differ by subfield, the basic principles are the same.  Investigators interrogate spatially replicated inter-specific abundance data to search for correlations in the abundances of each species pair.  
+
+Simple normalized covariance (i.e. linear correlation) is one metric used to quantify association, especially in microbial ecology studies where the software SpARCC is commony used []. It should further be noted that in microbial ecology studies, log transformed relative read frequency is used in the place of abundance. Other common metrics used to quantify association do not follow the exact formula of normalied covariance, but are non-the-less very close.  These include xyz. I will therefore use the term "correlation" for all these metrics.
+
+When interpreting pairwise species abundance correlations as species associations, positive correlations are assumed to indicate either shared adaptive responses to environmental conditions, mutualism, or possibly commensalism []. Negative correlations are assumed to indicate either divergent adaptive responses to environmental conditions, competition, or possibly predation/parasatism [].  A lack of correlation is assumed to indicate no interaction [].  The cases of asymmetric interaction (commensalism and predation/parasatism) are well known to be more difficult to detect [].  To detect these processes some researchers have employed more nuanced approaches beyond correlation, such as XYZ entropy [].
+
+Metrics of association by themselves do not deliver association networks.  To construct networks, researchers need to filter out spurious associations (e.g. correlations produced by chance alone) from associations that are unlikely to have been produced by chance alone.  This is the task of null models.
 
 
 ### Null models 
+
+Null models are designed to produce sampling distributions of each pairwise abundance correlation under the null assumption that no association exists []. As simple as the intent, achieving this design goal is challenging and has spurred decades of debate about how to best construct null models []. At the root of this debate are the joint realities that null models for association networks require Monte Carlo simulation approaches because parametric approaches are not available [], and that Type I and II errors are very sensitive to how researchers choose to constrain null models []. Monte Carlo null model algorithms take as input a matrix of abundances where each cell represents the abundance of a specific species (usually the column ID) at a specific site (usually the row ID). The algorithm then permutes abundances across species and sites, thus simulating the condition of no association between species at sites.  The permutation can be carried out within well-defined constraints.
+
+Constraints on null models are necessary because early work revealed that null models that allowed permuted matrices to deviate from observed patterns of site richness and species abundance produced excessive Type I errors []. The conventional wisdom that has since emerged is that both row and column marginals should be constrained in the simulated null matrices [].  These constrains correspond to maintaining the total abundance or richness observed at each site, and the total abundance across sites observed for each species.
 
 **What do the people need to know?**
 
@@ -82,16 +92,13 @@ Species interactions are central to the evolution of biodiversity and the mainte
 - constraints are important because null models need to capture realistic configurations
 - however, even constraining marginals doesn't capture spatial aggregation due to demographic drift
 
+
+
 ### Spatial aggregation
 
-**What do the people need to know?**
+The goal of null models is to produce randomized abundance patterns where all non-random pattern deriving from species associations or interactions has been stripped away.  However, non-random patterns in abundance can arise from many processes, including neutrality, that are not driven by species interactions or associations. As such, deviations of abundance patterns from null models might not, by themselves, indicate true associations or interactions. One critical, and widely observed, property of spatially replicated, intra-species abundances is that they are not evenly distributed across space, a pattern often referred to as spatial clustering [@mcgill2003; @engen2008; @zillio2010; @harte2011; @connolly2017]. Spatial clustering can be accounted for by purely probabilistic processes from neutral birth-death-immigration [@kendall1949; @hubbell2001] to mechanistically agnostic statistical-mechanical properties of large assemblages [@harte2011]. There is thurough consensus that such spatial clustering takes a specific mathematical form: the negative binomial distribution []. This is the distribution that @kendall1949, and subsequently @engen2008, derived for a population undergoing demographic drift due to birth, death, and immigration---and without any regard to species-species or species-environment interactions. The negative binomial distribution also receives widespread empirical validation [@connolly2017]. 
 
-- it's pervasive
-- it's neutral (or otherwise)
-- it's negative binomial
-
-
-Here I show how spatial aggregation obscures detection of species associations.  I do use using a combination of reanalysis of exemplar datasets from microbes to animals and plants, *in silico* experiments showing how spatial aggregation, driven solely by demographic drift, produces spurious association patterns, and a mathematical investigation of why this happens.
+Here I show how negative binomial spatial aggregation obscures detection of species associations.  I do use using a combination of reanalysis of exemplar datasets from microbes to animals and plants, *in silico* experiments showing how spatial aggregation, driven solely by demographic drift, produces spurious association patterns, and a mathematical investigation of why this happens.
 
 
 ## Methods
