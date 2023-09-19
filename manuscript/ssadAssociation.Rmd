@@ -86,12 +86,6 @@ Null models are designed to produce sampling distributions of each pairwise abun
 
 Constraints on null models are necessary because early work revealed that null models that allowed permuted matrices to deviate from observed patterns of site richness and species abundance produced excessive Type I errors []. The conventional wisdom that has since emerged is that both row and column marginals should be constrained in the simulated null matrices [].  These constrains correspond to maintaining the total abundance or richness observed at each site, and the total abundance across sites observed for each species.
 
-**What do the people need to know?**
-
-- long ass debate about this, mostly about algorithms and how to add constraints
-- constraints are important because null models need to capture realistic configurations
-- however, even constraining marginals doesn't capture spatial aggregation due to demographic drift
-
 
 
 ### Spatial aggregation
